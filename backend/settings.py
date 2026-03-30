@@ -213,7 +213,12 @@ REST_FRAMEWORK = {
 TESTING = 'test' in sys.argv
 if TESTING:
     REST_FRAMEWORK['DEFAULT_THROTTLE_CLASSES'] = []
-    REST_FRAMEWORK['DEFAULT_THROTTLE_RATES'] = {}
+    REST_FRAMEWORK['DEFAULT_THROTTLE_RATES'] = {
+        'anon': '10000/day',
+        'user': '10000/day',
+        'auth': '10000/day',
+        'payment': '10000/day',
+    }
 
 SPECTACULAR_SETTINGS = {
     'TITLE': 'AI-Powered Learning Platform API',

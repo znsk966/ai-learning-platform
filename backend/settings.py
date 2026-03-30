@@ -209,7 +209,7 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
-# Disable throttling during tests
+# Disable throttling and quiet logging during tests
 TESTING = 'test' in sys.argv
 if TESTING:
     REST_FRAMEWORK['DEFAULT_THROTTLE_CLASSES'] = []
@@ -301,27 +301,27 @@ LOGGING = {
     'loggers': {
         'django': {
             'handlers': ['console'],
-            'level': 'WARNING',
+            'level': 'CRITICAL' if TESTING else 'WARNING',
         },
         'ai_tutor': {
             'handlers': ['console'],
-            'level': 'DEBUG' if DEBUG else 'INFO',
+            'level': 'CRITICAL' if TESTING else ('DEBUG' if DEBUG else 'INFO'),
         },
         'content': {
             'handlers': ['console'],
-            'level': 'DEBUG' if DEBUG else 'INFO',
+            'level': 'CRITICAL' if TESTING else ('DEBUG' if DEBUG else 'INFO'),
         },
         'payments': {
             'handlers': ['console'],
-            'level': 'DEBUG' if DEBUG else 'INFO',
+            'level': 'CRITICAL' if TESTING else ('DEBUG' if DEBUG else 'INFO'),
         },
         'users': {
             'handlers': ['console'],
-            'level': 'DEBUG' if DEBUG else 'INFO',
+            'level': 'CRITICAL' if TESTING else ('DEBUG' if DEBUG else 'INFO'),
         },
         'assessment': {
             'handlers': ['console'],
-            'level': 'DEBUG' if DEBUG else 'INFO',
+            'level': 'CRITICAL' if TESTING else ('DEBUG' if DEBUG else 'INFO'),
         },
     },
 }

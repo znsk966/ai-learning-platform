@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find 'C:\\\\Users\\\\Elena\\\\Python Projects\\\\ai-powered-learning' -maxdepth 2 -type f \\\\\\(-name Makefile -o -name docker-compose* -o -name .github -o -name .gitlab-ci.yml -o -name .travis.yml -o -name pytest.ini -o -name tox.ini -o -name *settings*.py -o -name conftest.py \\\\\\))",
+      "Bash(python manage.py test payments --verbosity=2)",
+      "Bash(source venv/Scripts/activate)",
+      "Bash(DATABASES='{}' python -c \":*)",
+      "Bash(python -c \":*)",
+      "Bash(DJANGO_SETTINGS_MODULE=backend.test_settings python manage.py test payments --verbosity=2)",
+      "Bash(pip install:*)",
+      "Bash(DJANGO_SETTINGS_MODULE=backend.test_settings python manage.py test payments --verbosity=1)",
+      "Bash(DJANGO_SETTINGS_MODULE=backend.test_settings python manage.py test payments.tests.LemonSqueezyCheckoutTest.test_checkout_creates_pending_transaction --verbosity=2)",
+      "Bash(DJANGO_SETTINGS_MODULE=backend.test_settings python -c \":*)",
+      "Bash(npm run:*)"
+    ]
+  }
+}

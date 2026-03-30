@@ -1,7 +1,6 @@
 # ai-powered-learning/content/admin.py
 from django import forms
 from django.contrib import admin
-from mdeditor.widgets import MDEditorWidget
 
 from .models import CourseEnrollment, Lesson, Module, Profile, SubModule  # <-- Import Profile and CourseEnrollment
 
@@ -27,7 +26,7 @@ class SubModuleAdmin(admin.ModelAdmin):
     search_fields = ('title', 'description')
 
 class LessonAdminForm(forms.ModelForm):
-    text_content = forms.CharField(widget=MDEditorWidget, required=False)
+    text_content = forms.CharField(widget=forms.Textarea(attrs={'rows': 20, 'cols': 120}), required=False)
     class Meta:
         model = Lesson
         fields = '__all__'

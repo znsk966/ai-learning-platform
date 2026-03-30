@@ -44,7 +44,6 @@ urlpatterns = [
     path('api/content/', include('content.urls')), # Content management APIs
     path('api/users/', include('users.urls')), # User registration and authentication
     path('api/payments/', include('payments.urls')), # Payment and enrollment APIs
-    path('mdeditor/', include('mdeditor.urls')), # Markdown editor for content creation
     path('api/assessment/', include('assessment.urls')), # Assessment and quiz APIs
     path('api/ai/', include('ai_tutor.urls')), # AI Tutor APIs
 

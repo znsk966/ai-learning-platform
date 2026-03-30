@@ -1,7 +1,9 @@
-from django.db import models
 from django.conf import settings
-from django.core.validators import MinValueValidator, MaxValueValidator
-from content.models import Lesson # We need to link a Quiz to a Lesson
+from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db import models
+
+from content.models import Lesson  # We need to link a Quiz to a Lesson
+
 
 class Quiz(models.Model):
     """
@@ -28,7 +30,7 @@ class Question(models.Model):
         MULTIPLE_CHOICE = 'MC', 'Multiple Choice'
         TRUE_FALSE = 'TF', 'True / False'
         # Future types can be added here
-    
+
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name='questions')
     question_text = models.TextField()
     question_type = models.CharField(max_length=2, choices=QuestionType.choices, default=QuestionType.MULTIPLE_CHOICE)

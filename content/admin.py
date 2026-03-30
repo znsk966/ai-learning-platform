@@ -1,9 +1,10 @@
 # ai-powered-learning/content/admin.py
-from django.contrib import admin
 from django import forms
-from django.db import models
-from .models import Module, SubModule, Lesson, Profile, CourseEnrollment # <-- Import Profile and CourseEnrollment
+from django.contrib import admin
 from mdeditor.widgets import MDEditorWidget
+
+from .models import CourseEnrollment, Lesson, Module, Profile, SubModule  # <-- Import Profile and CourseEnrollment
+
 
 @admin.register(Module)
 class ModuleAdmin(admin.ModelAdmin):
@@ -59,7 +60,7 @@ class ProfileAdmin(admin.ModelAdmin):
     list_editable = ('is_premium',) # Allows manual override, but will sync with subscription
     search_fields = ('user__username',)
     readonly_fields = ('get_subscription_tier', 'get_subscription_status')
-    
+
     def get_subscription_tier(self, obj):
         """Display current subscription tier"""
         try:
@@ -68,10 +69,10 @@ class ProfileAdmin(admin.ModelAdmin):
                 return f"{subscription.get_tier_display()} (Active)"
             else:
                 return f"{subscription.get_tier_display()} (Expired)"
-        except:
+        except Exception:
             return "No Subscription"
     get_subscription_tier.short_description = 'Subscription'
-    
+
     def get_subscription_status(self, obj):
         """Display subscription status details"""
         try:
@@ -89,10 +90,10 @@ class ProfileAdmin(admin.ModelAdmin):
                 else:
                     status_parts.append("Expired")
             return " | ".join(status_parts)
-        except:
+        except Exception:
             return "No subscription found"
     get_subscription_status.short_description = 'Subscription Status'
-    
+
     fieldsets = (
         ('User Info', {
             'fields': ('user', 'last_viewed_lesson')

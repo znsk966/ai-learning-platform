@@ -1,13 +1,13 @@
 from rest_framework import serializers
-from .models import Subscription, AIChatUsage, SubscriptionPlan
-from content.models import Lesson
+
+from .models import AIChatUsage, Subscription, SubscriptionPlan
 
 
 class SubscriptionSerializer(serializers.ModelSerializer):
     tier_display = serializers.CharField(source='get_tier_display', read_only=True)
     is_valid = serializers.BooleanField(read_only=True)
     is_expired = serializers.BooleanField(read_only=True)
-    
+
     class Meta:
         model = Subscription
         fields = [
@@ -20,7 +20,7 @@ class SubscriptionSerializer(serializers.ModelSerializer):
 
 class AIChatUsageSerializer(serializers.ModelSerializer):
     lesson_title = serializers.CharField(source='lesson.title', read_only=True)
-    
+
     class Meta:
         model = AIChatUsage
         fields = [
@@ -33,7 +33,7 @@ class AIChatUsageSerializer(serializers.ModelSerializer):
 class SubscriptionPlanSerializer(serializers.ModelSerializer):
     tier_display = serializers.CharField(source='get_tier_display', read_only=True)
     billing_period_display = serializers.CharField(source='get_billing_period_display', read_only=True)
-    
+
     class Meta:
         model = SubscriptionPlan
         fields = [

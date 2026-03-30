@@ -6,7 +6,8 @@ Usage:
 """
 
 from django.core.management.base import BaseCommand
-from ai_tutor.models import SubscriptionPlan, Subscription
+
+from ai_tutor.models import Subscription, SubscriptionPlan
 
 
 class Command(BaseCommand):
@@ -154,7 +155,7 @@ class Command(BaseCommand):
                 billing_period=plan_data['billing_period'],
                 defaults=plan_data
             )
-            
+
             if created:
                 created_count += 1
                 self.stdout.write(

@@ -1,5 +1,7 @@
 from django.contrib import admin
+
 from .models import EmailVerificationToken, PasswordResetToken
+
 
 @admin.register(EmailVerificationToken)
 class EmailVerificationTokenAdmin(admin.ModelAdmin):

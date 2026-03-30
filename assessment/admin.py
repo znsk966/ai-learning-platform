@@ -1,5 +1,7 @@
 from django.contrib import admin
-from .models import Quiz, Question, AnswerChoice, QuizAttempt
+
+from .models import AnswerChoice, Question, Quiz, QuizAttempt
+
 
 class AnswerChoiceInline(admin.TabularInline):
     """
@@ -47,14 +49,14 @@ class QuizAttemptAdmin(admin.ModelAdmin):
     search_fields = ('user__username', 'quiz__title')
     readonly_fields = ('user', 'quiz', 'score', 'passed', 'timestamp')
     date_hierarchy = 'timestamp'
-    
+
     # Prevent manual creation/editing, but allow deletion for admin cleanup
     def has_add_permission(self, request):
         return False  # Don't allow manual creation
 
     def has_change_permission(self, request, obj=None):
         return False  # Don't allow editing (read-only fields)
-    
+
     # Allow deletion for staff users to clean up data
     def has_delete_permission(self, request, obj=None):
         return request.user.is_staff  # Allow deletion for staff users

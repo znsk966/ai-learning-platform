@@ -6,8 +6,9 @@ Usage:
 """
 
 from django.core.management.base import BaseCommand
-from content.models import Profile
+
 from ai_tutor.models import Subscription
+from content.models import Profile
 
 
 class Command(BaseCommand):
@@ -16,16 +17,16 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         updated_count = 0
         unchanged_count = 0
-        
+
         for profile in Profile.objects.all():
             try:
                 subscription = profile.user.subscription
                 # User is premium if they have an active, valid subscription that's not FREE
                 should_be_premium = (
-                    subscription.is_valid and 
+                    subscription.is_valid and
                     subscription.tier != Subscription.SubscriptionTier.FREE
                 )
-                
+
                 if profile.is_premium != should_be_premium:
                     profile.is_premium = should_be_premium
                     profile.save(update_fields=['is_premium'])
@@ -50,7 +51,7 @@ class Command(BaseCommand):
                     )
                 else:
                     unchanged_count += 1
-        
+
         self.stdout.write(
             self.style.SUCCESS(
                 f'\n✓ Sync complete: {updated_count} updated, {unchanged_count} unchanged'

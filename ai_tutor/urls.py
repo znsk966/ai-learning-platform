@@ -1,12 +1,8 @@
-from django.urls import path, include
+from django.urls import include, path
 from rest_framework.routers import DefaultRouter
+
+from .subscription_views import AIChatUsageViewSet, CreateSubscriptionView, SubscriptionPlanViewSet, SubscriptionViewSet
 from .views import AIAskView
-from .subscription_views import (
-    SubscriptionViewSet,
-    SubscriptionPlanViewSet,
-    AIChatUsageViewSet,
-    CreateSubscriptionView
-)
 
 router = DefaultRouter()
 router.register(r'subscriptions', SubscriptionViewSet, basename='subscription')

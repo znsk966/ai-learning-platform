@@ -1,9 +1,9 @@
 # ai-powered-learning/users/serializers.py
 
 from django.contrib.auth.models import User
-from rest_framework import serializers, validators
 from django.contrib.auth.password_validation import validate_password
-from .models import EmailVerificationToken, PasswordResetToken
+from rest_framework import serializers, validators
+
 
 class RegisterSerializer(serializers.ModelSerializer):
     # We are using the default Django User model which requires a username.

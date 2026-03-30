@@ -1,12 +1,14 @@
 from rest_framework import serializers
-from .models import PaymentTransaction
+
 from content.models import Module
+
+from .models import PaymentTransaction
 
 
 class PaymentTransactionSerializer(serializers.ModelSerializer):
     module_title = serializers.CharField(source='module.title', read_only=True)
     user_email = serializers.EmailField(source='user.email', read_only=True)
-    
+
     class Meta:
         model = PaymentTransaction
         fields = [
@@ -21,7 +23,7 @@ class PaymentTransactionSerializer(serializers.ModelSerializer):
 class CreatePaymentIntentSerializer(serializers.Serializer):
     """Serializer for creating a payment intent"""
     module_id = serializers.IntegerField()
-    
+
     def validate_module_id(self, value):
         try:
             module = Module.objects.get(pk=value)

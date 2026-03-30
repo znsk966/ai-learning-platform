@@ -1,7 +1,9 @@
 # ai-powered-learning/content/serializers.py
 
 from rest_framework import serializers
-from .models import Module, SubModule, Lesson, Profile
+
+from .models import Lesson, Module, Profile, SubModule
+
 
 # --- LessonSerializer with 'status' field ---
 class LessonSerializer(serializers.ModelSerializer):
@@ -32,11 +34,11 @@ class ModuleSerializer(serializers.ModelSerializer):
     is_enrolled = serializers.BooleanField(read_only=True)
     can_access = serializers.BooleanField(read_only=True)
     is_free = serializers.BooleanField(read_only=True)
-    
+
     class Meta:
         model = Module
         fields = [
-            'id', 'title', 'description', 'order', 
+            'id', 'title', 'description', 'order',
             'price', 'currency', 'is_premium_only',
             'is_free', 'is_enrolled', 'can_access',
             'submodules'

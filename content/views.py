@@ -1,22 +1,20 @@
 # ai-powered-learning/content/views.py
 
-from rest_framework import viewsets, status
-from rest_framework.decorators import action
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
-from django.db.models import Count, Prefetch, Q
-from django.utils import timezone
 from datetime import timedelta
 
-from backend.permissions import IsAdminOrReadOnly 
-from .models import Module, SubModule, Lesson, UserLessonProgress, Profile, CourseEnrollment
-from .serializers import (
-    ModuleSerializer, 
-    SubModuleSerializer, 
-    LessonSerializer,
-    DashboardSerializer
-)
+from django.db.models import Q
+from django.utils import timezone
+from rest_framework import status, viewsets
+from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from backend.permissions import IsAdminOrReadOnly
+
+from .models import CourseEnrollment, Lesson, Module, Profile, SubModule, UserLessonProgress
+from .serializers import DashboardSerializer, LessonSerializer, ModuleSerializer, SubModuleSerializer
+
 
 # --- CORRECTED ModuleViewSet with Locking Logic ---
 class ModuleViewSet(viewsets.ModelViewSet):
@@ -35,19 +33,19 @@ class ModuleViewSet(viewsets.ModelViewSet):
         is_enrolled = False
         if user.is_authenticated:
             is_enrolled = CourseEnrollment.objects.filter(
-                user=user, 
-                module=instance, 
+                user=user,
+                module=instance,
                 is_active=True
             ).exists()
-        
+
         # Check if user can access (enrolled OR (free course) OR (premium user and premium-only course))
         can_access = False
         if user.is_authenticated:
             try:
                 profile, _ = Profile.objects.get_or_create(user=user)
                 can_access = (
-                    is_enrolled or 
-                    instance.is_free or 
+                    is_enrolled or
+                    instance.is_free or
                     (instance.is_premium_only and profile.is_premium)
                 )
             except Exception:
@@ -56,7 +54,7 @@ class ModuleViewSet(viewsets.ModelViewSet):
         else:
             # Anonymous users can only access free courses
             can_access = instance.is_free
-        
+
         # If user cannot access, return limited information
         if not can_access and not (user.is_authenticated and user.is_staff):
             serializer = self.get_serializer(instance)
@@ -103,21 +101,21 @@ class ModuleViewSet(viewsets.ModelViewSet):
         data['can_access'] = can_access
         data['is_free'] = instance.is_free
         return Response(data)
-    
+
     def list(self, request, *args, **kwargs):
         """
         Override list to add enrollment and access information.
         """
         response = super().list(request, *args, **kwargs)
         user = request.user
-        
+
         # Handle paginated response (response.data is a dict with 'results') or list response
         modules_list = response.data.get('results', response.data) if isinstance(response.data, dict) else response.data
-        
+
         if not isinstance(modules_list, list):
             # If it's not a list, something went wrong, return as-is
             return response
-        
+
         # Fetch all modules referenced in the response in one query
         module_ids = [m.get('id') for m in modules_list if m.get('id')]
         modules_by_id = {m.id: m for m in Module.objects.filter(id__in=module_ids)}
@@ -162,13 +160,13 @@ class ModuleViewSet(viewsets.ModelViewSet):
                 module_data['is_enrolled'] = False
                 module_data['can_access'] = module.is_free
                 module_data['is_free'] = module.is_free
-        
+
         # Update response.data with modified modules_list
         if isinstance(response.data, dict):
             response.data['results'] = modules_list
         else:
             response.data = modules_list
-        
+
         return response
 
 
@@ -204,7 +202,7 @@ class SubModuleViewSet(viewsets.ModelViewSet):
                 unlocked_lesson_found = True
             else:
                 lesson.status = 'locked'
-        
+
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
@@ -212,7 +210,7 @@ class LessonViewSet(viewsets.ModelViewSet):
     queryset = Lesson.objects.all().order_by('order')
     serializer_class = LessonSerializer
     filterset_fields = ['submodule']
-    permission_classes = [IsAdminOrReadOnly] 
+    permission_classes = [IsAdminOrReadOnly]
 
     @action(detail=True, methods=['post'], url_path='view', permission_classes=[IsAuthenticated])
     def mark_as_viewed(self, request, pk=None):
@@ -286,15 +284,15 @@ class DashboardView(APIView):
         ).distinct().count()
 
         profile_data = DashboardSerializer(instance=profile).data
-        
+
         profile_data['stats'] = {
             'modules_completed': modules_completed_count,
             'lessons_completed': lessons_completed_count,
             'average_score': "N/A"
         }
-        
+
         return Response(profile_data)
-    
+
 # --- ADD THIS NEW VIEW AT THE END OF THE FILE ---
 class NextLessonView(APIView):
     """
@@ -305,7 +303,7 @@ class NextLessonView(APIView):
     def get(self, request, *args, **kwargs):
         user = request.user
         completed_lesson_ids = set(UserLessonProgress.objects.filter(user=user).values_list('lesson_id', flat=True))
-        
+
         # Find the first lesson that is not in the completed set, respecting the global order.
         next_lesson = Lesson.objects.exclude(id__in=completed_lesson_ids).order_by('submodule__module__order', 'submodule__order', 'order').first()
 
@@ -327,15 +325,15 @@ class ProgressAnalyticsView(APIView):
 
     def get(self, request, *args, **kwargs):
         user = request.user
-        
+
         # Get user's completed lessons
         completed_lessons = UserLessonProgress.objects.filter(user=user)
         completed_lesson_ids = set(completed_lessons.values_list('lesson_id', flat=True))
-        
+
         # Get user's enrollments
         enrollments = CourseEnrollment.objects.filter(user=user, is_active=True).select_related('module')
         enrolled_module_ids = set(enrollments.values_list('module_id', flat=True))
-        
+
         # Get all lessons for comparison (only from enrolled modules or free modules for progress calculation)
         enrolled_or_free_modules = Module.objects.filter(
             Q(id__in=enrolled_module_ids) | Q(price=0.00)
@@ -343,10 +341,10 @@ class ProgressAnalyticsView(APIView):
         all_lessons = Lesson.objects.filter(submodule__module__in=enrolled_or_free_modules)
         total_lessons = all_lessons.count()
         completed_count = len(completed_lesson_ids)
-        
+
         # Calculate overall progress percentage (only for enrolled/free courses)
         overall_progress = (completed_count / total_lessons * 100) if total_lessons > 0 else 0
-        
+
         # Progress by module (show all modules, but mark enrollment status)
         all_modules = Module.objects.all()
         module_progress = []
@@ -355,11 +353,11 @@ class ProgressAnalyticsView(APIView):
             module_total = module_lessons.count()
             module_completed = module_lessons.filter(id__in=completed_lesson_ids).count()
             module_percentage = (module_completed / module_total * 100) if module_total > 0 else 0
-            
+
             # Get enrollment info
             enrollment = enrollments.filter(module=module).first()
             is_enrolled = module.id in enrolled_module_ids
-            
+
             module_progress.append({
                 'id': module.id,
                 'title': module.title,
@@ -372,7 +370,7 @@ class ProgressAnalyticsView(APIView):
                 'is_free': module.is_free,
                 'price': float(module.price) if not module.is_free else 0
             })
-        
+
         # Progress by lesson type
         lesson_type_progress = []
         for lesson_type, lesson_type_name in Lesson.LessonType.choices:
@@ -380,7 +378,7 @@ class ProgressAnalyticsView(APIView):
             type_total = type_lessons.count()
             type_completed = type_lessons.filter(id__in=completed_lesson_ids).count()
             type_percentage = (type_completed / type_total * 100) if type_total > 0 else 0
-            
+
             lesson_type_progress.append({
                 'type': lesson_type,
                 'name': lesson_type_name,
@@ -388,12 +386,12 @@ class ProgressAnalyticsView(APIView):
                 'completed': type_completed,
                 'percentage': round(type_percentage, 1)
             })
-        
+
         # Recent activity (last 7 days)
         seven_days_ago = timezone.now() - timedelta(days=7)
         recent_completions = completed_lessons.filter(completed_at__gte=seven_days_ago)
         recent_lessons = recent_completions.select_related('lesson__submodule__module').order_by('-completed_at')[:5]
-        
+
         recent_activity = []
         for progress in recent_lessons:
             recent_activity.append({
@@ -404,26 +402,26 @@ class ProgressAnalyticsView(APIView):
                 'completed_at': progress.completed_at,
                 'days_ago': (timezone.now() - progress.completed_at).days
             })
-        
+
         # Study streak calculation
         streak = 0
         current_date = timezone.now().date()
         check_date = current_date
-        
+
         while True:
             daily_completions = completed_lessons.filter(
                 completed_at__date=check_date
             ).exists()
-            
+
             if daily_completions:
                 streak += 1
                 check_date -= timedelta(days=1)
             else:
                 break
-        
+
         # Achievement badges
         achievements = []
-        
+
         # First lesson completed
         if completed_count >= 1:
             achievements.append({
@@ -433,7 +431,7 @@ class ProgressAnalyticsView(APIView):
                 'icon': '🎯',
                 'earned': True
             })
-        
+
         # 10 lessons completed
         if completed_count >= 10:
             achievements.append({
@@ -443,7 +441,7 @@ class ProgressAnalyticsView(APIView):
                 'icon': '📚',
                 'earned': True
             })
-        
+
         # Module completion
         completed_modules = [m for m in module_progress if m['is_completed']]
         if completed_modules:
@@ -454,7 +452,7 @@ class ProgressAnalyticsView(APIView):
                 'icon': '🏆',
                 'earned': True
             })
-        
+
         # Study streak
         if streak >= 3:
             achievements.append({
@@ -464,7 +462,7 @@ class ProgressAnalyticsView(APIView):
                 'icon': '🔥',
                 'earned': True
             })
-        
+
         # Add unearned achievements for motivation
         if completed_count < 10:
             achievements.append({
@@ -474,7 +472,7 @@ class ProgressAnalyticsView(APIView):
                 'icon': '📚',
                 'earned': False
             })
-        
+
         if streak < 3:
             achievements.append({
                 'id': 'streak_3',
@@ -483,7 +481,7 @@ class ProgressAnalyticsView(APIView):
                 'icon': '🔥',
                 'earned': False
             })
-        
+
         # Next milestones
         next_milestones = []
         if completed_count < 10:
@@ -493,7 +491,7 @@ class ProgressAnalyticsView(APIView):
                 'current': completed_count,
                 'description': 'Complete 10 lessons'
             })
-        
+
         if streak < 7:
             next_milestones.append({
                 'type': 'streak',
@@ -501,12 +499,12 @@ class ProgressAnalyticsView(APIView):
                 'current': streak,
                 'description': 'Maintain a 7-day study streak'
             })
-        
+
         # Get next lesson for quick access
         next_lesson = Lesson.objects.exclude(id__in=completed_lesson_ids).order_by(
             'submodule__module__order', 'submodule__order', 'order'
         ).first()
-        
+
         next_lesson_data = None
         if next_lesson:
             next_lesson_data = {
@@ -517,7 +515,7 @@ class ProgressAnalyticsView(APIView):
                 'lesson_type': next_lesson.get_lesson_type_display(),
                 'url': f'/submodule/{next_lesson.submodule.id}/lesson/{next_lesson.id}'
             }
-        
+
         # Get enrolled courses info
         enrolled_courses = []
         for enrollment in enrollments.order_by('-enrolled_at')[:5]:
@@ -526,7 +524,7 @@ class ProgressAnalyticsView(APIView):
             module_completed = module_lessons.filter(id__in=completed_lesson_ids).count()
             module_total = module_lessons.count()
             module_percentage = (module_completed / module_total * 100) if module_total > 0 else 0
-            
+
             enrolled_courses.append({
                 'id': module.id,
                 'title': module.title,
@@ -540,7 +538,7 @@ class ProgressAnalyticsView(APIView):
                 'is_free': module.is_free,
                 'price': float(module.price) if not module.is_free else 0
             })
-        
+
         return Response({
             'overall_progress': {
                 'total_lessons': total_lessons,

@@ -12,7 +12,6 @@ const QuizView = ({ lessonId, onQuizComplete }) => {
   
   // New state for step-by-step interface
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [showProgress, setShowProgress] = useState(true);
 
   useEffect(() => {
     const fetchQuiz = async () => {
@@ -183,7 +182,6 @@ const QuizView = ({ lessonId, onQuizComplete }) => {
           {results.questions && results.questions.length > 0 ? (
             results.questions.map((question, index) => {
               const userChoice = question.choices?.find(choice => choice.id === question.user_answer);
-              const correctChoice = question.choices?.find(choice => choice.is_correct);
               const isCorrect = userChoice?.is_correct;
 
               return (

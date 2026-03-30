@@ -1,25 +1,27 @@
 # ai-powered-learning/users/views.py
 
+from django.conf import settings
 from django.contrib.auth.models import User
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 from rest_framework import generics, status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.authentication import SessionAuthentication
+
 from backend.throttles import AuthRateThrottle
-from django.conf import settings
-from django.core.mail import send_mail
-from django.template.loader import render_to_string
-from django.utils.html import strip_tags
-from .serializers import (
-    RegisterSerializer,
-    EmailVerificationSerializer,
-    PasswordResetRequestSerializer,
-    PasswordResetConfirmSerializer,
-    PasswordChangeSerializer,
-    UserProfileSerializer
-)
+
 from .models import EmailVerificationToken, PasswordResetToken
+from .serializers import (
+    EmailVerificationSerializer,
+    PasswordChangeSerializer,
+    PasswordResetConfirmSerializer,
+    PasswordResetRequestSerializer,
+    RegisterSerializer,
+    UserProfileSerializer,
+)
+
 
 class RegisterView(generics.CreateAPIView):
     """
@@ -36,26 +38,26 @@ class RegisterView(generics.CreateAPIView):
     def perform_create(self, serializer):
         """Override to create email verification token and send email"""
         user = serializer.save()
-        
+
         # Create email verification token
         verification_token = EmailVerificationToken.objects.create(user=user)
-        
+
         # Send verification email
         self.send_verification_email(user, verification_token.token)
-        
+
         return user
 
     def send_verification_email(self, user, token):
         """Send email verification link to user"""
         verification_url = f"{settings.FRONTEND_URL}/verify-email/{token}/"
-        
+
         subject = 'Verify Your Email Address'
         html_message = render_to_string('users/email_verification.html', {
             'user': user,
             'verification_url': verification_url,
         })
         plain_message = strip_tags(html_message)
-        
+
         send_mail(
             subject=subject,
             message=plain_message,
@@ -76,35 +78,35 @@ class EmailVerificationView(APIView):
         serializer = EmailVerificationSerializer(data=request.data)
         if serializer.is_valid():
             token = serializer.validated_data['token']
-            
+
             try:
                 verification = EmailVerificationToken.objects.get(token=token)
-                
+
                 if not verification.is_valid():
                     return Response(
                         {'error': 'Invalid or expired verification token.'},
                         status=status.HTTP_400_BAD_REQUEST
                     )
-                
+
                 # Mark token as verified and activate user
                 verification.is_verified = True
                 verification.save()
-                
+
                 user = verification.user
                 user.is_active = True
                 user.save()
-                
+
                 return Response({
                     'message': 'Email verified successfully. You can now log in.',
                     'verified': True
                 }, status=status.HTTP_200_OK)
-                
+
             except EmailVerificationToken.DoesNotExist:
                 return Response(
                     {'error': 'Invalid verification token.'},
                     status=status.HTTP_400_BAD_REQUEST
                 )
-        
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class ResendVerificationEmailView(APIView):
@@ -116,28 +118,28 @@ class ResendVerificationEmailView(APIView):
 
     def post(self, request):
         email = request.data.get('email')
-        
+
         if not email:
             return Response(
                 {'error': 'Email is required.'},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        
+
         try:
             user = User.objects.get(email=email)
-            
+
             if user.is_active:
                 return Response(
                     {'message': 'Email is already verified.'},
                     status=status.HTTP_200_OK
             )
-            
+
             # Get or create verification token
             verification_token, created = EmailVerificationToken.objects.get_or_create(
                 user=user,
                 defaults={'is_verified': False}
             )
-            
+
             # If token exists but is verified, create a new one
             if verification_token.is_verified:
                 verification_token.delete()
@@ -146,7 +148,7 @@ class ResendVerificationEmailView(APIView):
                 # Token expired, create new one
                 verification_token.delete()
                 verification_token = EmailVerificationToken.objects.create(user=user)
-            
+
             # Send verification email
             verification_url = f"{settings.FRONTEND_URL}/verify-email/{verification_token.token}/"
             subject = 'Verify Your Email Address'
@@ -155,7 +157,7 @@ class ResendVerificationEmailView(APIView):
                 'verification_url': verification_url,
             })
             plain_message = strip_tags(html_message)
-            
+
             send_mail(
                 subject=subject,
                 message=plain_message,
@@ -164,11 +166,11 @@ class ResendVerificationEmailView(APIView):
                 html_message=html_message,
                 fail_silently=False,
             )
-            
+
             return Response({
                 'message': 'Verification email sent successfully.'
             }, status=status.HTTP_200_OK)
-            
+
         except User.DoesNotExist:
             # Don't reveal if email exists or not (security best practice)
             return Response({
@@ -187,13 +189,13 @@ class PasswordResetRequestView(APIView):
         serializer = PasswordResetRequestSerializer(data=request.data)
         if serializer.is_valid():
             email = serializer.validated_data['email']
-            
+
             try:
                 user = User.objects.get(email=email)
-                
+
                 # Create password reset token
                 reset_token = PasswordResetToken.objects.create(user=user)
-                
+
                 # Send password reset email
                 reset_url = f"{settings.FRONTEND_URL}/reset-password/{reset_token.token}/"
                 subject = 'Password Reset Request'
@@ -203,7 +205,7 @@ class PasswordResetRequestView(APIView):
                     'token': reset_token.token,
                 })
                 plain_message = strip_tags(html_message)
-                
+
                 send_mail(
                     subject=subject,
                     message=plain_message,
@@ -212,17 +214,17 @@ class PasswordResetRequestView(APIView):
                     html_message=html_message,
                     fail_silently=False,
                 )
-                
+
                 return Response({
                     'message': 'If an account exists with this email, a password reset link has been sent.'
                 }, status=status.HTTP_200_OK)
-                
+
             except User.DoesNotExist:
                 # Don't reveal if email exists or not (security best practice)
                 return Response({
                     'message': 'If an account exists with this email, a password reset link has been sent.'
                 }, status=status.HTTP_200_OK)
-        
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class PasswordResetConfirmView(APIView):
@@ -237,41 +239,41 @@ class PasswordResetConfirmView(APIView):
         if serializer.is_valid():
             token = serializer.validated_data['token']
             new_password = serializer.validated_data['new_password']
-            
+
             try:
                 reset_token = PasswordResetToken.objects.get(token=token)
-                
+
                 if not reset_token.is_valid():
                     return Response(
                         {'error': 'Invalid or expired reset token.'},
                         status=status.HTTP_400_BAD_REQUEST
                     )
-                
+
                 # Update user password
                 user = reset_token.user
                 user.set_password(new_password)
                 user.save()
-                
+
                 # Mark token as used
                 reset_token.is_used = True
                 reset_token.save()
-                
+
                 # Invalidate all other reset tokens for this user
                 PasswordResetToken.objects.filter(
                     user=user,
                     is_used=False
                 ).update(is_used=True)
-                
+
                 return Response({
                     'message': 'Password reset successfully. You can now log in with your new password.'
                 }, status=status.HTTP_200_OK)
-                
+
             except PasswordResetToken.DoesNotExist:
                 return Response(
                     {'error': 'Invalid reset token.'},
                     status=status.HTTP_400_BAD_REQUEST
                 )
-        
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class PasswordChangeView(APIView):
@@ -285,19 +287,19 @@ class PasswordChangeView(APIView):
             data=request.data,
             context={'request': request}
         )
-        
+
         if serializer.is_valid():
             user = request.user
             new_password = serializer.validated_data['new_password']
-            
+
             # Update password
             user.set_password(new_password)
             user.save()
-            
+
             return Response({
                 'message': 'Password changed successfully.'
             }, status=status.HTTP_200_OK)
-        
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

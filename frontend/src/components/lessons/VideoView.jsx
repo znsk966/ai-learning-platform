@@ -20,7 +20,6 @@ const getYouTubeEmbedUrl = (url) => {
 const VideoView = ({ url, textContent }) => {
   const [hasError, setHasError] = useState(false);
   const [isReady, setIsReady] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
   const playerRef = useRef(null);
 
   // Check if URL is YouTube - use iframe directly for better compatibility
@@ -53,19 +52,12 @@ const VideoView = ({ url, textContent }) => {
     setIsReady(true); // Also set ready when video starts
   };
 
-  const handleClickPreview = () => {
-    console.log('User clicked video preview/thumbnail');
-    setIsReady(true); // Set ready when user clicks to load video
-  };
-
   const handlePlay = () => {
     console.log('Video play event');
-    setIsPlaying(true);
   };
 
   const handlePause = () => {
     console.log('Video pause event');
-    setIsPlaying(false);
   };
 
   const handleProgress = (state) => {

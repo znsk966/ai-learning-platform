@@ -1,9 +1,10 @@
 # ai-powered-learning/content/urls.py
 
-from django.urls import path, include
+from django.urls import include, path
 from rest_framework.routers import DefaultRouter
+
 # Import the new DashboardView
-from .views import ModuleViewSet, SubModuleViewSet, LessonViewSet, DashboardView, NextLessonView, ProgressAnalyticsView
+from .views import DashboardView, LessonViewSet, ModuleViewSet, NextLessonView, ProgressAnalyticsView, SubModuleViewSet
 
 # Your existing router setup remains the same
 router = DefaultRouter()

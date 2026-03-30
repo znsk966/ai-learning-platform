@@ -1,6 +1,7 @@
-from django.urls import path, include
+from django.urls import include, path
 from rest_framework.routers import DefaultRouter
-from .views import QuizViewSet, QuizAttemptViewSet
+
+from .views import QuizAttemptViewSet, QuizViewSet
 
 # Create a router and register our viewsets with it.
 router = DefaultRouter()

@@ -10,10 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
-from pathlib import Path
-from django.core.exceptions import ImproperlyConfigured
 import os
+from pathlib import Path
+
 import dj_database_url
+from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -55,13 +56,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # Our apps
-    'users.apps.UsersConfig',         # Or just 'users' if you haven't defined an AppConfig class 
-    'content.apps.ContentConfig',     
-    'assessment.apps.AssessmentConfig', 
+    'users.apps.UsersConfig',         # Or just 'users' if you haven't defined an AppConfig class
+    'content.apps.ContentConfig',
+    'assessment.apps.AssessmentConfig',
     'progress.apps.ProgressConfig',
     'ai_tutor.apps.AiTutorConfig',  # Assuming you have an app named ai_tutor
     'payments.apps.PaymentsConfig',  # Payments app for course pricing
-    'mdeditor',  
+    'mdeditor',
 
     # Third-party apps
     'rest_framework', # Django REST Framework
@@ -214,7 +215,7 @@ SPECTACULAR_SETTINGS = {
 }
 
 # JWT Settings
-from datetime import timedelta
+from datetime import timedelta  # noqa: E402
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),

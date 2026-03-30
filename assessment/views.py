@@ -1,16 +1,14 @@
-from rest_framework import viewsets, status
-from rest_framework.decorators import action
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
 from django.db import transaction
+from rest_framework import status, viewsets
+from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
-from .models import Quiz, QuizAttempt, AnswerChoice
-from content.models import UserLessonProgress # To mark lessons as complete
-from .serializers import (
-    QuizSerializer, 
-    QuizSubmissionSerializer, 
-    QuizAttemptResultSerializer
-)
+from content.models import UserLessonProgress  # To mark lessons as complete
+
+from .models import AnswerChoice, Quiz, QuizAttempt
+from .serializers import QuizAttemptResultSerializer, QuizSerializer, QuizSubmissionSerializer
+
 
 class QuizViewSet(viewsets.ReadOnlyModelViewSet):
     """
@@ -74,7 +72,7 @@ class QuizViewSet(viewsets.ReadOnlyModelViewSet):
 
             if user_choice_id == correct_choice_id:
                 correct_answers += 1
-        
+
         score = (correct_answers / total_questions) * 100 if total_questions > 0 else 0
         passed = score >= quiz.passing_score
 
@@ -93,11 +91,11 @@ class QuizViewSet(viewsets.ReadOnlyModelViewSet):
         # Return the detailed results of the attempt
         result_serializer = QuizAttemptResultSerializer(instance=attempt)
         response_data = result_serializer.data
-        
+
         # Add user's answers to the questions
         for question_data in response_data['questions']:
             question_data['user_answer'] = submitted_answers.get(question_data['id'])
-        
+
         return Response(response_data, status=status.HTTP_201_CREATED)
 
 class QuizAttemptViewSet(viewsets.ReadOnlyModelViewSet):

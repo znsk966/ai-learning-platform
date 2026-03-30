@@ -1,18 +1,18 @@
-from django.db import models
+
 from django.conf import settings
+from django.db import models
 from django.utils import timezone
-from datetime import timedelta
 
 
 class Subscription(models.Model):
     """User subscription for AI tutor access"""
-    
+
     class SubscriptionTier(models.TextChoices):
         FREE = 'FREE', 'Free'
         BASIC = 'BASIC', 'Basic'
         PREMIUM = 'PREMIUM', 'Premium'
         PRO = 'PRO', 'Pro'
-    
+
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -27,29 +27,29 @@ class Subscription(models.Model):
     expires_at = models.DateTimeField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
     auto_renew = models.BooleanField(default=False)
-    
+
     # Usage limits based on tier
     monthly_chat_limit = models.PositiveIntegerField(default=0)  # 0 = unlimited
     monthly_token_limit = models.PositiveIntegerField(default=0)  # 0 = unlimited
-    
+
     class Meta:
         ordering = ['-started_at']
-    
+
     def __str__(self):
         return f"{self.user.username} - {self.get_tier_display()}"
-    
+
     @property
     def is_expired(self):
         """Check if subscription has expired"""
         if not self.expires_at:
             return False
         return timezone.now() > self.expires_at
-    
+
     @property
     def is_valid(self):
         """Check if subscription is active and not expired"""
         return self.is_active and not self.is_expired
-    
+
     def get_limits(self):
         """Get usage limits for this subscription tier"""
         limits = {
@@ -90,14 +90,14 @@ class AIChatUsage(models.Model):
     response = models.TextField(blank=True)
     tokens_used = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
-    
+
     class Meta:
         ordering = ['-created_at']
         indexes = [
             models.Index(fields=['user', 'created_at']),
             models.Index(fields=['user', '-created_at']),
         ]
-    
+
     def __str__(self):
         return f"{self.user.username} - {self.created_at.date()}"
 
@@ -124,10 +124,10 @@ class SubscriptionPlan(models.Model):
     features = models.JSONField(default=dict, help_text="Dictionary of features included")
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    
+
     class Meta:
         ordering = ['price']
         unique_together = ['name', 'billing_period']  # Prevent duplicate plans
-    
+
     def __str__(self):
         return f"{self.name} - {self.get_billing_period_display()}"

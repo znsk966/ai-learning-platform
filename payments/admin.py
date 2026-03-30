@@ -1,4 +1,5 @@
 from django.contrib import admin
+
 from .models import PaymentTransaction
 
 
@@ -9,7 +10,7 @@ class PaymentTransactionAdmin(admin.ModelAdmin):
     search_fields = ('user__username', 'user__email', 'module__title', 'transaction_id', 'payment_intent_id')
     readonly_fields = ('created_at', 'updated_at', 'completed_at')
     date_hierarchy = 'created_at'
-    
+
     fieldsets = (
         ('User & Course', {
             'fields': ('user', 'module')

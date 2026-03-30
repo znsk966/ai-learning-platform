@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { login as loginService, register as registerService } from '../api/authService';
 import { useAuth } from '../store/authContext';
@@ -24,8 +24,10 @@ const AuthPage = () => {
   const location = useLocation();
   const { login } = useAuth();
 
-  const [isLoginView, setIsLoginView] = useState(location.pathname === '/login');
   const [showPassword, setShowPassword] = useState(false);
+
+  const isLoginView = location.pathname === '/login';
+  const successMessage = useMemo(() => location.state?.message || '', [location.state]);
   
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -33,15 +35,7 @@ const AuthPage = () => {
   const [passwordConfirm, setPasswordConfirm] = useState('');
   
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    setIsLoginView(location.pathname === '/login');
-    setError('');
-    setSuccess(location.state?.message || '');
-    setShowPassword(false);
-  }, [location.pathname, location.state]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -124,7 +118,7 @@ const AuthPage = () => {
                       )}
                       
                       {error && <p className="text-sm text-center text-red-500 font-medium">{error}</p>}
-                      {success && <p className="text-sm text-center text-green-500 font-medium">{success}</p>}
+                      {successMessage && <p className="text-sm text-center text-green-500 font-medium">{successMessage}</p>}
                       
                       <button type="submit" disabled={loading} className="w-full py-3 text-white font-semibold bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200 disabled:bg-blue-400">
                           {loading ? 'Processing...' : (isLoginView ? 'Sign In' : 'Create Account')}

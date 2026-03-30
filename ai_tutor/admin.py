@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Subscription, AIChatUsage, SubscriptionPlan
+
+from .models import AIChatUsage, Subscription, SubscriptionPlan
 
 
 @admin.register(Subscription)
@@ -9,7 +10,7 @@ class SubscriptionAdmin(admin.ModelAdmin):
     search_fields = ('user__username', 'user__email')
     readonly_fields = ('started_at',)
     date_hierarchy = 'started_at'
-    
+
     fieldsets = (
         ('User', {
             'fields': ('user',)
@@ -31,7 +32,7 @@ class AIChatUsageAdmin(admin.ModelAdmin):
     search_fields = ('user__username', 'user__email', 'question')
     readonly_fields = ('created_at',)
     date_hierarchy = 'created_at'
-    
+
     fieldsets = (
         ('Usage Info', {
             'fields': ('user', 'lesson', 'tokens_used', 'created_at')
@@ -48,7 +49,7 @@ class SubscriptionPlanAdmin(admin.ModelAdmin):
     list_display = ('name', 'tier', 'price', 'currency', 'billing_period', 'is_active')
     list_filter = ('tier', 'billing_period', 'is_active')
     search_fields = ('name',)
-    
+
     fieldsets = (
         ('Plan Details', {
             'fields': ('name', 'tier', 'price', 'currency', 'billing_period', 'is_active')

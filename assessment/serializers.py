@@ -1,5 +1,7 @@
 from rest_framework import serializers
-from .models import Quiz, Question, AnswerChoice, QuizAttempt
+
+from .models import AnswerChoice, Question, Quiz, QuizAttempt
+
 
 class AnswerChoiceSerializer(serializers.ModelSerializer):
     """
@@ -67,7 +69,7 @@ class QuestionResultSerializer(serializers.ModelSerializer):
     """
     choices = AnswerChoiceResultSerializer(many=True, read_only=True)
     # We will manually add the user's selected answer in the view.
-    user_answer = serializers.IntegerField(required=False) 
+    user_answer = serializers.IntegerField(required=False)
 
     class Meta:
         model = Question

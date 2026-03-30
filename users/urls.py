@@ -1,14 +1,15 @@
 # ai-powered-learning/users/urls.py
 
 from django.urls import path
+
 from .views import (
-    RegisterView,
     EmailVerificationView,
-    ResendVerificationEmailView,
-    PasswordResetRequestView,
-    PasswordResetConfirmView,
     PasswordChangeView,
+    PasswordResetConfirmView,
+    PasswordResetRequestView,
     ProfileView,
+    RegisterView,
+    ResendVerificationEmailView,
 )
 
 urlpatterns = [

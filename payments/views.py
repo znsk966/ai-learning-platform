@@ -1,24 +1,24 @@
 import json
 import logging
 
-from rest_framework import viewsets, status
-from rest_framework.decorators import action
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework.views import APIView
 from django.conf import settings
 from django.db import transaction as db_transaction
 from django.utils import timezone
+from rest_framework import status, viewsets
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from backend.throttles import PaymentRateThrottle
+from content.models import CourseEnrollment, Module
+
 from .models import PaymentTransaction
 from .serializers import (
-    PaymentTransactionSerializer,
-    CreatePaymentIntentSerializer,
     ConfirmPaymentSerializer,
+    CreatePaymentIntentSerializer,
     LemonSqueezyCheckoutSerializer,
+    PaymentTransactionSerializer,
 )
-from content.models import Module, CourseEnrollment
 
 logger = logging.getLogger('payments')
 
@@ -27,7 +27,7 @@ class PaymentTransactionViewSet(viewsets.ReadOnlyModelViewSet):
     """ViewSet for viewing payment transactions (read-only for users)"""
     serializer_class = PaymentTransactionSerializer
     permission_classes = [IsAuthenticated]
-    
+
     def get_queryset(self):
         """Users can only see their own transactions"""
         return PaymentTransaction.objects.filter(user=self.request.user)
@@ -37,22 +37,22 @@ class CreatePaymentIntentView(APIView):
     """Create a payment intent for a course purchase"""
     permission_classes = [IsAuthenticated]
     throttle_classes = [PaymentRateThrottle]
-    
+
     def post(self, request, *args, **kwargs):
         serializer = CreatePaymentIntentSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        
+
         module_id = serializer.validated_data['module_id']
         module = Module.objects.get(pk=module_id)
         user = request.user
-        
+
         # Check if user is already enrolled
         if CourseEnrollment.objects.filter(user=user, module=module, is_active=True).exists():
             return Response(
                 {'detail': 'You are already enrolled in this course.'},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        
+
         # Check if user is premium and course is premium-only
         from content.models import Profile
         profile, _ = Profile.objects.get_or_create(user=user)
@@ -61,7 +61,7 @@ class CreatePaymentIntentView(APIView):
                 {'detail': 'This course requires a premium subscription.'},
                 status=status.HTTP_403_FORBIDDEN
             )
-        
+
         # TODO: Integrate with Stripe/PayPal here
         # For now, we'll create a pending transaction
         # In production, you would:
@@ -69,7 +69,7 @@ class CreatePaymentIntentView(APIView):
         # 2. Return the client_secret to the frontend
         # 3. Frontend confirms payment
         # 4. Webhook confirms and completes the transaction
-        
+
         # Placeholder: Create a pending transaction
         transaction = PaymentTransaction.objects.create(
             user=user,
@@ -79,7 +79,7 @@ class CreatePaymentIntentView(APIView):
             status=PaymentTransaction.PaymentStatus.PENDING,
             payment_method=PaymentTransaction.PaymentMethod.STRIPE
         )
-        
+
         # For demo purposes, use transaction ID as payment_intent_id
         # In production, replace this with actual Stripe PaymentIntent creation
         # import stripe
@@ -91,11 +91,11 @@ class CreatePaymentIntentView(APIView):
         # )
         # transaction.payment_intent_id = intent.id
         # transaction.save()
-        
+
         # For demo: store transaction ID as payment_intent_id so we can find it later
         transaction.payment_intent_id = f"demo_{transaction.id}"
         transaction.save()
-        
+
         return Response({
             'payment_intent_id': transaction.payment_intent_id,
             'client_secret': None,  # Would be returned from Stripe
@@ -110,7 +110,7 @@ class ConfirmPaymentView(APIView):
     """Confirm a payment and enroll the user"""
     permission_classes = [IsAuthenticated]
     throttle_classes = [PaymentRateThrottle]
-    
+
     @db_transaction.atomic
     def post(self, request, *args, **kwargs):
         serializer = ConfirmPaymentSerializer(data=request.data)
@@ -181,16 +181,16 @@ class ConfirmPaymentView(APIView):
 class EnrollFreeCourseView(APIView):
     """Enroll user in a free course"""
     permission_classes = [IsAuthenticated]
-    
+
     def post(self, request, *args, **kwargs):
         module_id = request.data.get('module_id')
-        
+
         if not module_id:
             return Response(
                 {'detail': 'module_id is required.'},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        
+
         try:
             module = Module.objects.get(pk=module_id)
         except Module.DoesNotExist:
@@ -198,21 +198,21 @@ class EnrollFreeCourseView(APIView):
                 {'detail': 'Module not found.'},
                 status=status.HTTP_404_NOT_FOUND
             )
-        
+
         # Check if course is free
         if not module.is_free:
             return Response(
                 {'detail': 'This course is not free. Please use the payment endpoint.'},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        
+
         # Check if user is already enrolled
         enrollment, created = CourseEnrollment.objects.get_or_create(
             user=request.user,
             module=module,
             defaults={'is_active': True}
         )
-        
+
         if not created:
             if enrollment.is_active:
                 return Response(
@@ -222,7 +222,7 @@ class EnrollFreeCourseView(APIView):
             else:
                 enrollment.is_active = True
                 enrollment.save()
-        
+
         # Create a free payment transaction record
         PaymentTransaction.objects.create(
             user=request.user,
@@ -233,7 +233,7 @@ class EnrollFreeCourseView(APIView):
             payment_method=PaymentTransaction.PaymentMethod.FREE,
             completed_at=timezone.now()
         )
-        
+
         return Response({
             'status': 'success',
             'message': 'Successfully enrolled in free course.',
@@ -328,7 +328,7 @@ class LemonSqueezyCheckoutView(APIView):
             }, status=status.HTTP_201_CREATED)
 
         # Create a real Lemon Squeezy checkout
-        from .lemonsqueezy import create_checkout, LemonSqueezyError
+        from .lemonsqueezy import LemonSqueezyError, create_checkout
 
         success_url = f'{settings.FRONTEND_URL}/modules/{module_id}' if module_id else f'{settings.FRONTEND_URL}/subscription'
 
@@ -377,7 +377,7 @@ class LemonSqueezyWebhookView(APIView):
 
     @db_transaction.atomic
     def post(self, request, *args, **kwargs):
-        from .lemonsqueezy import verify_webhook_signature, is_sandbox
+        from .lemonsqueezy import is_sandbox, verify_webhook_signature
 
         sandbox = is_sandbox()
 
@@ -495,8 +495,9 @@ class LemonSqueezyWebhookView(APIView):
 
     def _activate_subscription(self, user, plan_id):
         """Activate or update a user's subscription from a plan."""
-        from ai_tutor.models import Subscription, SubscriptionPlan
         from datetime import timedelta
+
+        from ai_tutor.models import Subscription, SubscriptionPlan
 
         try:
             plan = SubscriptionPlan.objects.get(pk=plan_id, is_active=True)

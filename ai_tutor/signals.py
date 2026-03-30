@@ -1,10 +1,12 @@
 """
 Signals to sync Profile.is_premium with Subscription status
 """
-from django.db.models.signals import post_save, post_delete
+from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
-from .models import Subscription
+
 from content.models import Profile
+
+from .models import Subscription
 
 
 @receiver(post_save, sender=Subscription)
@@ -17,10 +19,10 @@ def sync_profile_premium_status(sender, instance, **kwargs):
         profile = Profile.objects.get(user=instance.user)
         # User is premium if they have an active, valid subscription that's not FREE
         is_premium = (
-            instance.is_valid and 
+            instance.is_valid and
             instance.tier != Subscription.SubscriptionTier.FREE
         )
-        
+
         # Only update if changed to avoid unnecessary saves
         if profile.is_premium != is_premium:
             profile.is_premium = is_premium
@@ -30,7 +32,7 @@ def sync_profile_premium_status(sender, instance, **kwargs):
         Profile.objects.create(
             user=instance.user,
             is_premium=(
-                instance.is_valid and 
+                instance.is_valid and
                 instance.tier != Subscription.SubscriptionTier.FREE
             )
         )
@@ -51,7 +53,7 @@ def update_profile_on_subscription_delete(sender, instance, **kwargs):
         ).exclude(
             tier=Subscription.SubscriptionTier.FREE
         ).exists()
-        
+
         if not has_other_premium:
             profile.is_premium = False
             profile.save(update_fields=['is_premium'])

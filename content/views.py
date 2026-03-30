@@ -90,12 +90,11 @@ class ModuleViewSet(viewsets.ModelViewSet):
             else:
                 lesson_status_map[lesson.id] = 'locked'
 
-        # Apply statuses to the prefetched submodule/lesson structure
-        for submodule in instance.submodules.all():
-            for lesson in submodule.lessons.all():
-                lesson.status = lesson_status_map.get(lesson.id, 'locked')
-
-        serializer = self.get_serializer(instance)
+        # Pass status map to serializer via context
+        serializer = self.get_serializer(instance, context={
+            'request': request,
+            'lesson_status_map': lesson_status_map,
+        })
         data = serializer.data
         data['is_enrolled'] = is_enrolled
         data['can_access'] = can_access
@@ -192,18 +191,22 @@ class SubModuleViewSet(viewsets.ModelViewSet):
 
         # This flag will track if we've found the next lesson to be unlocked
         unlocked_lesson_found = False
+        lesson_status_map = {}
 
         # Iterate through the submodule lessons to set the status for each lesson
         for lesson in instance.lessons.all():
             if lesson.id in completed_lesson_ids:
-                lesson.status = 'completed'
+                lesson_status_map[lesson.id] = 'completed'
             elif not unlocked_lesson_found:
-                lesson.status = 'unlocked'
+                lesson_status_map[lesson.id] = 'unlocked'
                 unlocked_lesson_found = True
             else:
-                lesson.status = 'locked'
+                lesson_status_map[lesson.id] = 'locked'
 
-        serializer = self.get_serializer(instance)
+        serializer = self.get_serializer(instance, context={
+            'request': request,
+            'lesson_status_map': lesson_status_map,
+        })
         return Response(serializer.data)
 
 class LessonViewSet(viewsets.ModelViewSet):

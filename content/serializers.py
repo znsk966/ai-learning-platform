@@ -8,7 +8,11 @@ from .models import Lesson, Module, Profile, SubModule
 # --- LessonSerializer with 'status' field ---
 class LessonSerializer(serializers.ModelSerializer):
     # This new field will be populated by the view logic. It is read-only.
-    status = serializers.CharField(read_only=True)
+    status = serializers.SerializerMethodField()
+
+    def get_status(self, obj):
+        lesson_status_map = self.context.get('lesson_status_map', {})
+        return lesson_status_map.get(obj.id, getattr(obj, 'status', None))
 
     class Meta:
         model = Lesson

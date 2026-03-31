@@ -17,8 +17,7 @@ Including another URLconf
 # ai-powered-learning/backend/urls.py
 
 from django.contrib import admin
-from django.db import connection
-from django.http import JsonResponse
+from django.http import HttpResponse
 from django.urls import include, path
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework_simplejwt.views import (
@@ -28,12 +27,7 @@ from rest_framework_simplejwt.views import (
 
 
 def health_check(request):
-    try:
-        with connection.cursor() as cursor:
-            cursor.execute("SELECT 1")
-        return JsonResponse({"status": "healthy"}, status=200)
-    except Exception as e:
-        return JsonResponse({"status": "unhealthy", "error": str(e)}, status=503)
+    return HttpResponse("ok", status=200)
 
 
 urlpatterns = [

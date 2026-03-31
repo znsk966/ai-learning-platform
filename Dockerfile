@@ -21,5 +21,4 @@ RUN python manage.py collectstatic --noinput
 
 EXPOSE 8000
 
-# Use $PORT for Railway (defaults to 8000 for local docker-compose)
-CMD ["sh", "-c", "gunicorn backend.wsgi:application --bind 0.0.0.0:${PORT:-8000} --workers 3"]
+CMD ["sh", "-c", "python manage.py migrate --noinput && gunicorn backend.wsgi:application --bind 0.0.0.0:${PORT:-8000} --workers 3 --access-logfile - --error-logfile -"]

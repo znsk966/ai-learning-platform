@@ -3,7 +3,7 @@ builder = "DOCKERFILE"
 dockerfilePath = "./Dockerfile"
 
 [deploy]
-startCommand = "python manage.py migrate --noinput && python manage.py setup_subscription_plans && gunicorn backend.wsgi:application --bind 0.0.0.0:$PORT --workers 3"
+startCommand = "python manage.py migrate --noinput && python manage.py setup_subscription_plans && gunicorn backend.wsgi:application --bind 0.0.0.0:$PORT --workers 3 --access-logfile - --error-logfile - --log-level info"
 healthcheckPath = "/health/"
 healthcheckTimeout = 300
 restartPolicyType = "ON_FAILURE"

@@ -19,9 +19,6 @@ COPY . .
 ARG SECRET_KEY=build-only-placeholder
 RUN python manage.py collectstatic --noinput
 
-# Ensure start.sh has Unix line endings and is executable
-RUN sed -i 's/\r$//' start.sh && chmod +x start.sh
-
 EXPOSE 8000
 
-CMD ["./start.sh"]
+CMD sh -c "echo 'Running migrations...' && python manage.py migrate --noinput && echo 'Starting gunicorn...' && exec gunicorn backend.wsgi:application --bind 0.0.0.0:\${PORT:-8000} --workers 3 --access-logfile - --error-logfile - --log-level info"

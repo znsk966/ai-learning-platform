@@ -19,6 +19,8 @@ COPY . .
 ARG SECRET_KEY=build-only-placeholder
 RUN python manage.py collectstatic --noinput
 
+RUN chmod +x start.sh
+
 EXPOSE 8000
 
-CMD ["sh", "-c", "python manage.py migrate --noinput && gunicorn backend.wsgi:application --bind 0.0.0.0:${PORT:-8000} --workers 3 --access-logfile - --error-logfile -"]
+CMD ["./start.sh"]

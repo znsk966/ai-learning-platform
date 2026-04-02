@@ -2,7 +2,14 @@
 from django import forms
 from django.contrib import admin
 
-from .models import CourseEnrollment, Lesson, LessonFile, Module, Profile, SubModule  # <-- Import Profile and CourseEnrollment
+from .models import (  # <-- Import Profile and CourseEnrollment
+    CourseEnrollment,
+    Lesson,
+    LessonFile,
+    Module,
+    Profile,
+    SubModule,
+)
 
 
 @admin.register(Module)

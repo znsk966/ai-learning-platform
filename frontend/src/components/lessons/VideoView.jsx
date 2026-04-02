@@ -17,13 +17,16 @@ const getYouTubeEmbedUrl = (url) => {
   return `https://www.youtube.com/embed/${videoId}`;
 };
 
-const VideoView = ({ url, textContent }) => {
+const VideoView = ({ url, textContent, bunnyEmbedUrl }) => {
   const [hasError, setHasError] = useState(false);
   const [isReady, setIsReady] = useState(false);
   const playerRef = useRef(null);
 
+  // Bunny Stream takes priority
+  const useBunny = !!bunnyEmbedUrl;
+
   // Check if URL is YouTube - use iframe directly for better compatibility
-  const isYouTube = url && (url.includes('youtube.com') || url.includes('youtu.be'));
+  const isYouTube = !useBunny && url && (url.includes('youtube.com') || url.includes('youtu.be'));
   const embedUrl = isYouTube ? getYouTubeEmbedUrl(url) : null;
 
   useEffect(() => {
@@ -70,7 +73,7 @@ const VideoView = ({ url, textContent }) => {
   return (
     <div>
       {/* Video Player Section */}
-      {url ? (
+      {(useBunny || url) ? (
         <div className="mb-8 rounded-lg overflow-hidden shadow-lg bg-gray-900">
           <div className="relative" style={{ paddingBottom: '56.25%' }}> {/* 16:9 aspect ratio */}
             {hasError ? (
@@ -81,16 +84,31 @@ const VideoView = ({ url, textContent }) => {
                   </svg>
                   <p className="text-lg font-semibold mb-2">Unable to load video</p>
                   <p className="text-sm text-gray-400 mb-4">The video URL may be invalid or unavailable.</p>
-                  <a 
-                    href={url} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-blue-400 hover:text-blue-300 underline"
-                  >
-                    Open video in new tab
-                  </a>
+                  {url && (
+                    <a 
+                      href={url} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-blue-400 hover:text-blue-300 underline"
+                    >
+                      Open video in new tab
+                    </a>
+                  )}
                 </div>
               </div>
+            ) : useBunny ? (
+              // Bunny Stream iframe embed (highest priority)
+              <iframe
+                src={`${bunnyEmbedUrl}?autoplay=false&preload=true`}
+                title="Video player"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+                allowFullScreen
+                loading="lazy"
+                className="absolute top-0 left-0 w-full h-full"
+                onLoad={() => setIsReady(true)}
+                onError={() => setHasError(true)}
+              />
             ) : isYouTube && embedUrl ? (
               // Direct YouTube iframe embed (more reliable than ReactPlayer for YouTube)
               <iframe

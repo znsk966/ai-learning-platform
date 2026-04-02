@@ -11,6 +11,7 @@ import QuizView from '../components/lessons/QuizView';
 import AITutorView from '../components/lessons/AITutorView';
 import SimulationView from '../components/lessons/SimulationView';
 import ProblemSolvingView from '../components/lessons/ProblemSolvingView';
+import FileDownloadList from '../components/lessons/FileDownloadList';
 
 const LessonDetailPage = () => {
   const { moduleId, submoduleId, lessonId } = useParams();
@@ -44,7 +45,7 @@ const LessonDetailPage = () => {
       case 'READ':
         return <ReadingView content={lesson.text_content} />;
       case 'VID':
-        return <VideoView url={lesson.video_url} textContent={lesson.text_content} />;
+        return <VideoView url={lesson.video_url} textContent={lesson.text_content} bunnyEmbedUrl={lesson.bunny_embed_url} />;
       case 'QUIZ':
         return <QuizView lessonId={lesson.id} onQuizComplete={(result) => {
           console.log('Quiz completed:', result);
@@ -104,6 +105,10 @@ const LessonDetailPage = () => {
       <div className="bg-white rounded-lg shadow-sm p-8">
         {renderLessonContent()}
       </div>
+
+      {lesson.files && lesson.files.length > 0 && (
+        <FileDownloadList files={lesson.files} />
+      )}
     </div>
   );
 };

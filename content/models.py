@@ -51,6 +51,7 @@ class Lesson(models.Model):
     order = models.PositiveIntegerField(default=0, db_index=True, help_text="Order within the parent submodule")
     text_content = models.TextField(blank=True, null=True, help_text="Text content for reading, problem description, etc.")
     video_url = models.URLField(blank=True, null=True, help_text="URL for video content (e.g., YouTube, Vimeo)")
+    bunny_video_id = models.CharField(max_length=100, blank=True, null=True, help_text="Bunny Stream video GUID (takes priority over video_url)")
     simulation_url = models.URLField(blank=True, null=True, help_text="URL for an interactive simulation")
     ai_tutor_initial_prompt = models.TextField(blank=True, null=True, help_text="Initial prompt or context for the AI Tutor")
     ai_tutor_config = models.JSONField(blank=True, null=True, help_text="Specific configuration for this AI tutor session")
@@ -60,6 +61,32 @@ class Lesson(models.Model):
         ordering = ['submodule', 'order', 'title']
     def __str__(self):
         return f"{self.submodule.title} - {self.title} ({self.get_lesson_type_display()})"
+
+
+class LessonFile(models.Model):
+    """Downloadable files attached to lessons (e.g., .py, .ipynb lab files)"""
+    lesson = models.ForeignKey(Lesson, related_name='files', on_delete=models.CASCADE)
+    file_name = models.CharField(max_length=255, help_text="Display name (e.g., lab_01.ipynb)")
+    bunny_file_path = models.CharField(max_length=500, help_text="Path in Bunny Storage (e.g., module-1/lab_01.ipynb)")
+    file_size = models.PositiveIntegerField(default=0, help_text="File size in bytes")
+    file_type = models.CharField(max_length=50, blank=True, help_text="File extension (e.g., .py, .ipynb)")
+    description = models.CharField(max_length=255, blank=True, help_text="Brief description of the file")
+    order = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['order', 'file_name']
+
+    def __str__(self):
+        return f"{self.lesson.title} - {self.file_name}"
+
+    @property
+    def download_url(self):
+        from django.conf import settings
+        cdn_url = settings.BUNNY_STORAGE_CDN_URL
+        if cdn_url:
+            return f"{cdn_url.rstrip('/')}/{self.bunny_file_path}"
+        return ""
 
 class Profile(models.Model):
     user = models.OneToOneField(

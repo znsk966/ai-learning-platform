@@ -282,6 +282,18 @@ GEMINI_API_KEY = os.getenv('GEMINI_API_KEY', '')
 # Demo mode: allows subscription creation without real payment processing
 DEMO_MODE = os.getenv('DEMO_MODE', 'False').lower() == 'true'
 
+# Bunny.net Configuration
+# Stream (Video Hosting)
+BUNNY_STREAM_LIBRARY_ID = os.getenv('BUNNY_STREAM_LIBRARY_ID', '')
+BUNNY_STREAM_API_KEY = os.getenv('BUNNY_STREAM_API_KEY', '')
+BUNNY_STREAM_CDN_HOSTNAME = os.getenv('BUNNY_STREAM_CDN_HOSTNAME', '')
+
+# Storage (Lab Files)
+BUNNY_STORAGE_ZONE_NAME = os.getenv('BUNNY_STORAGE_ZONE_NAME', '')
+BUNNY_STORAGE_API_KEY = os.getenv('BUNNY_STORAGE_API_KEY', '')
+BUNNY_STORAGE_HOSTNAME = os.getenv('BUNNY_STORAGE_HOSTNAME', 'storage.bunnycdn.com')
+BUNNY_STORAGE_CDN_URL = os.getenv('BUNNY_STORAGE_CDN_URL', '')
+
 # Lemon Squeezy Configuration
 LEMONSQUEEZY_API_KEY = os.getenv('LEMONSQUEEZY_API_KEY', '')
 LEMONSQUEEZY_STORE_ID = os.getenv('LEMONSQUEEZY_STORE_ID', '')

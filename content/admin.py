@@ -2,7 +2,7 @@
 from django import forms
 from django.contrib import admin
 
-from .models import CourseEnrollment, Lesson, Module, Profile, SubModule  # <-- Import Profile and CourseEnrollment
+from .models import CourseEnrollment, Lesson, LessonFile, Module, Profile, SubModule  # <-- Import Profile and CourseEnrollment
 
 
 @admin.register(Module)
@@ -31,9 +31,17 @@ class LessonAdminForm(forms.ModelForm):
         model = Lesson
         fields = '__all__'
 
+
+class LessonFileInline(admin.TabularInline):
+    model = LessonFile
+    extra = 1
+    fields = ('file_name', 'bunny_file_path', 'file_type', 'file_size', 'description', 'order')
+
+
 @admin.register(Lesson)
 class LessonAdmin(admin.ModelAdmin):
     form = LessonAdminForm
+    inlines = [LessonFileInline]
     list_display = ('title', 'submodule', 'lesson_type', 'order')
     list_filter = ('submodule__module', 'submodule', 'lesson_type')
     search_fields = ('title', 'text_content')
@@ -43,7 +51,7 @@ class LessonAdmin(admin.ModelAdmin):
         }),
         ('Content Specifics (fill based on Lesson Type)', {
             'classes': ('collapse',),
-            'fields': ('text_content', 'video_url', 'simulation_url', 'ai_tutor_initial_prompt', 'ai_tutor_config'),
+            'fields': ('text_content', 'video_url', 'bunny_video_id', 'simulation_url', 'ai_tutor_initial_prompt', 'ai_tutor_config'),
         }),
     )
 

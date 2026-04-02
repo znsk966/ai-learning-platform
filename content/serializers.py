@@ -2,25 +2,46 @@
 
 from rest_framework import serializers
 
-from .models import Lesson, Module, Profile, SubModule
+from .models import Lesson, LessonFile, Module, Profile, SubModule
+
+
+# --- LessonFileSerializer ---
+class LessonFileSerializer(serializers.ModelSerializer):
+    download_url = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = LessonFile
+        fields = ['id', 'file_name', 'file_type', 'file_size', 'description', 'download_url', 'order']
 
 
 # --- LessonSerializer with 'status' field ---
 class LessonSerializer(serializers.ModelSerializer):
     # This new field will be populated by the view logic. It is read-only.
     status = serializers.SerializerMethodField()
+    bunny_embed_url = serializers.SerializerMethodField()
+    files = LessonFileSerializer(many=True, read_only=True)
 
     def get_status(self, obj):
         lesson_status_map = self.context.get('lesson_status_map', {})
         return lesson_status_map.get(obj.id, getattr(obj, 'status', None))
 
+    def get_bunny_embed_url(self, obj):
+        if not obj.bunny_video_id:
+            return None
+        from django.conf import settings
+        library_id = settings.BUNNY_STREAM_LIBRARY_ID
+        if not library_id:
+            return None
+        return f"https://iframe.mediadelivery.net/embed/{library_id}/{obj.bunny_video_id}"
+
     class Meta:
         model = Lesson
         fields = [
             'id', 'submodule', 'title', 'lesson_type', 'order',
-            'text_content', 'video_url', 'simulation_url',
+            'text_content', 'video_url', 'bunny_video_id', 'bunny_embed_url',
+            'simulation_url',
             'ai_tutor_initial_prompt', 'ai_tutor_config',
-            'status' # Add the new status field
+            'status', 'files',
         ]
 
 # --- SubModuleSerializer and ModuleSerializer remain the same but will now benefit from the change above ---

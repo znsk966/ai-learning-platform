@@ -19,7 +19,7 @@ class Command(BaseCommand):
                 'name': 'Free',
                 'tier': Subscription.SubscriptionTier.FREE,
                 'price': 0.00,
-                'currency': 'USD',
+                'currency': 'EUR',
                 'billing_period': 'MONTHLY',
                 'monthly_chat_limit': 5,
                 'monthly_token_limit': 10000,
@@ -29,13 +29,14 @@ class Command(BaseCommand):
                     'community_support': 'Community support',
                     'basic_analytics': 'Basic progress tracking'
                 },
-                'is_active': True
+                'is_active': True,
+                'lemon_squeezy_variant_id': '',
             },
             {
                 'name': 'Basic',
                 'tier': Subscription.SubscriptionTier.BASIC,
                 'price': 9.99,
-                'currency': 'USD',
+                'currency': 'EUR',
                 'billing_period': 'MONTHLY',
                 'monthly_chat_limit': 50,
                 'monthly_token_limit': 100000,
@@ -46,13 +47,14 @@ class Command(BaseCommand):
                     'progress_tracking': 'Advanced progress tracking',
                     'study_streaks': 'Study streak tracking'
                 },
-                'is_active': True
+                'is_active': True,
+                'lemon_squeezy_variant_id': '1507996',
             },
             {
                 'name': 'Basic (Yearly)',
                 'tier': Subscription.SubscriptionTier.BASIC,
                 'price': 99.00,
-                'currency': 'USD',
+                'currency': 'EUR',
                 'billing_period': 'YEARLY',
                 'monthly_chat_limit': 50,
                 'monthly_token_limit': 100000,
@@ -64,13 +66,14 @@ class Command(BaseCommand):
                     'study_streaks': 'Study streak tracking',
                     'yearly_discount': 'Save 17% with yearly billing'
                 },
-                'is_active': True
+                'is_active': True,
+                'lemon_squeezy_variant_id': '1507998',
             },
             {
                 'name': 'Premium',
                 'tier': Subscription.SubscriptionTier.PREMIUM,
                 'price': 19.99,
-                'currency': 'USD',
+                'currency': 'EUR',
                 'billing_period': 'MONTHLY',
                 'monthly_chat_limit': 200,
                 'monthly_token_limit': 500000,
@@ -82,13 +85,14 @@ class Command(BaseCommand):
                     'early_access': 'Early access to new features',
                     'export_reports': 'Export learning reports'
                 },
-                'is_active': True
+                'is_active': True,
+                'lemon_squeezy_variant_id': '1508020',
             },
             {
                 'name': 'Premium (Yearly)',
                 'tier': Subscription.SubscriptionTier.PREMIUM,
                 'price': 199.00,
-                'currency': 'USD',
+                'currency': 'EUR',
                 'billing_period': 'YEARLY',
                 'monthly_chat_limit': 200,
                 'monthly_token_limit': 500000,
@@ -101,13 +105,14 @@ class Command(BaseCommand):
                     'export_reports': 'Export learning reports',
                     'yearly_discount': 'Save 17% with yearly billing'
                 },
-                'is_active': True
+                'is_active': True,
+                'lemon_squeezy_variant_id': '1508055',
             },
             {
                 'name': 'Pro',
                 'tier': Subscription.SubscriptionTier.PRO,
                 'price': 39.99,
-                'currency': 'USD',
+                'currency': 'EUR',
                 'billing_period': 'MONTHLY',
                 'monthly_chat_limit': 0,  # Unlimited
                 'monthly_token_limit': 0,  # Unlimited
@@ -121,13 +126,14 @@ class Command(BaseCommand):
                     'export_reports': 'Export learning reports',
                     'early_access': 'Early access to new features'
                 },
-                'is_active': True
+                'is_active': True,
+                'lemon_squeezy_variant_id': '1508070',
             },
             {
                 'name': 'Pro (Yearly)',
                 'tier': Subscription.SubscriptionTier.PRO,
                 'price': 399.00,
-                'currency': 'USD',
+                'currency': 'EUR',
                 'billing_period': 'YEARLY',
                 'monthly_chat_limit': 0,  # Unlimited
                 'monthly_token_limit': 0,  # Unlimited
@@ -142,7 +148,8 @@ class Command(BaseCommand):
                     'early_access': 'Early access to new features',
                     'yearly_discount': 'Save 17% with yearly billing'
                 },
-                'is_active': True
+                'is_active': True,
+                'lemon_squeezy_variant_id': '1508080',
             },
         ]
 

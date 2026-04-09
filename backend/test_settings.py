@@ -7,6 +7,10 @@ DATABASES = {
     }
 }
 
+# Disable real payment provider in tests (use demo mode)
+LEMONSQUEEZY_API_KEY = ''
+LEMONSQUEEZY_STORE_ID = ''
+
 # Disable throttling in tests
 REST_FRAMEWORK = {
     **REST_FRAMEWORK,  # noqa: F405

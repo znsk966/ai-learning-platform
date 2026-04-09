@@ -65,6 +65,7 @@ class ModuleSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'title', 'description', 'order',
             'price', 'currency', 'is_premium_only',
+            'lemon_squeezy_variant_id',
             'is_free', 'is_enrolled', 'can_access',
             'submodules'
         ]

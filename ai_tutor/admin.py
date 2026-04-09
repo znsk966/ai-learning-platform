@@ -52,7 +52,7 @@ class SubscriptionPlanAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ('Plan Details', {
-            'fields': ('name', 'tier', 'price', 'currency', 'billing_period', 'is_active')
+            'fields': ('name', 'tier', 'price', 'currency', 'billing_period', 'is_active', 'lemon_squeezy_variant_id')
         }),
         ('Limits', {
             'fields': ('monthly_chat_limit', 'monthly_token_limit'),

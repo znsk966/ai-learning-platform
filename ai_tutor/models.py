@@ -123,6 +123,7 @@ class SubscriptionPlan(models.Model):
     monthly_token_limit = models.PositiveIntegerField(default=0)  # 0 = unlimited
     features = models.JSONField(default=dict, help_text="Dictionary of features included")
     is_active = models.BooleanField(default=True)
+    lemon_squeezy_variant_id = models.CharField(max_length=50, blank=True, null=True, help_text="Lemon Squeezy variant ID for checkout")
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

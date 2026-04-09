@@ -13,6 +13,7 @@ class Module(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, help_text="Price of the course (0.00 for free courses)")
     currency = models.CharField(max_length=3, default='USD', help_text="Currency code (e.g., USD, EUR)")
     is_premium_only = models.BooleanField(default=False, help_text="If True, only premium users can access this course")
+    lemon_squeezy_variant_id = models.CharField(max_length=50, blank=True, null=True, help_text="Lemon Squeezy variant ID for paid checkout")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     class Meta:

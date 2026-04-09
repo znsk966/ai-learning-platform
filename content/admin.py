@@ -22,7 +22,7 @@ class ModuleAdmin(admin.ModelAdmin):
             'fields': ('title', 'description', 'order')
         }),
         ('Pricing', {
-            'fields': ('price', 'currency', 'is_premium_only')
+            'fields': ('price', 'currency', 'is_premium_only', 'lemon_squeezy_variant_id')
         }),
     )
 

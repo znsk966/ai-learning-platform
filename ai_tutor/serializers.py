@@ -39,7 +39,8 @@ class SubscriptionPlanSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'name', 'tier', 'tier_display', 'price', 'currency',
             'billing_period', 'billing_period_display',
-            'monthly_chat_limit', 'monthly_token_limit', 'features', 'is_active'
+            'monthly_chat_limit', 'monthly_token_limit', 'features', 'is_active',
+            'lemon_squeezy_variant_id',
         ]
 
 

@@ -82,7 +82,9 @@ def create_checkout(
     }
 
     if success_url:
-        payload['data']['attributes']['success_url'] = success_url
+        payload['data']['attributes']['product_options'] = {
+            'redirect_url': success_url,
+        }
 
     response = requests.post(
         f'{LEMONSQUEEZY_API_BASE}/checkouts',

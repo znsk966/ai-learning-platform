@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { getBlogPost } from '../api/blogService';
 import { useAuth } from '../store/authContext';
 import LoadingSpinner from '../components/common/LoadingSpinner';
@@ -116,9 +118,9 @@ const BlogDetailPage = () => {
           </div>
         ) : (
           <article className="prose prose-lg max-w-none">
-            {post.content.split('\n').map((paragraph, idx) => (
-              paragraph.trim() ? <p key={idx}>{paragraph}</p> : null
-            ))}
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {post.content}
+            </ReactMarkdown>
           </article>
         )}
 

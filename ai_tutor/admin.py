@@ -18,6 +18,9 @@ class SubscriptionAdmin(admin.ModelAdmin):
         ('Subscription Details', {
             'fields': ('tier', 'is_active', 'auto_renew', 'started_at', 'expires_at')
         }),
+        ('Lemon Squeezy', {
+            'fields': ('lemon_squeezy_subscription_id',),
+        }),
         ('Limits', {
             'fields': ('monthly_chat_limit', 'monthly_token_limit'),
             'description': 'Leave as 0 to use tier defaults'

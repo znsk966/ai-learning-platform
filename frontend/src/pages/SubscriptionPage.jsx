@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getCurrentSubscription, getSubscriptionPlans, getUsageStats, createSubscription } from '../api/subscriptionService';
+import { getCurrentSubscription, getSubscriptionPlans, getUsageStats, createSubscription, cancelSubscription } from '../api/subscriptionService';
 import { createLemonSqueezyCheckout } from '../api/paymentService';
 // import { useNavigate } from 'react-router-dom';
 import { formatPrice } from '../utils/formatting';
@@ -13,6 +13,8 @@ const SubscriptionPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [upgrading, setUpgrading] = useState(false);
+  const [cancelling, setCancelling] = useState(false);
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
   const [statusMessage, setStatusMessage] = useState({ type: '', text: '' });
   const [billingPeriod, setBillingPeriod] = useState('MONTHLY');
 
@@ -60,6 +62,20 @@ const SubscriptionPage = () => {
       setStatusMessage({ type: 'error', text: err.message || 'Failed to create subscription' });
     } finally {
       setUpgrading(false);
+    }
+  };
+
+  const handleCancelSubscription = async () => {
+    setCancelling(true);
+    try {
+      const result = await cancelSubscription();
+      setShowCancelConfirm(false);
+      setStatusMessage({ type: 'success', text: result.detail || 'Subscription cancelled successfully.' });
+      await fetchData();
+    } catch (err) {
+      setStatusMessage({ type: 'error', text: err.message || 'Failed to cancel subscription' });
+    } finally {
+      setCancelling(false);
     }
   };
 
@@ -116,6 +132,14 @@ const SubscriptionPage = () => {
                     <span className="text-gray-800">{subscription.auto_renew ? 'Yes' : 'No'}</span>
                   </div>
                 </div>
+                {subscription.can_cancel && (
+                  <button
+                    onClick={() => setShowCancelConfirm(true)}
+                    className="mt-4 w-full py-2 px-4 rounded-lg font-medium border-2 border-red-300 text-red-600 hover:bg-red-50 transition-colors"
+                  >
+                    Cancel Subscription
+                  </button>
+                )}
               </div>
               
               {/* Usage Stats */}
@@ -293,6 +317,35 @@ const SubscriptionPage = () => {
             })}
           </div>
         </div>
+
+        {/* Cancel Confirmation Modal */}
+        {showCancelConfirm && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-xl shadow-xl p-6 max-w-md mx-4">
+              <h3 className="text-xl font-bold text-gray-800 mb-2">Cancel Subscription?</h3>
+              <p className="text-gray-600 mb-6">
+                Are you sure you want to cancel your <span className="font-semibold">{subscription?.tier_display}</span> subscription?
+                You will retain access until the end of your current billing period.
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowCancelConfirm(false)}
+                  disabled={cancelling}
+                  className="flex-1 py-2 px-4 rounded-lg font-medium border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
+                >
+                  Keep Subscription
+                </button>
+                <button
+                  onClick={handleCancelSubscription}
+                  disabled={cancelling}
+                  className="flex-1 py-2 px-4 rounded-lg font-medium bg-red-600 text-white hover:bg-red-700 transition-colors disabled:opacity-50"
+                >
+                  {cancelling ? 'Cancelling...' : 'Yes, Cancel'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -27,6 +27,10 @@ class Subscription(models.Model):
     expires_at = models.DateTimeField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
     auto_renew = models.BooleanField(default=False)
+    lemon_squeezy_subscription_id = models.CharField(
+        max_length=50, blank=True, default='',
+        help_text='Lemon Squeezy subscription ID for cancellation'
+    )
 
     # Usage limits based on tier
     monthly_chat_limit = models.PositiveIntegerField(default=0)  # 0 = unlimited

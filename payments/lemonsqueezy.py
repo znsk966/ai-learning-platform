@@ -162,6 +162,38 @@ def get_subscription(subscription_id):
     return response.json()['data']['attributes']
 
 
+def cancel_subscription(subscription_id):
+    """
+    Cancel a subscription on Lemon Squeezy.
+
+    Args:
+        subscription_id: The Lemon Squeezy subscription ID.
+
+    Returns:
+        dict with updated subscription attributes.
+
+    Raises:
+        LemonSqueezyError on API failure.
+    """
+    response = requests.delete(
+        f'{LEMONSQUEEZY_API_BASE}/subscriptions/{subscription_id}',
+        headers=_get_headers(),
+        timeout=30,
+    )
+
+    if not response.ok:
+        logger.error(
+            'Lemon Squeezy subscription cancel failed: %s %s',
+            response.status_code,
+            response.text,
+        )
+        raise LemonSqueezyError(
+            f'Failed to cancel subscription: {response.status_code}'
+        )
+
+    return response.json()['data']['attributes']
+
+
 def verify_webhook_signature(payload_body, signature_header):
     """
     Verify the X-Signature header from a Lemon Squeezy webhook.

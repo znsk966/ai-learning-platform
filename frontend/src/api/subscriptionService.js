@@ -66,3 +66,16 @@ export const getUsageHistory = async () => {
     throw new Error(error.response?.data?.detail || 'Could not fetch usage history.');
   }
 };
+
+/**
+ * Cancel current subscription
+ */
+export const cancelSubscription = async () => {
+  try {
+    const response = await apiClient.post('/ai/subscriptions/cancel/');
+    return response.data;
+  } catch (error) {
+    console.error("Error cancelling subscription:", error);
+    throw new Error(error.response?.data?.detail || 'Could not cancel subscription.');
+  }
+};

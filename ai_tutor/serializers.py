@@ -8,14 +8,23 @@ class SubscriptionSerializer(serializers.ModelSerializer):
     is_valid = serializers.BooleanField(read_only=True)
     is_expired = serializers.BooleanField(read_only=True)
 
+    can_cancel = serializers.SerializerMethodField()
+
     class Meta:
         model = Subscription
         fields = [
             'id', 'tier', 'tier_display', 'started_at', 'expires_at',
             'is_active', 'auto_renew', 'is_valid', 'is_expired',
-            'monthly_chat_limit', 'monthly_token_limit'
+            'monthly_chat_limit', 'monthly_token_limit', 'can_cancel',
         ]
         read_only_fields = ['started_at']
+
+    def get_can_cancel(self, obj):
+        return (
+            obj.is_active
+            and obj.tier != Subscription.SubscriptionTier.FREE
+            and bool(obj.lemon_squeezy_subscription_id)
+        )
 
 
 class AIChatUsageSerializer(serializers.ModelSerializer):

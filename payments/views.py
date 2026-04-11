@@ -399,6 +399,7 @@ class LemonSqueezyWebhookView(APIView):
         event_name = payload.get('meta', {}).get('event_name', '')
         custom_data = payload.get('meta', {}).get('custom_data', {})
         attributes = payload.get('data', {}).get('attributes', {})
+        resource_id = str(payload.get('data', {}).get('id', ''))
 
         transaction_id = custom_data.get('transaction_id')
         if not transaction_id:
@@ -414,7 +415,7 @@ class LemonSqueezyWebhookView(APIView):
         if event_name == 'order_created':
             self._handle_order_created(txn, attributes, custom_data)
         elif event_name == 'subscription_created':
-            self._handle_subscription_created(txn, attributes, custom_data)
+            self._handle_subscription_created(txn, attributes, custom_data, resource_id)
         elif event_name == 'subscription_updated':
             self._handle_subscription_updated(txn, attributes, custom_data)
         else:
@@ -452,7 +453,7 @@ class LemonSqueezyWebhookView(APIView):
                 enrollment.save()
             logger.info('User %s enrolled in module %s via Lemon Squeezy', txn.user.id, txn.module.id)
 
-    def _handle_subscription_created(self, txn, attributes, custom_data):
+    def _handle_subscription_created(self, txn, attributes, custom_data, resource_id=''):
         """Activate subscription when subscription is created."""
         if txn.status != PaymentTransaction.PaymentStatus.PENDING:
             return
@@ -461,7 +462,7 @@ class LemonSqueezyWebhookView(APIView):
         txn.completed_at = timezone.now()
         txn.transaction_id = str(attributes.get('order_id', ''))
         txn.metadata = {
-            'ls_subscription_id': attributes.get('urls', {}).get('update_payment_method', ''),
+            'ls_subscription_id': resource_id,
             'ls_status': attributes.get('status', ''),
             'ls_variant_id': attributes.get('variant_id', ''),
         }
@@ -470,7 +471,7 @@ class LemonSqueezyWebhookView(APIView):
         # Activate the subscription
         plan_id = custom_data.get('plan_id')
         if plan_id:
-            self._activate_subscription(txn.user, plan_id)
+            self._activate_subscription(txn.user, plan_id, ls_subscription_id=resource_id)
 
     def _handle_subscription_updated(self, txn, attributes, custom_data):
         """Update subscription on status changes (pause, cancel, resume)."""
@@ -493,7 +494,7 @@ class LemonSqueezyWebhookView(APIView):
             if plan_id:
                 self._activate_subscription(txn.user, plan_id)
 
-    def _activate_subscription(self, user, plan_id):
+    def _activate_subscription(self, user, plan_id, ls_subscription_id=''):
         """Activate or update a user's subscription from a plan."""
         from datetime import timedelta
 
@@ -517,6 +518,8 @@ class LemonSqueezyWebhookView(APIView):
         sub.is_active = True
         sub.monthly_chat_limit = plan.monthly_chat_limit
         sub.monthly_token_limit = plan.monthly_token_limit
+        if ls_subscription_id:
+            sub.lemon_squeezy_subscription_id = ls_subscription_id
 
         if plan.billing_period == 'MONTHLY':
             sub.expires_at = timezone.now() + timedelta(days=30)

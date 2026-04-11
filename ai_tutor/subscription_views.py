@@ -141,3 +141,57 @@ class CreateSubscriptionView(APIView):
 
         serializer = SubscriptionSerializer(subscription)
         return Response(serializer.data, status=status.HTTP_201_CREATED if created else status.HTTP_200_OK)
+
+
+class CancelSubscriptionView(APIView):
+    """Cancel the current user's Lemon Squeezy subscription."""
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        try:
+            subscription = Subscription.objects.get(user=request.user)
+        except Subscription.DoesNotExist:
+            return Response(
+                {'detail': 'No subscription found.'},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        if subscription.tier == Subscription.SubscriptionTier.FREE:
+            return Response(
+                {'detail': 'Cannot cancel a free subscription.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if not subscription.is_active:
+            return Response(
+                {'detail': 'Subscription is already inactive.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        ls_sub_id = subscription.lemon_squeezy_subscription_id
+        if not ls_sub_id:
+            return Response(
+                {'detail': 'No Lemon Squeezy subscription linked. Contact support.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Call Lemon Squeezy API to cancel
+        from payments.lemonsqueezy import LemonSqueezyError, cancel_subscription
+
+        try:
+            cancel_subscription(ls_sub_id)
+        except LemonSqueezyError as e:
+            return Response(
+                {'detail': f'Failed to cancel subscription: {e}'},
+                status=status.HTTP_502_BAD_GATEWAY,
+            )
+
+        # Deactivate locally
+        subscription.is_active = False
+        subscription.save()
+
+        serializer = SubscriptionSerializer(subscription)
+        return Response({
+            'detail': 'Subscription cancelled successfully. You retain access until the end of your billing period.',
+            'subscription': serializer.data,
+        })

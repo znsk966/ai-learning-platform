@@ -1,7 +1,13 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from .subscription_views import AIChatUsageViewSet, CreateSubscriptionView, SubscriptionPlanViewSet, SubscriptionViewSet
+from .subscription_views import (
+    AIChatUsageViewSet,
+    CancelSubscriptionView,
+    CreateSubscriptionView,
+    SubscriptionPlanViewSet,
+    SubscriptionViewSet,
+)
 from .views import AIAskView
 
 router = DefaultRouter()
@@ -13,4 +19,5 @@ urlpatterns = [
     path('ask/', AIAskView.as_view(), name='ai-ask'),
     path('', include(router.urls)),
     path('subscribe/', CreateSubscriptionView.as_view(), name='create-subscription'),
+    path('subscriptions/cancel/', CancelSubscriptionView.as_view(), name='cancel-subscription'),
 ]

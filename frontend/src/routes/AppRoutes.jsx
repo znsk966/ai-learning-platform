@@ -23,6 +23,8 @@ import LessonDetailPage from '../pages/LessonDetailPage';
 import DashboardPage from '../pages/DashboardPage';
 import SubscriptionPage from '../pages/SubscriptionPage';
 import ProfilePage from '../pages/ProfilePage';
+import BlogListPage from '../pages/BlogListPage';
+import BlogDetailPage from '../pages/BlogDetailPage';
 
 
 const AppRouter = () => {
@@ -51,6 +53,8 @@ const AppRouter = () => {
           <Route path="/modules/:moduleId/lesson/:lessonId" element={<ErrorBoundary><LessonDetailPage /></ErrorBoundary>} />
           <Route path="/submodule/:submoduleId/lesson/:lessonId" element={<ErrorBoundary><LessonDetailPage /></ErrorBoundary>} />
           <Route path="/profile" element={<ErrorBoundary><ProfilePage /></ErrorBoundary>} />
+          <Route path="/blog" element={<ErrorBoundary><BlogListPage /></ErrorBoundary>} />
+          <Route path="/blog/:slug" element={<ErrorBoundary><BlogDetailPage /></ErrorBoundary>} />
         </Route>
 
         {/* Catch-all 404 */}

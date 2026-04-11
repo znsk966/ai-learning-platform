@@ -71,6 +71,7 @@ INSTALLED_APPS = [
     'progress.apps.ProgressConfig',
     'ai_tutor.apps.AiTutorConfig',  # Assuming you have an app named ai_tutor
     'payments.apps.PaymentsConfig',  # Payments app for course pricing
+    'blog.apps.BlogConfig',  # Blog posts
 
     # Third-party apps
     'rest_framework', # Django REST Framework

@@ -40,6 +40,7 @@ urlpatterns = [
     path('api/payments/', include('payments.urls')), # Payment and enrollment APIs
     path('api/assessment/', include('assessment.urls')), # Assessment and quiz APIs
     path('api/ai/', include('ai_tutor.urls')), # AI Tutor APIs
+    path('api/blog/', include('blog.urls')), # Blog APIs
 
     # JWT Token Endpoints
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),

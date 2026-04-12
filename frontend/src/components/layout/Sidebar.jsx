@@ -25,7 +25,7 @@ const Sidebar = () => {
         <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-blue-600 text-white font-bold text-lg">
           AI
         </div>
-        <span className="text-lg font-semibold text-white tracking-tight">in Plain English</span>
+        <span className="text-lg font-semibold text-white tracking-tight">AI Powered Learning</span>
       </div>
 
       {/* Navigation */}

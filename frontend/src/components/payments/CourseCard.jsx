@@ -4,7 +4,7 @@ import EnrollmentStatus from './EnrollmentStatus';
 import PaymentModal from './PaymentModal';
 import { formatPrice } from '../../utils/formatting';
 
-const CourseCard = ({ module, onEnrollmentSuccess }) => {
+const CourseCard = ({ module, onEnrollmentSuccess, isGuestPreview = false, onGuestSelect }) => {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [isEnrolling, setIsEnrolling] = useState(false);
 
@@ -45,6 +45,35 @@ const CourseCard = ({ module, onEnrollmentSuccess }) => {
       onEnrollmentSuccess(module.id);
     }
   };
+
+  if (isGuestPreview) {
+    return (
+      <button
+        type="button"
+        onClick={() => onGuestSelect?.(module)}
+        className="group relative w-full overflow-hidden rounded-xl border border-gray-200 bg-white p-5 text-left shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-200 hover:shadow-lg"
+      >
+        <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-600" />
+        <div className="flex items-start justify-between gap-4 pt-2">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-600">Guest Preview</p>
+            <h2 className="mt-2 text-lg font-semibold leading-snug text-gray-900 transition-colors group-hover:text-blue-700">
+              {module.title}
+            </h2>
+            <p className="mt-3 text-sm leading-6 text-gray-600">
+              Create an account to open course chapters and lessons.
+            </p>
+          </div>
+          <div className="rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">Title only</div>
+        </div>
+
+        <div className="mt-6 flex items-center justify-between border-t border-gray-100 pt-4">
+          <span className="text-sm font-medium text-gray-500">Account required for full access</span>
+          <span className="text-sm font-semibold text-blue-600">Create account →</span>
+        </div>
+      </button>
+    );
+  }
 
   return (
     <>

@@ -1,9 +1,11 @@
 //src/pages/ModulesPage.jsx
 import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getModules } from '../api/contentService';
 import CourseCard from '../components/payments/CourseCard';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import ErrorDisplay from '../components/common/ErrorDisplay';
+import { useAuth } from '../store/authContext';
 
 const parseModulesResponse = (data) => {
   if (Array.isArray(data)) return data;
@@ -14,6 +16,8 @@ const parseModulesResponse = (data) => {
 };
 
 const ModulesPage = () => {
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
   const [modules, setModules] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -37,6 +41,16 @@ const ModulesPage = () => {
     fetchModules();
   }, [fetchModules]);
 
+  const handleGuestSelect = (module) => {
+    navigate('/login', {
+      state: {
+        from: { pathname: `/modules/${module.id}` },
+        message: 'You must create an account first to view course chapters and lessons.',
+        messageType: 'info',
+      },
+    });
+  };
+
   if (loading) return <LoadingSpinner text="Loading modules..." />;
   if (error) return <ErrorDisplay title="Error Loading Modules" message={error} onRetry={fetchModules} />;
 
@@ -45,7 +59,7 @@ const ModulesPage = () => {
       <div>
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-gray-900">Available Modules</h1>
-          <p className="mt-1 text-sm text-gray-500">Browse courses and start learning</p>
+          <p className="mt-1 text-sm text-gray-500">{isAuthenticated ? 'Browse courses and continue learning.' : 'Browse course titles as a guest. Create an account to open chapters and lessons.'}</p>
         </div>
         <div className="text-center text-gray-500 bg-white p-12 rounded-xl border border-gray-200">
           <svg className="w-12 h-12 mx-auto text-gray-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -62,14 +76,21 @@ const ModulesPage = () => {
     <div>
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-gray-900">Available Modules</h1>
-        <p className="mt-1 text-sm text-gray-500">Browse courses and start learning</p>
+        <p className="mt-1 text-sm text-gray-500">{isAuthenticated ? 'Browse courses and continue learning.' : 'Browse course titles as a guest. Create an account to open chapters and lessons.'}</p>
       </div>
+      {!isAuthenticated && (
+        <div className="mb-6 rounded-2xl border border-blue-100 bg-blue-50 px-5 py-4 text-sm text-blue-800">
+          Guest access lets you browse course titles only. Open a course by creating an account first.
+        </div>
+      )}
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
         {modules.map((module) => (
           <CourseCard
             key={module.id}
             module={module}
             onEnrollmentSuccess={() => fetchModules()}
+            isGuestPreview={!isAuthenticated}
+            onGuestSelect={handleGuestSelect}
           />
         ))}
       </div>

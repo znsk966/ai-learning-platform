@@ -36,6 +36,7 @@ const AppRouter = () => {
         <Route path="/login" element={<ErrorBoundary><AuthPage /></ErrorBoundary>} />
         <Route path="/register" element={<ErrorBoundary><AuthPage /></ErrorBoundary>} />
         <Route path="/verify-email/:token" element={<ErrorBoundary><EmailVerificationPage /></ErrorBoundary>} />
+        <Route path="/verify-email" element={<ErrorBoundary><EmailVerificationPage /></ErrorBoundary>} />
         <Route path="/forgot-password" element={<ErrorBoundary><PasswordResetRequestPage /></ErrorBoundary>} />
         <Route path="/reset-password/:token" element={<ErrorBoundary><PasswordResetConfirmPage /></ErrorBoundary>} />
         <Route path="/change-password" element={<ErrorBoundary><PasswordChangePage /></ErrorBoundary>} />
@@ -43,18 +44,19 @@ const AppRouter = () => {
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/refund" element={<RefundPage />} />
 
-        {/* Routes WITH the sidebar layout — authentication required */}
-        <Route element={<PrivateRoute><MainLayout /></PrivateRoute>}>
-          <Route path="/dashboard" element={<ErrorBoundary><DashboardPage /></ErrorBoundary>} />
-          <Route path="/subscription" element={<ErrorBoundary><SubscriptionPage /></ErrorBoundary>} />
+        {/* Shared layout: guest-safe for catalog pages, authenticated shell for signed-in users */}
+        <Route element={<MainLayout />}>
           <Route path="/modules" element={<ErrorBoundary><ModulesPage /></ErrorBoundary>} />
-          <Route path="/modules/:moduleId" element={<ErrorBoundary><ModuleDetailPage /></ErrorBoundary>} />
-          <Route path="/submodule/:submoduleId" element={<ErrorBoundary><SubmoduleDetailPage /></ErrorBoundary>} />
-          <Route path="/modules/:moduleId/lesson/:lessonId" element={<ErrorBoundary><LessonDetailPage /></ErrorBoundary>} />
-          <Route path="/submodule/:submoduleId/lesson/:lessonId" element={<ErrorBoundary><LessonDetailPage /></ErrorBoundary>} />
-          <Route path="/profile" element={<ErrorBoundary><ProfilePage /></ErrorBoundary>} />
           <Route path="/blog" element={<ErrorBoundary><BlogListPage /></ErrorBoundary>} />
-          <Route path="/blog/:slug" element={<ErrorBoundary><BlogDetailPage /></ErrorBoundary>} />
+
+          <Route path="/dashboard" element={<PrivateRoute><ErrorBoundary><DashboardPage /></ErrorBoundary></PrivateRoute>} />
+          <Route path="/subscription" element={<PrivateRoute><ErrorBoundary><SubscriptionPage /></ErrorBoundary></PrivateRoute>} />
+          <Route path="/modules/:moduleId" element={<PrivateRoute><ErrorBoundary><ModuleDetailPage /></ErrorBoundary></PrivateRoute>} />
+          <Route path="/submodule/:submoduleId" element={<PrivateRoute><ErrorBoundary><SubmoduleDetailPage /></ErrorBoundary></PrivateRoute>} />
+          <Route path="/modules/:moduleId/lesson/:lessonId" element={<PrivateRoute><ErrorBoundary><LessonDetailPage /></ErrorBoundary></PrivateRoute>} />
+          <Route path="/submodule/:submoduleId/lesson/:lessonId" element={<PrivateRoute><ErrorBoundary><LessonDetailPage /></ErrorBoundary></PrivateRoute>} />
+          <Route path="/profile" element={<PrivateRoute><ErrorBoundary><ProfilePage /></ErrorBoundary></PrivateRoute>} />
+          <Route path="/blog/:slug" element={<PrivateRoute><ErrorBoundary><BlogDetailPage /></ErrorBoundary></PrivateRoute>} />
         </Route>
 
         {/* Catch-all 404 */}

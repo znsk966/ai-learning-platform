@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { requestPasswordReset, confirmPasswordReset } from '../api/authService';
 
+const isValidEmail = (value) => /\S+@\S+\.\S+/.test(value);
+
 const PasswordResetRequestPage = () => {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
@@ -12,6 +14,17 @@ const PasswordResetRequestPage = () => {
     e.preventDefault();
     setError('');
     setMessage('');
+
+    if (!email.trim()) {
+      setError('Enter your email address.');
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      setError('Enter a valid email address.');
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -27,13 +40,13 @@ const PasswordResetRequestPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8">
+      <div className="max-w-md w-full bg-white rounded-3xl shadow-xl shadow-blue-100/20 p-8 border border-gray-100">
         <h2 className="text-2xl font-bold text-gray-800 mb-2">Reset Password</h2>
         <p className="text-gray-600 mb-6">
           Enter your email address and we'll send you a link to reset your password.
         </p>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} noValidate className="space-y-4">
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
               Email Address
@@ -43,19 +56,18 @@ const PasswordResetRequestPage = () => {
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              required
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-3 border rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="your.email@example.com"
             />
           </div>
 
-          {error && <p className="text-sm text-red-500">{error}</p>}
-          {message && <p className="text-sm text-green-500">{message}</p>}
+          {error && <p className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-500">{error}</p>}
+          {message && <p className="rounded-2xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-600">{message}</p>}
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-blue-400 transition-colors"
+            className="w-full px-4 py-3 bg-blue-600 text-white rounded-2xl hover:bg-blue-700 disabled:bg-blue-400 transition-colors"
           >
             {loading ? 'Sending...' : 'Send Reset Link'}
           </button>
@@ -63,7 +75,7 @@ const PasswordResetRequestPage = () => {
 
         <div className="mt-6 text-center">
           <Link to="/login" className="text-blue-600 hover:underline">
-            Back to Login
+            Back to sign in
           </Link>
         </div>
       </div>
@@ -83,6 +95,16 @@ const PasswordResetConfirmPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
+    if (!newPassword) {
+      setError('Enter your new password.');
+      return;
+    }
+
+    if (!newPasswordConfirm) {
+      setError('Confirm your new password.');
+      return;
+    }
 
     if (newPassword !== newPasswordConfirm) {
       setError('Passwords do not match.');
@@ -108,13 +130,13 @@ const PasswordResetConfirmPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8">
+      <div className="max-w-md w-full bg-white rounded-3xl shadow-xl shadow-blue-100/20 p-8 border border-gray-100">
         <h2 className="text-2xl font-bold text-gray-800 mb-2">Set New Password</h2>
         <p className="text-gray-600 mb-6">
           Enter your new password below.
         </p>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} noValidate className="space-y-4">
           <div>
             <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700 mb-1">
               New Password
@@ -125,8 +147,7 @@ const PasswordResetConfirmPage = () => {
                 id="newPassword"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                required
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-3 border rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter new password"
               />
               <button
@@ -148,18 +169,17 @@ const PasswordResetConfirmPage = () => {
               id="newPasswordConfirm"
               value={newPasswordConfirm}
               onChange={(e) => setNewPasswordConfirm(e.target.value)}
-              required
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-3 border rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Confirm new password"
             />
           </div>
 
-          {error && <p className="text-sm text-red-500">{error}</p>}
+          {error && <p className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-500">{error}</p>}
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-blue-400 transition-colors"
+            className="w-full px-4 py-3 bg-blue-600 text-white rounded-2xl hover:bg-blue-700 disabled:bg-blue-400 transition-colors"
           >
             {loading ? 'Resetting...' : 'Reset Password'}
           </button>
@@ -167,7 +187,7 @@ const PasswordResetConfirmPage = () => {
 
         <div className="mt-6 text-center">
           <Link to="/login" className="text-blue-600 hover:underline">
-            Back to Login
+            Back to sign in
           </Link>
         </div>
       </div>

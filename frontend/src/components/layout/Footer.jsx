@@ -9,7 +9,7 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-6 py-6">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-sm text-gray-400">
-            &copy; {currentYear} AI Powered Learning App. Designed and created by Zoran Nedelkovski.
+            &copy; {currentYear} Simple &amp; Plain AI by Nedex Education. Designed and created by Zoran Nedelkovski.
           </p>
           <div className="flex items-center gap-6 text-sm text-gray-400">
             <Link to="/terms" className="hover:text-gray-600 transition-colors">Terms</Link>

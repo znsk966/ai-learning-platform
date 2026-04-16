@@ -15,14 +15,14 @@ const TermsPage = () => {
           <section>
             <h2 className="text-xl font-semibold text-gray-800 mb-3">1. Acceptance of Terms</h2>
             <p className="text-gray-600 leading-relaxed">
-              By accessing or using AI Powered Learning App ("Service"), you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use the Service.
+              By accessing or using Simple &amp; Plain AI ("Service"), a Nedex Education product, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use the Service.
             </p>
           </section>
 
           <section>
             <h2 className="text-xl font-semibold text-gray-800 mb-3">2. Description of Service</h2>
             <p className="text-gray-600 leading-relaxed">
-              AI Powered Learning App provides online educational courses with AI-powered tutoring, interactive lessons, quizzes, and progress tracking. Access to certain features requires a paid subscription.
+              Simple &amp; Plain AI provides online educational courses with AI-powered tutoring, interactive lessons, quizzes, and progress tracking. Access to certain features requires a paid subscription.
             </p>
           </section>
 
@@ -55,7 +55,7 @@ const TermsPage = () => {
           <section>
             <h2 className="text-xl font-semibold text-gray-800 mb-3">6. Intellectual Property</h2>
             <p className="text-gray-600 leading-relaxed">
-              All course content, materials, and platform design are the property of AI Powered Learning App or its content creators. You are granted a limited, non-exclusive, non-transferable license to access and use the content for personal educational purposes only.
+              All course content, materials, and platform design are the property of Simple &amp; Plain AI, Nedex Education, or their content creators. You are granted a limited, non-exclusive, non-transferable license to access and use the content for personal educational purposes only.
             </p>
           </section>
 
@@ -69,7 +69,7 @@ const TermsPage = () => {
           <section>
             <h2 className="text-xl font-semibold text-gray-800 mb-3">8. Limitation of Liability</h2>
             <p className="text-gray-600 leading-relaxed">
-              The Service is provided "as is" without warranties of any kind. To the maximum extent permitted by law, AI Powered Learning App shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of the Service.
+              The Service is provided "as is" without warranties of any kind. To the maximum extent permitted by law, Simple &amp; Plain AI and Nedex Education shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of the Service.
             </p>
           </section>
 

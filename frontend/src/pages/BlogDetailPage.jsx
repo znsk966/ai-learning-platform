@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -13,11 +13,7 @@ const BlogDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    fetchPost();
-  }, [slug]);
-
-  const fetchPost = async () => {
+  const fetchPost = useCallback(async () => {
     setLoading(true);
     setError('');
     try {
@@ -28,7 +24,11 @@ const BlogDetailPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [slug]);
+
+  useEffect(() => {
+    fetchPost();
+  }, [fetchPost]);
 
   const formatDate = (dateString) => {
     if (!dateString) return '';

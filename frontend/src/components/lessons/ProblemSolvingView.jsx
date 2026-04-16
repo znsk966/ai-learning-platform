@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { markProblemComplete } from '../../api/contentService';
+import LessonCompletionPanel from './LessonCompletionPanel';
 
-const ProblemSolvingView = ({ lessonId, problemContent, onComplete }) => {
+const ProblemSolvingView = ({ lessonId, problemContent, backLink, backLinkLabel = 'Back to lessons', onComplete }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [userAnswers, setUserAnswers] = useState({});
   const [showHints, setShowHints] = useState({});
   const [isCompleted, setIsCompleted] = useState(false);
   const [error, setError] = useState(null);
+  const [completionResult, setCompletionResult] = useState(null);
   const [startTime] = useState(new Date());
 
   // Parse problem content to extract steps, hints, and solutions
@@ -104,11 +106,13 @@ const ProblemSolvingView = ({ lessonId, problemContent, onComplete }) => {
     try {
       const endTime = new Date();
       const timeSpent = Math.round((endTime - startTime) / 1000);
-      
-      setIsCompleted(true);
+      setError(null);
 
       // Mark problem as completed in backend
-      await markProblemComplete(lessonId, timeSpent, userAnswers);
+      const result = await markProblemComplete(lessonId, timeSpent, userAnswers);
+
+      setCompletionResult(result);
+      setIsCompleted(true);
       
       // Call the completion callback
       if (onComplete) {
@@ -116,6 +120,7 @@ const ProblemSolvingView = ({ lessonId, problemContent, onComplete }) => {
           lessonId,
           timeSpent,
           userAnswers,
+          nextLesson: result.next_lesson,
           completedAt: endTime.toISOString()
         });
       }
@@ -130,68 +135,21 @@ const ProblemSolvingView = ({ lessonId, problemContent, onComplete }) => {
     setUserAnswers({});
     setShowHints({});
     setIsCompleted(false);
+    setCompletionResult(null);
     setError(null);
   };
 
   if (isCompleted) {
     return (
-      <div className="space-y-6">
-        {/* Completion Message */}
-        <div className="bg-green-50 border border-green-200 rounded-lg p-6">
-          <div className="text-center">
-            <div className="text-4xl mb-2">🎉</div>
-            <h3 className="text-xl font-bold text-green-800 mb-2">
-              Problem Solved!
-            </h3>
-            <p className="text-green-700">
-              Excellent work! You've successfully completed this problem-solving exercise.
-            </p>
-          </div>
-        </div>
-
-        {/* Problem Review */}
-        <div className="bg-white border border-gray-200 rounded-lg p-6">
-          <h4 className="text-lg font-semibold text-gray-800 mb-4">
-            Your Solution
-          </h4>
-          <div className="space-y-4">
-            {problemData.steps.map((step, index) => (
-              <div key={index} className="border border-gray-200 rounded-lg p-4">
-                <h5 className="font-medium text-gray-800 mb-2">
-                  Step {index + 1}
-                </h5>
-                <p className="text-gray-600 mb-3">{step}</p>
-                <div className="bg-gray-50 p-3 rounded">
-                  <span className="text-sm font-medium text-gray-700">Your Answer:</span>
-                  <p className="text-gray-800 mt-1">{userAnswers[index] || 'No answer provided'}</p>
-                </div>
-                {problemData.solutions[index] && (
-                  <div className="bg-blue-50 p-3 rounded mt-2">
-                    <span className="text-sm font-medium text-blue-700">Expected Answer:</span>
-                    <p className="text-blue-800 mt-1">{problemData.solutions[index]}</p>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex justify-center space-x-4">
-          <button
-            onClick={() => window.history.back()}
-            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            Continue Learning
-          </button>
-          <button
-            onClick={resetProblem}
-            className="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
-          >
-            Try Again
-          </button>
-        </div>
-      </div>
+      <LessonCompletionPanel
+        title="Problem Solved"
+        description="Excellent work. Your progress has been saved and the next lesson is unlocked."
+        nextLesson={completionResult?.next_lesson}
+        backLink={backLink}
+        backLabel={backLinkLabel}
+        secondaryActionLabel="Try Again"
+        onSecondaryAction={resetProblem}
+      />
     );
   }
 

@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ReactPlayer from 'react-player';
+import { markLessonComplete } from '../../api/contentService';
 import ReadingView from './ReadingView';
+import LessonCompletionPanel from './LessonCompletionPanel';
 
 // Helper function to extract YouTube video ID
 const getYouTubeVideoId = (url) => {
@@ -17,9 +19,12 @@ const getYouTubeEmbedUrl = (url) => {
   return `https://www.youtube.com/embed/${videoId}`;
 };
 
-const VideoView = ({ url, textContent, bunnyEmbedUrl }) => {
+const VideoView = ({ lessonId, url, textContent, bunnyEmbedUrl, backLink, backLinkLabel = 'Back to lessons' }) => {
   const [hasError, setHasError] = useState(false);
   const [isReady, setIsReady] = useState(false);
+  const [isCompleting, setIsCompleting] = useState(false);
+  const [completionError, setCompletionError] = useState(null);
+  const [completionResult, setCompletionResult] = useState(null);
   const playerRef = useRef(null);
 
   // Bunny Stream takes priority
@@ -69,6 +74,37 @@ const VideoView = ({ url, textContent, bunnyEmbedUrl }) => {
       setIsReady(true);
     }
   };
+
+  const handleComplete = async () => {
+    if (!lessonId || isCompleting) {
+      return;
+    }
+
+    setIsCompleting(true);
+    setCompletionError(null);
+
+    try {
+      const result = await markLessonComplete(lessonId);
+      setCompletionResult(result);
+    } catch (err) {
+      console.error('Failed to mark video lesson as complete:', err);
+      setCompletionError(err.message || 'Failed to save completion status. Please try again.');
+    } finally {
+      setIsCompleting(false);
+    }
+  };
+
+  if (completionResult) {
+    return (
+      <LessonCompletionPanel
+        title="Video Lesson Completed"
+        description="Your progress has been saved and the next lesson is ready when you are."
+        nextLesson={completionResult.next_lesson}
+        backLink={backLink}
+        backLabel={backLinkLabel}
+      />
+    );
+  }
 
   return (
     <div>
@@ -179,9 +215,35 @@ const VideoView = ({ url, textContent, bunnyEmbedUrl }) => {
       {/* Accompanying Text Section */}
       {textContent && (
         <div className="mt-8">
-          <ReadingView content={textContent} />
+          <ReadingView content={textContent} enableCompletion={false} />
         </div>
       )}
+
+      <div className="mt-8 pt-6 border-t border-gray-200">
+        {completionError && (
+          <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+            <p className="text-red-800 text-sm">{completionError}</p>
+          </div>
+        )}
+
+        <div className="flex items-center justify-between gap-4 flex-wrap">
+          <p className="text-sm text-gray-600">
+            Mark this lesson complete after you finish watching the video and reviewing the notes.
+          </p>
+          <button
+            type="button"
+            onClick={handleComplete}
+            disabled={!isReady || isCompleting}
+            className={`px-6 py-2 rounded-lg font-medium transition-colors ${
+              !isReady || isCompleting
+                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                : 'bg-green-600 text-white hover:bg-green-700'
+            }`}
+          >
+            {isCompleting ? 'Saving...' : 'Mark as Complete'}
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

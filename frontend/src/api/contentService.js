@@ -83,35 +83,36 @@ export const getNextLesson = async () => {
     }
 };
 
+  /**
+   * Marks a non-quiz lesson as completed.
+   */
+  export const markLessonComplete = async (lessonId, payload = {}) => {
+    try {
+      const response = await apiClient.post(`/content/lessons/${lessonId}/complete/`, payload);
+      return response.data;
+    } catch (error) {
+      console.error('Error marking lesson as complete:', error);
+      throw new Error(error.response?.data?.detail || 'Could not mark lesson as complete.');
+    }
+  };
+
 /**
  * Marks a simulation lesson as completed.
  */
 export const markSimulationComplete = async (lessonId, timeSpent) => {
-    try {
-        const response = await apiClient.post(`/content/lessons/${lessonId}/complete-simulation/`, {
-            time_spent: timeSpent
-        });
-        return response.data;
-    } catch (error) {
-        console.error("Error marking simulation as complete:", error);
-        throw new Error(error.response?.data?.detail || 'Could not mark simulation as complete.');
-    }
+    return markLessonComplete(lessonId, {
+      time_spent: timeSpent
+    });
 };
 
 /**
  * Marks a problem-solving lesson as completed.
  */
 export const markProblemComplete = async (lessonId, timeSpent, userAnswers) => {
-    try {
-        const response = await apiClient.post(`/content/lessons/${lessonId}/complete-problem/`, {
-            time_spent: timeSpent,
-            user_answers: userAnswers
-        });
-        return response.data;
-    } catch (error) {
-        console.error("Error marking problem as complete:", error);
-        throw new Error(error.response?.data?.detail || 'Could not mark problem as complete.');
-    }
+    return markLessonComplete(lessonId, {
+      time_spent: timeSpent,
+      user_answers: userAnswers
+    });
 };
 
 /**

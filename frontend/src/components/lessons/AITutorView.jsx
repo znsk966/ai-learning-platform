@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { askAI } from '../../api/aiService';
+import { markLessonComplete } from '../../api/contentService';
 import { getUsageStats } from '../../api/subscriptionService';
+import LessonCompletionPanel from './LessonCompletionPanel';
 
-const AITutorView = ({ lessonId, lessonTitle, initialPrompt, aiConfig }) => {
+const AITutorView = ({ lessonId, lessonTitle, initialPrompt, aiConfig, backLink, backLinkLabel = 'Back to lessons' }) => {
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -11,6 +13,8 @@ const AITutorView = ({ lessonId, lessonTitle, initialPrompt, aiConfig }) => {
   const [subscriptionError, setSubscriptionError] = useState(null);
   const [usageInfo, setUsageInfo] = useState(null);
   const [config, setConfig] = useState(null);
+  const [isCompleting, setIsCompleting] = useState(false);
+  const [completionResult, setCompletionResult] = useState(null);
   const messagesEndRef = useRef(null);
 
   // Auto-scroll to bottom when new messages are added
@@ -131,7 +135,6 @@ const AITutorView = ({ lessonId, lessonTitle, initialPrompt, aiConfig }) => {
 
       // Refresh usage stats after successful message
       try {
-        const { getUsageStats } = await import('../../api/subscriptionService');
         const stats = await getUsageStats();
         setUsageInfo(stats);
       } catch (err) {
@@ -192,6 +195,39 @@ const AITutorView = ({ lessonId, lessonTitle, initialPrompt, aiConfig }) => {
       minute: '2-digit' 
     });
   };
+
+  const handleComplete = async () => {
+    if (!lessonId || isCompleting) {
+      return;
+    }
+
+    setIsCompleting(true);
+    setError(null);
+
+    try {
+      const result = await markLessonComplete(lessonId, {
+        interaction_count: messages.filter((message) => message.type === 'user').length,
+      });
+      setCompletionResult(result);
+    } catch (err) {
+      console.error('Failed to mark AI tutor lesson as complete:', err);
+      setError(err.message || 'Failed to save completion status. Please try again.');
+    } finally {
+      setIsCompleting(false);
+    }
+  };
+
+  if (completionResult) {
+    return (
+      <LessonCompletionPanel
+        title="AI Tutor Session Completed"
+        description="Your progress has been saved. Continue to the next lesson when you are ready."
+        nextLesson={completionResult.next_lesson}
+        backLink={backLink}
+        backLabel={backLinkLabel}
+      />
+    );
+  }
 
   return (
     <div className="flex flex-col h-[600px] bg-white border border-gray-200 rounded-lg">
@@ -310,6 +346,24 @@ const AITutorView = ({ lessonId, lessonTitle, initialPrompt, aiConfig }) => {
         {/* Help text */}
         <div className="mt-2 text-xs text-gray-500">
           Press Enter to send, Shift+Enter for new line
+        </div>
+
+        <div className="mt-4 flex items-center justify-between gap-4 flex-wrap">
+          <p className="text-sm text-gray-600">
+            Mark this lesson complete when you are done working with the tutor.
+          </p>
+          <button
+            type="button"
+            onClick={handleComplete}
+            disabled={isCompleting}
+            className={`px-5 py-2 rounded-lg font-medium transition-colors ${
+              isCompleting
+                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                : 'bg-green-600 hover:bg-green-700 text-white'
+            }`}
+          >
+            {isCompleting ? 'Saving...' : 'Mark as Complete'}
+          </button>
         </div>
       </div>
 

@@ -5,9 +5,17 @@ import { materialDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import remarkGfm from 'remark-gfm';
+import { markLessonComplete } from '../../api/contentService';
+import LessonCompletionPanel from './LessonCompletionPanel';
 import 'katex/dist/katex.min.css';
 
-const ReadingView = ({ content }) => {
+const ReadingView = ({
+  content,
+  lessonId,
+  backLink,
+  backLinkLabel = 'Back to lessons',
+  enableCompletion = true,
+}) => {
   const contentRef = useRef(null);
   
   // Split content by delimiter (------ or ---)
@@ -45,6 +53,9 @@ const ReadingView = ({ content }) => {
 
   const [currentStep, setCurrentStep] = useState(0);
   const hasMultipleSteps = steps.length > 1;
+  const [isCompleting, setIsCompleting] = useState(false);
+  const [completionError, setCompletionError] = useState(null);
+  const [completionResult, setCompletionResult] = useState(null);
 
   // Scroll to top when step changes
   useEffect(() => {
@@ -69,6 +80,39 @@ const ReadingView = ({ content }) => {
 
   const nextStep = () => goToStep(currentStep + 1);
   const prevStep = () => goToStep(currentStep - 1);
+
+  const handleComplete = async () => {
+    if (!enableCompletion || !lessonId || isCompleting) {
+      return;
+    }
+
+    setIsCompleting(true);
+    setCompletionError(null);
+
+    try {
+      const result = await markLessonComplete(lessonId, {
+        time_spent: currentStep + 1,
+      });
+      setCompletionResult(result);
+    } catch (err) {
+      console.error('Failed to mark reading lesson as complete:', err);
+      setCompletionError(err.message || 'Failed to save completion status. Please try again.');
+    } finally {
+      setIsCompleting(false);
+    }
+  };
+
+  if (completionResult) {
+    return (
+      <LessonCompletionPanel
+        title="Reading Completed"
+        description="Your progress has been saved and the next lesson is now available."
+        nextLesson={completionResult.next_lesson}
+        backLink={backLink}
+        backLabel={backLinkLabel}
+      />
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto" ref={contentRef}>
@@ -160,6 +204,12 @@ const ReadingView = ({ content }) => {
         />
       </article>
 
+      {completionError && (
+        <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+          <p className="text-red-800 text-sm">{completionError}</p>
+        </div>
+      )}
+
       {/* Navigation Buttons - Only show if multiple steps */}
       {hasMultipleSteps && (
         <div className="flex justify-between items-center mt-8 pt-6 border-t border-gray-200">
@@ -182,19 +232,49 @@ const ReadingView = ({ content }) => {
             {currentStep + 1} / {steps.length}
           </div>
 
+          {enableCompletion && lessonId && currentStep === steps.length - 1 ? (
+            <button
+              onClick={handleComplete}
+              disabled={isCompleting}
+              className={`flex items-center px-6 py-2 rounded-lg font-medium transition-colors ${
+                isCompleting
+                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                  : 'bg-green-600 text-white hover:bg-green-700'
+              }`}
+            >
+              {isCompleting ? 'Saving...' : 'Mark as Complete'}
+            </button>
+          ) : (
+            <button
+              onClick={nextStep}
+              disabled={currentStep === steps.length - 1}
+              className={`flex items-center px-6 py-2 rounded-lg font-medium transition-colors ${
+                currentStep === steps.length - 1
+                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                  : 'bg-blue-600 text-white hover:bg-blue-700'
+              }`}
+            >
+              Next
+              <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          )}
+        </div>
+      )}
+
+      {!hasMultipleSteps && enableCompletion && lessonId && (
+        <div className="mt-8 pt-6 border-t border-gray-200 flex justify-end">
           <button
-            onClick={nextStep}
-            disabled={currentStep === steps.length - 1}
-            className={`flex items-center px-6 py-2 rounded-lg font-medium transition-colors ${
-              currentStep === steps.length - 1
+            onClick={handleComplete}
+            disabled={isCompleting}
+            className={`px-6 py-2 rounded-lg font-medium transition-colors ${
+              isCompleting
                 ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                : 'bg-blue-600 text-white hover:bg-blue-700'
+                : 'bg-green-600 text-white hover:bg-green-700'
             }`}
           >
-            Next
-            <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
+            {isCompleting ? 'Saving...' : 'Mark as Complete'}
           </button>
         </div>
       )}

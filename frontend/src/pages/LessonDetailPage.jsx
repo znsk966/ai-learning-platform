@@ -41,11 +41,14 @@ const LessonDetailPage = () => {
   const renderLessonContent = () => {
     if (!lesson) return null;
 
+    const backLink = submoduleId ? `/submodule/${submoduleId}` : `/modules/${moduleId}`;
+    const backLinkLabel = submoduleId ? 'Back to Submodule' : 'Back to Module';
+
     switch (lesson.lesson_type) {
       case 'READ':
-        return <ReadingView content={lesson.text_content} />;
+        return <ReadingView content={lesson.text_content} lessonId={lesson.id} backLink={backLink} backLinkLabel={backLinkLabel} />;
       case 'VID':
-        return <VideoView url={lesson.video_url} textContent={lesson.text_content} bunnyEmbedUrl={lesson.bunny_embed_url} />;
+        return <VideoView lessonId={lesson.id} url={lesson.video_url} textContent={lesson.text_content} bunnyEmbedUrl={lesson.bunny_embed_url} backLink={backLink} backLinkLabel={backLinkLabel} />;
       case 'QUIZ':
         return <QuizView lessonId={lesson.id} onQuizComplete={(result) => {
           console.log('Quiz completed:', result);
@@ -58,12 +61,16 @@ const LessonDetailPage = () => {
           lessonTitle={lesson.title}
           initialPrompt={lesson.ai_tutor_initial_prompt}
           aiConfig={lesson.ai_tutor_config}
+          backLink={backLink}
+          backLinkLabel={backLinkLabel}
         />;
       case 'SIM':
         return <SimulationView 
           lessonId={lesson.id}
           simulationUrl={lesson.simulation_url}
           textContent={lesson.text_content}
+          backLink={backLink}
+          backLinkLabel={backLinkLabel}
           onComplete={(result) => {
             console.log('Simulation completed:', result);
             // You can add additional logic here like showing a success message
@@ -74,6 +81,8 @@ const LessonDetailPage = () => {
         return <ProblemSolvingView 
           lessonId={lesson.id}
           problemContent={lesson.text_content}
+          backLink={backLink}
+          backLinkLabel={backLinkLabel}
           onComplete={(result) => {
             console.log('Problem solving completed:', result);
             // You can add additional logic here like showing a success message

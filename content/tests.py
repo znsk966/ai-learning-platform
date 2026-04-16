@@ -120,6 +120,70 @@ class LessonCompletionAccessTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
+class GenericLessonCompletionTest(TestCase):
+    """Tests for the generic non-quiz lesson completion endpoint."""
+
+    def setUp(self):
+        self.user = User.objects.create_user(username='reader', password='testpass123', is_active=True)
+        self.client = APIClient()
+        self.client.force_authenticate(user=self.user)
+
+        self.module = Module.objects.create(title='Reading Module', order=0, price=0.00)
+        self.submodule = SubModule.objects.create(module=self.module, title='Basics', order=0)
+        self.reading_lesson = Lesson.objects.create(
+            submodule=self.submodule,
+            title='Intro Reading',
+            order=0,
+            lesson_type='READ',
+        )
+        self.next_lesson = Lesson.objects.create(
+            submodule=self.submodule,
+            title='Follow-up Lesson',
+            order=1,
+            lesson_type='SIM',
+        )
+
+    def test_complete_reading_lesson_unlocks_next_lesson(self):
+        response = self.client.post(
+            f'/api/content/lessons/{self.reading_lesson.id}/complete/',
+            {'time_spent': 42},
+            format='json'
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(
+            UserLessonProgress.objects.filter(user=self.user, lesson=self.reading_lesson).exists()
+        )
+        self.assertEqual(response.data['status'], 'lesson completed')
+        self.assertEqual(response.data['next_lesson']['id'], self.next_lesson.id)
+
+        module_response = self.client.get(f'/api/content/modules/{self.module.id}/')
+        self.assertEqual(module_response.status_code, status.HTTP_200_OK)
+
+        statuses = []
+        for submodule in module_response.data['submodules']:
+            for lesson in submodule['lessons']:
+                statuses.append((lesson['title'], lesson['status']))
+
+        self.assertEqual(statuses[0][1], 'completed')
+        self.assertEqual(statuses[1][1], 'unlocked')
+
+    def test_complete_paid_reading_lesson_without_enrollment_denied(self):
+        paid_module = Module.objects.create(title='Paid Reading', order=1, price=19.99)
+        paid_submodule = SubModule.objects.create(module=paid_module, title='Paid Sub', order=0)
+        paid_lesson = Lesson.objects.create(
+            submodule=paid_submodule,
+            title='Paid Reading Lesson',
+            order=0,
+            lesson_type='READ',
+        )
+
+        response = self.client.post(
+            f'/api/content/lessons/{paid_lesson.id}/complete/',
+            format='json'
+        )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+
 class ModuleAccessTest(TestCase):
     """Tests for module access control in list and retrieve."""
 

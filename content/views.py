@@ -233,45 +233,99 @@ class LessonViewSet(viewsets.ModelViewSet):
             user=user, module=module, is_active=True
         ).exists()
 
-    @action(detail=True, methods=['post'], url_path='complete-simulation', permission_classes=[IsAuthenticated])
-    def complete_simulation(self, request, pk=None):
-        lesson = self.get_object()
-        user = request.user
+    def _get_next_lesson_data(self, user, lesson):
+        """Return the next incomplete lesson in the current module after completion."""
+        module = lesson.submodule.module
+        completed_lesson_ids = set(
+            UserLessonProgress.objects.filter(
+                user=user,
+                lesson__submodule__module=module,
+            ).values_list('lesson_id', flat=True)
+        )
 
+        next_lesson = Lesson.objects.filter(
+            submodule__module=module
+        ).exclude(
+            id__in=completed_lesson_ids
+        ).select_related(
+            'submodule__module'
+        ).order_by(
+            'submodule__order',
+            'order'
+        ).first()
+
+        if not next_lesson:
+            return None
+
+        return {
+            'id': next_lesson.id,
+            'title': next_lesson.title,
+            'lesson_type': next_lesson.lesson_type,
+            'module_id': next_lesson.submodule.module_id,
+            'submodule_id': next_lesson.submodule_id,
+        }
+
+    def _build_completion_response(self, user, lesson, completion_status, extra_data=None):
         if not self._check_lesson_access(user, lesson):
             return Response(
                 {'detail': 'You do not have access to this lesson.'},
                 status=status.HTTP_403_FORBIDDEN
             )
 
-        time_spent = request.data.get('time_spent', 0)
         UserLessonProgress.objects.get_or_create(user=user, lesson=lesson)
 
-        return Response({
-            'status': 'simulation completed',
-            'time_spent': time_spent
-        }, status=status.HTTP_200_OK)
+        response_data = {
+            'status': completion_status,
+            'lesson_id': lesson.id,
+            'lesson_type': lesson.lesson_type,
+            'next_lesson': self._get_next_lesson_data(user, lesson),
+        }
+        if extra_data:
+            response_data.update(extra_data)
+
+        return Response(response_data, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['post'], url_path='complete', permission_classes=[IsAuthenticated])
+    def complete(self, request, pk=None):
+        lesson = self.get_object()
+        user = request.user
+        time_spent = request.data.get('time_spent')
+
+        extra_data = {}
+        if time_spent is not None:
+            extra_data['time_spent'] = time_spent
+
+        return self._build_completion_response(user, lesson, 'lesson completed', extra_data)
+
+    @action(detail=True, methods=['post'], url_path='complete-simulation', permission_classes=[IsAuthenticated])
+    def complete_simulation(self, request, pk=None):
+        lesson = self.get_object()
+        user = request.user
+
+        time_spent = request.data.get('time_spent', 0)
+        return self._build_completion_response(
+            user,
+            lesson,
+            'simulation completed',
+            {'time_spent': time_spent}
+        )
 
     @action(detail=True, methods=['post'], url_path='complete-problem', permission_classes=[IsAuthenticated])
     def complete_problem(self, request, pk=None):
         lesson = self.get_object()
         user = request.user
 
-        if not self._check_lesson_access(user, lesson):
-            return Response(
-                {'detail': 'You do not have access to this lesson.'},
-                status=status.HTTP_403_FORBIDDEN
-            )
-
         time_spent = request.data.get('time_spent', 0)
         user_answers = request.data.get('user_answers', {})
-        UserLessonProgress.objects.get_or_create(user=user, lesson=lesson)
-
-        return Response({
-            'status': 'problem completed',
-            'time_spent': time_spent,
-            'user_answers': user_answers
-        }, status=status.HTTP_200_OK)
+        return self._build_completion_response(
+            user,
+            lesson,
+            'problem completed',
+            {
+                'time_spent': time_spent,
+                'user_answers': user_answers,
+            }
+        )
 
 class DashboardView(APIView):
     permission_classes = [IsAuthenticated]

@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { markSimulationComplete } from '../../api/contentService';
+import LessonCompletionPanel from './LessonCompletionPanel';
 
-const SimulationView = ({ lessonId, simulationUrl, textContent, onComplete }) => {
+const SimulationView = ({ lessonId, simulationUrl, textContent, backLink, backLinkLabel = 'Back to lessons', onComplete }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isCompleted, setIsCompleted] = useState(false);
   const [completionTime, setCompletionTime] = useState(null);
+  const [completionResult, setCompletionResult] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [startTime] = useState(new Date());
 
   useEffect(() => {
@@ -18,27 +21,38 @@ const SimulationView = ({ lessonId, simulationUrl, textContent, onComplete }) =>
   }, []);
 
   const handleSimulationComplete = async () => {
+    if (isSubmitting) {
+      return;
+    }
+
     try {
       const endTime = new Date();
       const timeSpent = Math.round((endTime - startTime) / 1000); // Time in seconds
-      
-      setCompletionTime(timeSpent);
-      setIsCompleted(true);
+
+      setIsSubmitting(true);
+      setError(null);
 
       // Mark simulation as completed in backend
-      await markSimulationComplete(lessonId, timeSpent);
+      const result = await markSimulationComplete(lessonId, timeSpent);
+
+      setCompletionTime(timeSpent);
+      setCompletionResult(result);
+      setIsCompleted(true);
       
       // Call the completion callback
       if (onComplete) {
         onComplete({
           lessonId,
           timeSpent,
+          nextLesson: result.next_lesson,
           completedAt: endTime.toISOString()
         });
       }
     } catch (err) {
       console.error('Failed to mark simulation as complete:', err);
       setError('Failed to save completion status. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -67,71 +81,19 @@ const SimulationView = ({ lessonId, simulationUrl, textContent, onComplete }) =>
 
   if (isCompleted) {
     return (
-      <div className="space-y-6">
-        {/* Completion Message */}
-        <div className="bg-green-50 border border-green-200 rounded-lg p-6">
-          <div className="text-center">
-            <div className="text-4xl mb-2">🎉</div>
-            <h3 className="text-xl font-bold text-green-800 mb-2">
-              Simulation Completed!
-            </h3>
-            <p className="text-green-700">
-              Great job! You've successfully completed this interactive simulation.
-            </p>
-            {completionTime && (
-              <p className="text-green-600 text-sm mt-2">
-                Time spent: {Math.floor(completionTime / 60)}m {completionTime % 60}s
-              </p>
-            )}
-          </div>
-        </div>
-
-        {/* Simulation iframe (read-only view) */}
-        {simulationUrl && (
-          <div className="border border-gray-200 rounded-lg overflow-hidden">
-            <div className="bg-gray-50 px-4 py-2 border-b border-gray-200">
-              <span className="text-sm text-gray-600">Simulation (Completed)</span>
-            </div>
-            <iframe
-              src={simulationUrl}
-              title="Interactive Simulation"
-              className="w-full h-96 border-0"
-              allowFullScreen
-            />
-          </div>
-        )}
-
-        {/* Accompanying Text Content */}
-        {textContent && (
-          <div className="bg-white border border-gray-200 rounded-lg p-6">
-            <h4 className="text-lg font-semibold text-gray-800 mb-4">
-              Additional Information
-            </h4>
-            <div className="prose max-w-none">
-              {textContent}
-            </div>
-          </div>
-        )}
-
-        {/* Action Buttons */}
-        <div className="flex justify-center space-x-4">
-          <button
-            onClick={() => window.history.back()}
-            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            Continue Learning
-          </button>
-          <button
-            onClick={() => {
-              setIsCompleted(false);
-              setCompletionTime(null);
-            }}
-            className="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
-          >
-            Replay Simulation
-          </button>
-        </div>
-      </div>
+      <LessonCompletionPanel
+        title="Simulation Completed"
+        description={`Great job. Your progress has been saved.${completionTime ? ` Time spent: ${Math.floor(completionTime / 60)}m ${completionTime % 60}s.` : ''}`}
+        nextLesson={completionResult?.next_lesson}
+        backLink={backLink}
+        backLabel={backLinkLabel}
+        secondaryActionLabel="Replay Simulation"
+        onSecondaryAction={() => {
+          setIsCompleted(false);
+          setCompletionTime(null);
+          setCompletionResult(null);
+        }}
+      />
     );
   }
 
@@ -177,9 +139,10 @@ const SimulationView = ({ lessonId, simulationUrl, textContent, onComplete }) =>
       <div className="text-center">
         <button
           onClick={handleSimulationComplete}
+          disabled={isSubmitting}
           className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
         >
-          Mark as Complete
+          {isSubmitting ? 'Saving...' : 'Mark as Complete'}
         </button>
         <p className="text-sm text-gray-600 mt-2">
           Click this button when you've finished the simulation

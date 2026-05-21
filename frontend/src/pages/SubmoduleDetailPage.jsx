@@ -34,8 +34,8 @@ const SubmoduleDetailPage = () => {
   if (!submodule) return <ErrorDisplay title="Not Found" message="Submodule not found." />;
 
   return (
-    <div className="p-8">
-      <h1 className="mb-2 text-4xl font-bold">{submodule.title}</h1>
+    <div className="p-4 sm:p-6 lg:p-8">
+      <h1 className="mb-2 text-2xl sm:text-3xl lg:text-4xl font-bold">{submodule.title}</h1>
       <p className="mb-10 text-lg text-gray-600">{submodule.description}</p>
 
       <div className="bg-white rounded-lg shadow-md overflow-hidden">

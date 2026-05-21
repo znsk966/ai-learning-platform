@@ -230,9 +230,9 @@ const AITutorView = ({ lessonId, lessonTitle, initialPrompt, aiConfig, backLink,
   }
 
   return (
-    <div className="flex flex-col h-[600px] bg-white border border-gray-200 rounded-lg">
+    <div className="flex flex-col h-[calc(100dvh-9.5rem)] sm:h-[calc(100dvh-10.5rem)] min-h-[300px] bg-white border border-gray-200 rounded-lg">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gray-50 rounded-t-lg">
+      <div className="flex items-center justify-between p-3 border-b border-gray-200 bg-gray-50 rounded-t-lg">
         <div className="flex-1">
           <h3 className="text-lg font-semibold text-gray-800">AI Tutor</h3>
           <p className="text-sm text-gray-600">Ask me anything about this lesson</p>
@@ -243,7 +243,7 @@ const AITutorView = ({ lessonId, lessonTitle, initialPrompt, aiConfig, backLink,
           )}
           {/* Usage Info */}
           {usageInfo && (
-            <div className="mt-2 flex items-center gap-4 text-xs text-gray-600">
+            <div className="mt-1 hidden lg:flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-600">
               <span>
                 💬 Chats: {usageInfo.chats_used || 0} / {usageInfo.chats_remaining === 'unlimited' ? '∞' : usageInfo.chat_limit || usageInfo.chats_remaining || 'N/A'}
               </span>
@@ -263,14 +263,14 @@ const AITutorView = ({ lessonId, lessonTitle, initialPrompt, aiConfig, backLink,
       </div>
 
       {/* Messages Container */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div className="flex-1 min-h-0 overflow-y-auto p-4 space-y-4">
         {messages.map((message) => (
           <div
             key={message.id}
             className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
           >
             <div
-              className={`max-w-[80%] rounded-lg px-4 py-2 ${
+              className={`max-w-[90%] sm:max-w-[80%] lg:max-w-[70%] rounded-lg px-4 py-2 ${
                 message.type === 'user'
                   ? 'bg-blue-600 text-white'
                   : message.type === 'error'
@@ -312,14 +312,34 @@ const AITutorView = ({ lessonId, lessonTitle, initialPrompt, aiConfig, backLink,
         </div>
       )}
 
+      {/* Subscription Notice */}
+      {subscriptionError && (
+        <div className="px-3 sm:px-4 pb-2">
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+            <div className="flex items-center gap-2">
+              <span className="text-yellow-600 flex-shrink-0">⚠️</span>
+              <p className="text-yellow-800 text-sm font-medium flex-1">
+                {subscriptionError}
+              </p>
+            </div>
+            <Link
+              to="/subscription"
+              className="inline-block mt-2 px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white text-sm font-medium rounded-lg transition-colors"
+            >
+              View Subscription Plans →
+            </Link>
+          </div>
+        </div>
+      )}
+
       {/* Input Form */}
-      <div className="p-4 border-t border-gray-200">
+      <div className="p-3 sm:p-4 border-t border-gray-200">
         <form onSubmit={handleSendMessage} className="flex space-x-2">
           <div className="flex-1">
             <textarea
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
-              onKeyPress={handleKeyPress}
+              onKeyDown={handleKeyPress}
               placeholder="Type your question here..."
               className="w-full px-3 py-2 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               rows="2"
@@ -329,7 +349,7 @@ const AITutorView = ({ lessonId, lessonTitle, initialPrompt, aiConfig, backLink,
           <button
             type="submit"
             disabled={!inputMessage.trim() || isLoading}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+            className={`px-4 py-2.5 sm:py-2 min-w-[44px] min-h-[44px] rounded-lg font-medium transition-colors flex items-center justify-center ${
               !inputMessage.trim() || isLoading
                 ? 'bg-gray-300 cursor-not-allowed'
                 : 'bg-blue-600 hover:bg-blue-700 text-white'
@@ -343,53 +363,25 @@ const AITutorView = ({ lessonId, lessonTitle, initialPrompt, aiConfig, backLink,
           </button>
         </form>
         
-        {/* Help text */}
-        <div className="mt-2 text-xs text-gray-500">
-          Press Enter to send, Shift+Enter for new line
-        </div>
-
-        <div className="mt-4 flex items-center justify-between gap-4 flex-wrap">
-          <p className="text-sm text-gray-600">
-            Mark this lesson complete when you are done working with the tutor.
+        <div className="mt-2 flex items-center justify-end sm:justify-between gap-3">
+          <p className="text-xs text-gray-500 hidden sm:block">
+            Enter to send · Shift+Enter for new line
           </p>
           <button
             type="button"
             onClick={handleComplete}
             disabled={isCompleting}
-            className={`px-5 py-2 rounded-lg font-medium transition-colors ${
+            className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
               isCompleting
                 ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                 : 'bg-green-600 hover:bg-green-700 text-white'
             }`}
           >
-            {isCompleting ? 'Saving...' : 'Mark as Complete'}
+            {isCompleting ? 'Saving...' : 'Mark Complete'}
           </button>
         </div>
       </div>
 
-      {/* Subscription Error / Upgrade Notice */}
-      {subscriptionError && (
-        <div className="px-4 pb-4">
-          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <div className="flex items-center space-x-2 mb-2">
-                  <span className="text-yellow-600">⚠️</span>
-                  <p className="text-yellow-800 text-sm font-medium">
-                    {subscriptionError}
-                  </p>
-                </div>
-                <Link
-                  to="/subscription"
-                  className="inline-block mt-2 px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white text-sm font-medium rounded-lg transition-colors"
-                >
-                  View Subscription Plans →
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

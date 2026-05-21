@@ -147,7 +147,7 @@ const AuthPage = () => {
       <AuthIllustration isLoginView={isLoginView} />
 
       {/* Right side: Form */}
-      <div className="flex flex-col justify-center items-center w-full lg:w-1/2 p-8 bg-white">
+      <div className="flex flex-col justify-center items-center w-full lg:w-1/2 p-4 sm:p-6 lg:p-8 bg-white">
           <div className="w-full max-w-md mx-auto">
           <div className="mb-6 flex items-center justify-between">
             <Link to="/" className="text-sm font-medium text-gray-500 transition-colors hover:text-blue-600">
@@ -159,11 +159,11 @@ const AuthPage = () => {
           </div>
 
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">{isLoginView ? 'Sign in to continue learning' : 'Create your account'}</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">{isLoginView ? 'Sign in to continue learning' : 'Create your account'}</h1>
             <p className="mt-2 text-gray-500">{isLoginView ? 'Open your courses, lessons, and saved progress.' : 'Unlock course chapters, lessons, and full blog content.'}</p>
               </div>
 
-          <div className="rounded-3xl border border-gray-100 bg-white p-8 shadow-xl shadow-blue-100/20">
+          <div className="rounded-3xl border border-gray-100 bg-white p-6 sm:p-8 shadow-xl shadow-blue-100/20">
                   {stateMessage && (
                     <p className={`mb-4 rounded-2xl px-4 py-3 text-sm font-medium ${
                       stateMessageType === 'info'

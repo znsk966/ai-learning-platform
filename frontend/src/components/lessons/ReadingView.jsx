@@ -141,13 +141,15 @@ const ReadingView = ({
               <button
                 key={index}
                 onClick={() => goToStep(index)}
-                className={`w-2 h-2 rounded-full transition-all ${
+                className={`p-2 -m-1 rounded-full`}
+                aria-label={`Go to step ${index + 1}`}
+              >
+                <span className={`block w-2.5 h-2.5 rounded-full transition-all ${
                   index === currentStep
                     ? 'bg-blue-600 w-8'
                     : 'bg-gray-300 hover:bg-gray-400'
-                }`}
-                aria-label={`Go to step ${index + 1}`}
-              />
+                }`} />
+              </button>
             ))}
           </div>
         </div>
@@ -163,7 +165,7 @@ const ReadingView = ({
       )}
 
       {/* Content */}
-      <article className="prose prose-lg prose-slate max-w-none
+      <article className="prose prose-base sm:prose-lg prose-slate max-w-none
         prose-headings:font-bold prose-headings:text-gray-900 prose-headings:mt-8 prose-headings:mb-4
         prose-h1:text-3xl prose-h1:border-b prose-h1:border-gray-200 prose-h1:pb-3
         prose-h2:text-2xl prose-h2:mt-8 prose-h2:mb-4
@@ -216,7 +218,7 @@ const ReadingView = ({
           <button
             onClick={prevStep}
             disabled={currentStep === 0}
-            className={`flex items-center px-6 py-2 rounded-lg font-medium transition-colors ${
+            className={`flex items-center px-4 py-2.5 sm:px-6 sm:py-2 rounded-lg font-medium transition-colors ${
               currentStep === 0
                 ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                 : 'bg-blue-600 text-white hover:bg-blue-700'
@@ -236,7 +238,7 @@ const ReadingView = ({
             <button
               onClick={handleComplete}
               disabled={isCompleting}
-              className={`flex items-center px-6 py-2 rounded-lg font-medium transition-colors ${
+              className={`flex items-center px-4 py-2.5 sm:px-6 sm:py-2 rounded-lg font-medium transition-colors ${
                 isCompleting
                   ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                   : 'bg-green-600 text-white hover:bg-green-700'
@@ -248,7 +250,7 @@ const ReadingView = ({
             <button
               onClick={nextStep}
               disabled={currentStep === steps.length - 1}
-              className={`flex items-center px-6 py-2 rounded-lg font-medium transition-colors ${
+              className={`flex items-center px-4 py-2.5 sm:px-6 sm:py-2 rounded-lg font-medium transition-colors ${
                 currentStep === steps.length - 1
                   ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                   : 'bg-blue-600 text-white hover:bg-blue-700'
@@ -268,7 +270,7 @@ const ReadingView = ({
           <button
             onClick={handleComplete}
             disabled={isCompleting}
-            className={`px-6 py-2 rounded-lg font-medium transition-colors ${
+            className={`px-4 py-2.5 sm:px-6 sm:py-2 rounded-lg font-medium transition-colors ${
               isCompleting
                 ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                 : 'bg-green-600 text-white hover:bg-green-700'

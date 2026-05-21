@@ -11,7 +11,9 @@
       "Bash(DJANGO_SETTINGS_MODULE=backend.test_settings python manage.py test payments --verbosity=1)",
       "Bash(DJANGO_SETTINGS_MODULE=backend.test_settings python manage.py test payments.tests.LemonSqueezyCheckoutTest.test_checkout_creates_pending_transaction --verbosity=2)",
       "Bash(DJANGO_SETTINGS_MODULE=backend.test_settings python -c \":*)",
-      "Bash(npm run:*)"
+      "Bash(npm run:*)",
+      "Bash(grep -E \"\\\\.py$|manage\")",
+      "Bash(wc -l /c/Users/Elena/Python Projects/ai-powered-learning/*/*.py)"
     ]
   }
 }

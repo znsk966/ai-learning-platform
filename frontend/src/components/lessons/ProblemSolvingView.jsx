@@ -156,7 +156,7 @@ const ProblemSolvingView = ({ lessonId, problemContent, backLink, backLinkLabel 
   return (
     <div className="space-y-6">
       {/* Problem Header */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 sm:p-6">
         <h3 className="text-lg font-semibold text-blue-800 mb-2">
           Problem Solving Exercise
         </h3>
@@ -171,7 +171,7 @@ const ProblemSolvingView = ({ lessonId, problemContent, backLink, backLinkLabel 
 
       {/* Problem Statement */}
       {problemData.problem && (
-        <div className="bg-white border border-gray-200 rounded-lg p-6">
+        <div className="bg-white border border-gray-200 rounded-lg p-4 sm:p-6">
           <h4 className="text-lg font-semibold text-gray-800 mb-4">
             Problem
           </h4>
@@ -182,7 +182,7 @@ const ProblemSolvingView = ({ lessonId, problemContent, backLink, backLinkLabel 
       )}
 
       {/* Current Step */}
-      <div className="bg-white border border-gray-200 rounded-lg p-6">
+      <div className="bg-white border border-gray-200 rounded-lg p-4 sm:p-6">
         <div className="flex items-center justify-between mb-4">
           <h4 className="text-lg font-semibold text-gray-800">
             Step {currentStep + 1}
@@ -240,7 +240,7 @@ const ProblemSolvingView = ({ lessonId, problemContent, backLink, backLinkLabel 
           <button
             onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
             disabled={currentStep === 0}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+            className={`px-4 py-2.5 sm:py-2 rounded-lg font-medium transition-colors ${
               currentStep === 0
                 ? 'bg-gray-300 cursor-not-allowed'
                 : 'bg-gray-600 hover:bg-gray-700 text-white'
@@ -251,7 +251,7 @@ const ProblemSolvingView = ({ lessonId, problemContent, backLink, backLinkLabel 
 
           <button
             onClick={() => handleStepComplete(currentStep)}
-            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+            className="px-4 py-2.5 sm:px-6 sm:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
           >
             {currentStep === problemData.steps.length - 1 ? 'Complete Problem' : 'Next Step'}
           </button>

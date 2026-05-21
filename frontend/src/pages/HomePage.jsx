@@ -84,7 +84,7 @@ const HomePage = () => {
             </div>
           </div>
 
-          <div className="relative">
+          <div className="relative overflow-hidden">
             <div className="absolute -left-8 top-10 h-28 w-28 rounded-full bg-blue-200/60 blur-3xl" />
             <div className="absolute -right-10 bottom-4 h-36 w-36 rounded-full bg-cyan-200/60 blur-3xl" />
 

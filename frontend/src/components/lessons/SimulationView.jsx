@@ -100,7 +100,7 @@ const SimulationView = ({ lessonId, simulationUrl, textContent, backLink, backLi
   return (
     <div className="space-y-6">
       {/* Simulation Instructions */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 sm:p-6">
         <h3 className="text-lg font-semibold text-blue-800 mb-2">
           Interactive Simulation
         </h3>
@@ -117,7 +117,7 @@ const SimulationView = ({ lessonId, simulationUrl, textContent, backLink, backLi
       {/* Simulation iframe */}
       <div className="border border-gray-200 rounded-lg overflow-hidden bg-white">
         {isLoading && (
-          <div className="flex items-center justify-center h-96 bg-gray-50">
+          <div className="flex items-center justify-center h-64 sm:h-80 md:h-96 bg-gray-50">
             <div className="text-center">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
               <p className="text-gray-600">Loading simulation...</p>
@@ -128,7 +128,7 @@ const SimulationView = ({ lessonId, simulationUrl, textContent, backLink, backLi
         <iframe
           src={simulationUrl}
           title="Interactive Simulation"
-          className={`w-full h-96 border-0 ${isLoading ? 'hidden' : ''}`}
+          className={`w-full h-64 sm:h-80 md:h-96 border-0 ${isLoading ? 'hidden' : ''}`}
           onLoad={handleIframeLoad}
           onError={handleIframeError}
           allowFullScreen
@@ -151,7 +151,7 @@ const SimulationView = ({ lessonId, simulationUrl, textContent, backLink, backLi
 
       {/* Accompanying Text Content */}
       {textContent && (
-        <div className="bg-white border border-gray-200 rounded-lg p-6">
+        <div className="bg-white border border-gray-200 rounded-lg p-4 sm:p-6">
           <h4 className="text-lg font-semibold text-gray-800 mb-4">
             Additional Information
           </h4>

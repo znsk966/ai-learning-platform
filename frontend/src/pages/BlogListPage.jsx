@@ -52,9 +52,9 @@ const BlogListPage = () => {
   };
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
+    <div className="p-4 sm:p-6 lg:p-8 bg-gray-50 min-h-screen">
       <div className="max-w-5xl mx-auto">
-        <h1 className="text-4xl font-bold text-gray-800 mb-2">Blog</h1>
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 mb-2">Blog</h1>
         <p className="text-gray-600 mb-8">{isAuthenticated ? 'Insights, tutorials, and updates from our team.' : 'Browse blog titles as a guest. Create an account to read full articles.'}</p>
 
         {!isAuthenticated && (

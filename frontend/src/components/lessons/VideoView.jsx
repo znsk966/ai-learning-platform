@@ -113,7 +113,7 @@ const VideoView = ({ lessonId, url, textContent, bunnyEmbedUrl, backLink, backLi
         <div className="mb-8 rounded-lg overflow-hidden shadow-lg bg-gray-900">
           <div className="relative" style={{ paddingBottom: '56.25%' }}> {/* 16:9 aspect ratio */}
             {hasError ? (
-              <div className="absolute inset-0 flex items-center justify-center bg-gray-800 text-white p-8">
+              <div className="absolute inset-0 flex items-center justify-center bg-gray-800 text-white p-4 sm:p-8">
                 <div className="text-center">
                   <svg className="w-16 h-16 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
@@ -205,7 +205,7 @@ const VideoView = ({ lessonId, url, textContent, bunnyEmbedUrl, backLink, backLi
           </div>
         </div>
       ) : (
-        <div className="mb-8 rounded-lg bg-yellow-50 border border-yellow-200 p-6">
+        <div className="mb-8 rounded-lg bg-yellow-50 border border-yellow-200 p-4 sm:p-6">
           <p className="text-yellow-800">
             <strong>No video URL provided.</strong> This lesson should include a video, but no video URL was found.
           </p>
@@ -234,7 +234,7 @@ const VideoView = ({ lessonId, url, textContent, bunnyEmbedUrl, backLink, backLi
             type="button"
             onClick={handleComplete}
             disabled={!isReady || isCompleting}
-            className={`px-6 py-2 rounded-lg font-medium transition-colors ${
+            className={`px-4 py-2.5 sm:px-6 sm:py-2 rounded-lg font-medium transition-colors ${
               !isReady || isCompleting
                 ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                 : 'bg-green-600 text-white hover:bg-green-700'

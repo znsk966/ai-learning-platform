@@ -41,7 +41,7 @@ const BlogDetailPage = () => {
 
   if (error) {
     return (
-      <div className="p-8">
+      <div className="p-4 sm:p-6 lg:p-8">
         <div className="max-w-3xl mx-auto bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg">
           {error}
         </div>
@@ -54,7 +54,7 @@ const BlogDetailPage = () => {
   const contentLocked = post.is_premium && post.content === null;
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
+    <div className="p-4 sm:p-6 lg:p-8 bg-gray-50 min-h-screen">
       <div className="max-w-3xl mx-auto">
         <Link to="/blog" className="text-blue-600 hover:text-blue-700 text-sm mb-6 inline-block">
           &larr; Back to Blog

@@ -92,9 +92,9 @@ const SubscriptionPage = () => {
   if (error) return <ErrorDisplay title="Error" message={error} onRetry={fetchData} />;
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
+    <div className="p-4 sm:p-6 lg:p-8 bg-gray-50 min-h-screen">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl font-bold text-gray-800 mb-2">Subscription Management</h1>
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 mb-2">Subscription Management</h1>
         <p className="text-gray-600 mb-8">Manage your AI Tutor subscription and usage</p>
 
         {/* Current Subscription */}

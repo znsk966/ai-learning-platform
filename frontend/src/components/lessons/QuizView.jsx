@@ -147,9 +147,9 @@ const QuizView = ({ lessonId, onQuizComplete }) => {
     return (
       <div className="space-y-6 min-h-screen">
         {/* Results Header */}
-        <div className={`p-6 rounded-lg border-2 ${
-          results.passed 
-            ? 'bg-green-50 border-green-200' 
+        <div className={`p-4 sm:p-6 rounded-lg border-2 ${
+          results.passed
+            ? 'bg-green-50 border-green-200'
             : 'bg-red-50 border-red-200'
         }`}>
           <div className="text-center">
@@ -266,7 +266,7 @@ const QuizView = ({ lessonId, onQuizComplete }) => {
   return (
     <div className="space-y-6">
       {/* Quiz Header */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 sm:p-6">
         <h2 className="text-2xl font-bold text-gray-800 mb-2">{quiz.title}</h2>
         <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
           <span>Question {currentQuestionIndex + 1} of {quiz.questions.length}</span>
@@ -287,7 +287,7 @@ const QuizView = ({ lessonId, onQuizComplete }) => {
       </div>
 
       {/* Current Question */}
-      <div className="bg-white border border-gray-200 rounded-lg p-6">
+      <div className="bg-white border border-gray-200 rounded-lg p-4 sm:p-6">
         <h3 className="text-xl font-medium text-gray-800 mb-6">
           Question {currentQuestionIndex + 1}: {currentQuestion.question_text}
         </h3>
@@ -310,7 +310,7 @@ const QuizView = ({ lessonId, onQuizComplete }) => {
                 onChange={() => handleAnswerSelect(currentQuestion.id, choice.id)}
                 className="sr-only"
               />
-              <div className={`w-5 h-5 border-2 rounded-full mr-4 flex items-center justify-center ${
+              <div className={`w-6 h-6 sm:w-5 sm:h-5 border-2 rounded-full mr-4 flex items-center justify-center ${
                 answers[currentQuestion.id] === choice.id
                   ? 'border-blue-500 bg-blue-500'
                   : 'border-gray-300'
@@ -337,7 +337,7 @@ const QuizView = ({ lessonId, onQuizComplete }) => {
         <button
           onClick={handlePreviousQuestion}
           disabled={currentQuestionIndex === 0}
-          className={`px-6 py-2 rounded-lg font-medium transition-colors ${
+          className={`px-4 py-2.5 sm:px-6 sm:py-2 rounded-lg font-medium transition-colors ${
             currentQuestionIndex === 0
               ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
               : 'bg-gray-600 hover:bg-gray-700 text-white'
@@ -351,7 +351,7 @@ const QuizView = ({ lessonId, onQuizComplete }) => {
             <button
               onClick={handleNextQuestion}
               disabled={!canProceed}
-              className={`px-6 py-2 rounded-lg font-medium transition-colors ${
+              className={`px-4 py-2.5 sm:px-6 sm:py-2 rounded-lg font-medium transition-colors ${
                 !canProceed
                   ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                   : 'bg-blue-600 hover:bg-blue-700 text-white'
@@ -388,15 +388,17 @@ const QuizView = ({ lessonId, onQuizComplete }) => {
           <button
             key={index}
             onClick={() => setCurrentQuestionIndex(index)}
-            className={`w-3 h-3 rounded-full transition-colors ${
+            className="p-1.5 rounded-full"
+            title={`Question ${index + 1}`}
+          >
+            <span className={`block w-3 h-3 rounded-full transition-colors ${
               index === currentQuestionIndex
                 ? 'bg-blue-600'
                 : answers[quiz.questions[index].id]
                 ? 'bg-green-500'
                 : 'bg-gray-300'
-            }`}
-            title={`Question ${index + 1}`}
-          />
+            }`} />
+          </button>
         ))}
       </div>
     </div>

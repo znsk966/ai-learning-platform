@@ -68,15 +68,15 @@ const ModuleDetailPage = () => {
   const canAccess = module.can_access || module.is_enrolled;
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-6 lg:p-8">
       {/* Header with Pricing and Enrollment Status */}
       <div className="mb-8">
-        <div className="flex items-start justify-between mb-4">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
           <div className="flex-1">
-            <h1 className="mb-2 text-4xl font-bold">{module.title}</h1>
+            <h1 className="mb-2 text-2xl sm:text-3xl lg:text-4xl font-bold">{module.title}</h1>
             <p className="text-lg text-gray-600">{module.description}</p>
           </div>
-          <div className="ml-4 flex items-center gap-4">
+          <div className="flex items-center gap-4">
             <EnrollmentStatus
               isEnrolled={module.is_enrolled}
               isFree={module.is_free}

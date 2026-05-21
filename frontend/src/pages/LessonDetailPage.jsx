@@ -98,9 +98,11 @@ const LessonDetailPage = () => {
   if (error) return <ErrorDisplay title="Error Loading Lesson" message={error} onRetry={fetchLesson} />;
   if (!lesson) return <ErrorDisplay title="Not Found" message="Lesson not found." />;
 
+  const isAI = lesson.lesson_type === 'AI';
+
   return (
     <div className="max-w-5xl mx-auto">
-      <div className="mb-6">
+      <div className={isAI ? 'mb-1' : 'mb-6'}>
         <Link to={submoduleId ? `/submodule/${submoduleId}` : `/modules/${moduleId}`} className="inline-flex items-center text-blue-600 hover:text-blue-700 hover:underline transition-colors">
           <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -109,9 +111,11 @@ const LessonDetailPage = () => {
         </Link>
       </div>
 
-      <h1 className="mb-8 text-4xl font-bold text-gray-800 border-b border-gray-200 pb-4">{lesson.title}</h1>
+      {!isAI && (
+        <h1 className="mb-8 pb-4 text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 border-b border-gray-200">{lesson.title}</h1>
+      )}
       
-      <div className="bg-white rounded-lg shadow-sm p-8">
+      <div className={isAI ? '' : 'bg-white rounded-lg shadow-sm p-4 sm:p-6 lg:p-8'}>
         {renderLessonContent()}
       </div>
 

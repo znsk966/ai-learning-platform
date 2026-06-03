@@ -73,7 +73,8 @@ class QuestionResultSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Question
-        fields = ['id', 'question_text', 'question_type', 'choices', 'user_answer']
+        # 'explanation' is included here (results only), never in QuestionSerializer (pre-answer).
+        fields = ['id', 'question_text', 'question_type', 'choices', 'user_answer', 'explanation']
 
 
 class QuizAttemptResultSerializer(serializers.ModelSerializer):

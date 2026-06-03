@@ -226,6 +226,18 @@ const QuizView = ({ lessonId, onQuizComplete }) => {
                       </div>
                     ))}
                   </div>
+
+                  {/* Explanation — rendered only if the backend included one.
+                      Guarded so a deploy-timing gap (old backend, new frontend)
+                      can never throw. */}
+                  {question.explanation && (
+                    <div className="ml-6 mt-3 p-3 rounded-lg bg-blue-50 border border-blue-200">
+                      <p className="text-sm font-medium text-blue-800 mb-1">Why</p>
+                      <div className="prose prose-sm max-w-none text-gray-700">
+                        {question.explanation}
+                      </div>
+                    </div>
+                  )}
                 </div>
               );
             })

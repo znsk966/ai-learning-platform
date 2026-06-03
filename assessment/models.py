@@ -35,6 +35,11 @@ class Question(models.Model):
     question_text = models.TextField()
     question_type = models.CharField(max_length=2, choices=QuestionType.choices, default=QuestionType.MULTIPLE_CHOICE)
     order = models.PositiveIntegerField(help_text="Order of the question in the quiz")
+    explanation = models.TextField(
+        blank=True,
+        default="",
+        help_text="Shown to the learner AFTER they submit an attempt — never in the pre-answer quiz payload."
+    )
 
     class Meta:
         ordering = ['order']

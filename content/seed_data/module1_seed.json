@@ -1,0 +1,385 @@
+{
+  "_meta": {
+    "description": "Seed data for the Agentic AI Management course. Maps to content.Module (course) -> content.SubModule -> content.Lesson, with assessment.Quiz/Question/AnswerChoice for QUIZ lessons. READ lessons: join text_content_steps with '\\n\\n---\\n\\n' into Lesson.text_content so the ReadingView paginates by step. passing_score is an integer percentage.",
+    "module_in_this_file": 1
+  },
+  "course": {
+    "title": "Agentic AI Management",
+    "description": "A self-paced course that takes managers from operating software to supervising AI agents — how agents work under the hood, how to govern them safely, and how to deploy a real workflow in their own team.",
+    "order": 10,
+    "price": "0.00",
+    "currency": "USD",
+    "is_premium_only": false,
+    "lemon_squeezy_variant_id": null,
+    "_note": "price / is_premium_only / lemon_squeezy_variant_id are placeholders — set these to your real pricing."
+  },
+  "submodules": [
+    {
+      "title": "Module 1: The New Mental Model — From Tool to Teammate",
+      "description": "Shift from operating deterministic software to supervising a probabilistic, semi-autonomous workforce. Three lessons, each followed by a knowledge check.",
+      "order": 1,
+      "lessons": [
+        {
+          "type": "READ",
+          "title": "Lesson 1.1 — The Age of Agents",
+          "order": 1,
+          "text_content_steps": [
+            "## From answering to acting\n\nFor most of computing history, software has been deterministic: you click a button and a defined thing happens, and you drive every step yourself. Agentic AI breaks that pattern. Instead of operating an application step by step, you state an outcome and a system plans and carries out the steps on your behalf. That single move — from operating software to delegating an outcome — is the whole shift this course is about.\n\nThe June 2026 GTC Taipei keynote, where Jensen Huang declared the \"age of agents\" and that \"useful AI has arrived,\" is a convenient marker for when this idea went mainstream. We use it as a doorway and then leave it behind: the concepts underneath don't depend on any one announcement.",
+            "## The harness model\n\nIt helps to picture an agent as two parts. The first is the **model** — the language model that reads, reasons, and writes. On its own, a model is like a capable intern sitting on their hands: ask a question, get an answer, but nothing happens in the world. The second part is the **harness** — the scaffolding around the model that turns thinking into doing. The harness gives the model a goal, a set of tools it can use (search the web, read a database, send a message), a working memory, and a loop that lets it act, look at the result, and try again.\n\nAn agent, in plain terms, is a model (or several) inside a harness that orchestrates it toward a goal.\n\n## A worked example\n\nTake one request: *\"Tell me how our top competitor changed its pricing last quarter.\"*\n\nA **chatbot** answers from what it already knows — which may be outdated or simply guessed. An **agent** treats the same sentence as a goal: it plans (find the competitor's pricing pages, pull current and historical prices, compare them), uses tools to gather the data, compiles the findings, and hands you a memo on the actual changes — and, if you allow it, drafts the email to your team.\n\nThe chatbot produces words; the agent produces work. That difference — action toward a goal — is the line everything else in this course sits on.",
+            "## Why the interface fades\n\nWhen work happens behind the scenes, the buttons and menus matter less. You stop operating an application and start delegating an outcome. This is why leaders increasingly describe what they want rather than clicking through how to get it — and why \"which screen do I use\" is slowly being replaced by \"what outcome do I want, and who (or what) do I trust to deliver it.\"\n\n## What this means for you\n\nYou are not here to build these systems; you are here to supervise them. Supervising something that acts is a fundamentally different job from using something that responds, and it is the job this course prepares you for. For now, lodge one idea firmly: an agent does not just answer — it acts, on your behalf, through tools, toward a goal.\n\n> **Misconception to bust** — \"Agentic AI is just a faster, smarter chatbot.\" The dividing line isn't speed or polish — it's action and autonomy. A chatbot returns text; an agent plans, uses tools, and changes the state of real systems.",
+            "## Key takeaways\n\n- An agent is a model inside a harness that plans and acts toward a goal using tools.\n- The core shift is from answering to acting — and from operating software to delegating outcomes.\n- Your role is supervisor, not builder.\n\n## Apply it — capstone worksheet, part 1\n\n**Your task:** In one short paragraph, describe a task in your work that today forces a person to chain several software steps together (open one system, copy something, check another, send a message, update a record). This becomes the **candidate workflow** you carry through the entire course.\n\n**Self-check — a good candidate is:**\n\n- multi-step (not a single click or a single question);\n- something you can describe as an outcome, not just an activity;\n- real enough that you would actually want it off your plate.\n\n**Model answer (for reference):** \"Each Monday someone pulls last week's support tickets from our help desk, tags each one by theme in a spreadsheet, counts the top three recurring issues, and writes a short summary email to the product lead. It takes about ninety minutes and is the same shape every week.\" That is multi-step, outcome-describable, and genuinely worth delegating — a strong candidate."
+          ],
+          "ai_tutor_initial_prompt": "You are an AI tutor inside a self-paced course on managing AI agents. This lesson, ‘The Age of Agents’, teaches that an agent is a language model inside a ‘harness’ that plans and acts toward a goal using tools; that the shift is from AI that answers to AI that acts, and from operating software to delegating outcomes; and that the learner’s role is supervisor, not builder. Help with plain, non-technical examples, keep answers short and concrete, and if they ask how to build agents, acknowledge it briefly but steer back to the supervisor’s perspective."
+        },
+        {
+          "type": "QUIZ",
+          "title": "Knowledge Check 1.1",
+          "order": 2,
+          "quiz": {
+            "title": "Knowledge Check — The Age of Agents",
+            "passing_score": 75,
+            "questions": [
+              {
+                "order": 1,
+                "type": "MC",
+                "question_text": "What best distinguishes an AI agent from a chatbot?",
+                "explanation": "The dividing line is action and autonomy — an agent acts on the world via tools toward a goal, while a chatbot returns text. Speed, model size, and where it runs are not the distinction.",
+                "choices": [
+                  {
+                    "answer_text": "It responds faster and with better formatting.",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "It plans and takes multi-step action toward a goal using tools.",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "It uses a larger language model.",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "It runs on cloud servers instead of your laptop.",
+                    "is_correct": false
+                  }
+                ]
+              },
+              {
+                "order": 2,
+                "type": "MC",
+                "question_text": "In the ‘harness’ model of an agent, what does the harness provide?",
+                "explanation": "The model supplies the reasoning and language; the harness is the scaffolding that turns thinking into doing — goal, tools, memory, and an act-evaluate-retry loop.",
+                "choices": [
+                  {
+                    "answer_text": "The ability to read and write language.",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "A goal, tools, working memory, and a loop to act and re-check.",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "The training data the model learned from.",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "A graphical user interface for the user.",
+                    "is_correct": false
+                  }
+                ]
+              },
+              {
+                "order": 3,
+                "type": "MC",
+                "question_text": "A manager’s primary role with agentic AI is best described as:",
+                "explanation": "This course takes a ‘supervisor, not builder’ stance: you delegate outcomes and govern the system rather than write it or operate it manually.",
+                "choices": [
+                  {
+                    "answer_text": "Building and coding the agents.",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Supervising agents and delegating outcomes.",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "Avoiding agents until they are fully reliable.",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Operating the underlying software step by step.",
+                    "is_correct": false
+                  }
+                ]
+              },
+              {
+                "order": 4,
+                "type": "MC",
+                "question_text": "Given the request ‘Summarize how our competitor changed its pricing last quarter,’ which behavior is agentic?",
+                "explanation": "Treating the sentence as a goal and using tools to gather and compile real data is agentic behavior — producing work, not just words.",
+                "choices": [
+                  {
+                    "answer_text": "Answering from what the model already knows.",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Refusing because pricing changes constantly.",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Gathering current and past prices via tools, then compiling the changes.",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "Asking the user to paste in the pricing data first.",
+                    "is_correct": false
+                  }
+                ]
+              }
+            ]
+          },
+          "ai_tutor_initial_prompt": "You are an AI tutor helping with the knowledge check for ‘The Age of Agents’. Do not simply reveal the correct option; ask guiding questions and explain the underlying concept — an agent differs from a chatbot by action and autonomy (not speed), the harness supplies the goal, tools, memory and the act-and-recheck loop, and the learner’s role is supervisor."
+        },
+        {
+          "type": "READ",
+          "title": "Lesson 1.2 — Chatbots vs. Agents — The Boundary",
+          "order": 3,
+          "text_content_steps": [
+            "## The autonomy spectrum\n\nNot everything that uses AI is an agent, and not every agent is equally autonomous. The most useful way to hold this is as a spectrum from passive to autonomous:\n\n- **Assistant** — responds when asked. Prompt in, answer out (a chatbot answering a question).\n- **Copilot** — works alongside you within a task, drafting and suggesting, but you drive and approve each move (AI that drafts an email for you to send).\n- **Agent** — given a goal, plans and executes multiple steps using tools, with limited or no step-by-step input (the pricing-research agent from Lesson 1.1).\n- **Multi-agent system** — several agents coordinate; one may plan and delegate to others (a \"research team\" where one gathers, one analyzes, one writes).\n\nAs you move rightward, autonomy and capability rise — and so does the supervision you owe the system. The spectrum is the single most useful lens in this lesson: before you trust any tool, locate it on this line.",
+            "## What \"goal-oriented\" actually requires\n\nFor a system to act as an agent rather than merely talk, four things must be present:\n\n1. a **goal** (what \"done\" looks like),\n2. **tools** (the ability to act in the world),\n3. a way to **judge progress** (so it knows whether a step worked), and\n4. a **stopping condition** (so it knows when to quit).\n\nMiss any of these and you get trouble: no goal and it wanders; no stopping condition and it loops forever or quits too early. These four are also a handy checklist when a vendor calls something an \"agent.\"\n\n## Why \"uses an LLM\" is not \"is an agent\"\n\nA great deal of software now has a language model somewhere inside, and most of it is still an assistant or a copilot — it suggests, you act. That is not a criticism; passive tools are often exactly the right choice. But it means the word \"AI\" on a product tells you almost nothing about how much autonomy you are taking on. The supervisor's question is never \"does it use AI\" but \"how far right on the spectrum is it, and am I governing it accordingly?\"",
+            "## One task, walked up the spectrum\n\nConsider onboarding a new client.\n\n- As an **assistant**, you ask \"what should be in a welcome email?\" and get tips.\n- As a **copilot**, it drafts the welcome email and you edit and send it.\n- As an **agent**, you say \"onboard this client\" and it drafts the email, creates the account, schedules the kickoff, and files the paperwork — pausing only where you told it to.\n\nSame task, three very different levels of trust and risk. Naming which level you are actually deploying is the first act of supervision.\n\n> **Misconception to bust** — \"If it uses a large language model, it's an agent.\" Most LLM features are passive assistants or copilots. Agency requires multi-step action toward a goal — the model is necessary but nowhere near sufficient.",
+            "## Key takeaways\n\n- Autonomy is a spectrum: assistant → copilot → agent → multi-agent system.\n- Agency requires a goal, tools, a way to judge progress, and a stopping condition.\n- \"Uses AI\" ≠ \"is an agent\"; locate any tool on the spectrum before you trust it.\n\n## Apply it — capstone worksheet, part 2\n\n**Your task:** List five tools or features you already use at work. Place each one on the autonomy spectrum (assistant / copilot / agent / multi-agent), and flag the ones you would feel nervous letting act without you watching.\n\n**Self-check:** for any tool you labeled \"agent,\" can you name its goal, its tools, and what would make it stop? If you can't, it may be a copilot you're over-trusting — or an agent you don't yet understand well enough to supervise.\n\n**Model answer (one row):** \"Email draft suggestions — copilot: it proposes text, I always send. Comfortable.\" Versus: \"Auto-scheduling tool that books meetings from my inbox — agent: goal = fill my calendar, tool = calendar access, stop = when the request is booked. Nervous, because it acts in my real calendar without me seeing each step.\""
+          ],
+          "ai_tutor_initial_prompt": "You are an AI tutor for the lesson ‘Chatbots vs. Agents — The Boundary’. Key ideas: the autonomy spectrum (assistant → copilot → agent → multi-agent system); the four things agency requires (a goal, tools, a way to judge progress, and a stopping condition); and that ‘uses an LLM’ is not the same as ‘is an agent’. Help the learner place their own tools on the spectrum and reason about how much supervision each level deserves."
+        },
+        {
+          "type": "QUIZ",
+          "title": "Knowledge Check 1.2",
+          "order": 4,
+          "quiz": {
+            "title": "Knowledge Check — Chatbots vs. Agents — The Boundary",
+            "passing_score": 75,
+            "questions": [
+              {
+                "order": 1,
+                "type": "MC",
+                "question_text": "Which of these is best classified as a copilot rather than an agent?",
+                "explanation": "A copilot drafts and suggests while you drive and approve each move. The others take multi-step action with little or no step-by-step input — that’s agent territory.",
+                "choices": [
+                  {
+                    "answer_text": "A system that, given ‘onboard this client,’ creates the account and files paperwork on its own.",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "A tool that drafts an email which you then edit and send.",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "A research team of AIs that divides up and completes a report.",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "A scheduler that books meetings from your inbox without your input.",
+                    "is_correct": false
+                  }
+                ]
+              },
+              {
+                "order": 2,
+                "type": "MC",
+                "question_text": "Which of the following is NOT one of the four things a system needs to act as an agent?",
+                "explanation": "The four requirements are a goal, tools, a way to judge progress, and a stopping condition. A graphical interface is not required — in fact, agent work often happens with no interface at all.",
+                "choices": [
+                  {
+                    "answer_text": "A goal (what ‘done’ looks like).",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Tools to act in the world.",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "A graphical user interface.",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "A stopping condition.",
+                    "is_correct": false
+                  }
+                ]
+              },
+              {
+                "order": 3,
+                "type": "MC",
+                "question_text": "As you move rightward along the autonomy spectrum, what increases?",
+                "explanation": "More autonomy means more capability and more that can go wrong unattended — so the supervision burden rises in step with capability.",
+                "choices": [
+                  {
+                    "answer_text": "Only the system’s capability.",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Only the cost of running it.",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Both capability and the supervision you owe it.",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "Neither — the spectrum is just a naming convention.",
+                    "is_correct": false
+                  }
+                ]
+              },
+              {
+                "order": 4,
+                "type": "MC",
+                "question_text": "A tool contains a language model and answers questions, but never takes any action. It is best classified as:",
+                "explanation": "Answering questions without acting is the definition of an assistant — the leftmost, most passive point on the spectrum.",
+                "choices": [
+                  {
+                    "answer_text": "An agent.",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "A multi-agent system.",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "An assistant.",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "A copilot.",
+                    "is_correct": false
+                  }
+                ]
+              }
+            ]
+          },
+          "ai_tutor_initial_prompt": "You are an AI tutor helping with the knowledge check for ‘Chatbots vs. Agents’. Do not give answers outright; guide the learner to classify tools on the autonomy spectrum and to recall the four requirements for agency (goal, tools, progress judgement, stopping condition)."
+        },
+        {
+          "type": "READ",
+          "title": "Lesson 1.3 — The Psychology of AI Supervision",
+          "order": 5,
+          "text_content_steps": [
+            "## From executor to supervisor\n\nUntil now, your competence at work has likely come from doing: you know how to execute the task. Agentic AI asks you to shift from executor to supervisor — from doing the work to delegating it and verifying the result. This is the same shift a strong individual contributor makes when they become a manager, and the difficulty is the same: letting go of the doing while remaining fully accountable for the outcome. Recognizing that this is a mindset change, not just a tooling change, is half the battle.\n\n## Automation bias — the central danger\n\nThe most common and most costly mistake supervisors make with capable AI is **automation bias**: the tendency to trust an automated system more than the evidence warrants, especially when it sounds confident. A fluent, well-formatted, confident answer feels correct — but fluency is not accuracy. An agent can be completely wrong and completely confident at the same time, and the better its writing, the easier it is to wave through. This is why a wrong output in a professional tone is more dangerous than an obviously broken one: the broken one gets caught, the polished one slips through.",
+            "## Trust calibration\n\nThe antidote is neither suspicion of everything (which just recreates the manual work) nor blind trust (which is automation bias). It is **calibration**: match how much you trust an agent to how much it has actually proven, and to how reversible and high-stakes the task is.\n\nA useful rule of thumb: **autonomy is earned, not granted.** Start an agent on low-stakes, reversible work with tight checking; as it proves reliable, widen its leash. For irreversible or high-impact actions, keep a human gate no matter how reliable it has been — because the one time it is wrong is the time that matters. (You will design exactly these gates in Module 4.)",
+            "## The supervisor's discipline\n\nPut together, the discipline is simple to state and hard to practice: **trust, but verify — calibrated to risk.** Verify more where the action is irreversible, the stakes are high, or the agent is new. Verify less where mistakes are cheap and easily undone. The skill you build across this course is making that call deliberately rather than by gut feel — because gut feel, under a confident AI, reliably drifts toward over-trust.\n\n> **Misconception to bust** — \"More autonomy is always better.\" Autonomy should be earned incrementally and matched to the reversibility and stakes of the task. Granting full autonomy up front is how confident, wrong output causes expensive, irreversible mistakes.",
+            "## Key takeaways\n\n- The shift is executor → supervisor: delegate and verify while staying accountable.\n- Automation bias — over-trusting confident output — is the central risk; fluency is not accuracy.\n- Calibrate trust to proven reliability and to reversibility and stakes; autonomy is earned, not granted.\n\n## Apply it — capstone worksheet, part 3\n\n**Your task:** Name two tasks where you would be tempted to skip checking an agent's work, and for each, write down what would have to be true for skipping the check to be safe.\n\n**Self-check:** a safe \"skip\" usually requires that the task is low-stakes, easily reversible, and the agent has a track record on that exact task. If your justification is really just \"it sounds confident\" or \"it's usually right,\" that's automation bias talking — keep the check.\n\n**Model answer (one item):** \"Drafting first-pass meeting notes — I'd skip checking because it's low-stakes and fully reversible (anyone can correct them), and the agent has done it reliably for weeks. Safe to skip a line-by-line review, but I still skim before sharing externally.\""
+          ],
+          "ai_tutor_initial_prompt": "You are an AI tutor for the lesson ‘The Psychology of AI Supervision’. Key ideas: the shift from executor to supervisor; automation bias (over-trusting confident output — fluency is not accuracy); and trust calibration (autonomy is earned, not granted; keep a human gate on irreversible, high-impact actions). Help the learner spot automation bias in their own habits and calibrate trust to risk."
+        },
+        {
+          "type": "QUIZ",
+          "title": "Knowledge Check 1.3",
+          "order": 6,
+          "quiz": {
+            "title": "Knowledge Check — The Psychology of AI Supervision",
+            "passing_score": 75,
+            "questions": [
+              {
+                "order": 1,
+                "type": "MC",
+                "question_text": "Automation bias is best defined as:",
+                "explanation": "Automation bias is over-trusting automated output — especially confident-sounding output — beyond what the evidence supports. It is the central psychological risk for an AI supervisor.",
+                "choices": [
+                  {
+                    "answer_text": "The tendency of AI to automate too many tasks at once.",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Trusting an automated system more than the evidence warrants.",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "A preference for automated tools over manual ones.",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "The cost increase from running many agents.",
+                    "is_correct": false
+                  }
+                ]
+              },
+              {
+                "order": 2,
+                "type": "MC",
+                "question_text": "Why is a confidently-worded wrong answer especially dangerous?",
+                "explanation": "Polished, confident output slips past review more easily than obviously broken output — fluency is mistaken for correctness, which is exactly how automation bias causes harm.",
+                "choices": [
+                  {
+                    "answer_text": "It costs more tokens to produce.",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "It is more likely to be waved through, because fluency feels like accuracy.",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "It always indicates the agent is malfunctioning.",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "It cannot be detected by any review process.",
+                    "is_correct": false
+                  }
+                ]
+              },
+              {
+                "order": 3,
+                "type": "MC",
+                "question_text": "An agent has been reliable for months. It now proposes an irreversible, high-impact action. Best practice is to:",
+                "explanation": "Reversibility and stakes, not past reliability, govern irreversible high-impact actions. The one time it errs is the time that matters, so a human gate stays — a principle you’ll formalize in Module 4.",
+                "choices": [
+                  {
+                    "answer_text": "Let it proceed automatically, given its track record.",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Keep a human approval gate on the action regardless.",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "Reduce monitoring since it has earned trust.",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Stop using the agent entirely.",
+                    "is_correct": false
+                  }
+                ]
+              },
+              {
+                "order": 4,
+                "type": "MC",
+                "question_text": "‘Autonomy is earned, not granted’ means:",
+                "explanation": "Trust is calibrated to demonstrated reliability: start tight on low-stakes, reversible work and widen the leash as the agent proves itself — rather than granting broad autonomy up front.",
+                "choices": [
+                  {
+                    "answer_text": "Agents should be given full autonomy immediately to maximize value.",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Autonomy should never be given to any agent.",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "An agent’s freedom should widen as it proves reliable on lower-stakes work.",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "Only senior managers may grant autonomy.",
+                    "is_correct": false
+                  }
+                ]
+              }
+            ]
+          },
+          "ai_tutor_initial_prompt": "You are an AI tutor helping with the knowledge check for ‘The Psychology of AI Supervision’. Do not give answers outright; guide the learner to reason about automation bias and trust calibration, especially why irreversible high-impact actions keep a human gate regardless of past reliability."
+        }
+      ]
+    }
+  ]
+}

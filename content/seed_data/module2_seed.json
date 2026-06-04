@@ -1,0 +1,509 @@
+{
+  "_meta": {
+    "description": "Seed data for the Agentic AI Management course, Module 2. Same schema as module1_seed.json: course -> submodule -> lessons; READ lessons join text_content_steps with '\\n\\n---\\n\\n'; QUIZ lessons map to assessment.Quiz/Question/AnswerChoice. The course block is identical to Module 1 so the existing seed_agentic_course command ingests it unchanged.",
+    "module_in_this_file": 2
+  },
+  "course": {
+    "title": "Agentic AI Management",
+    "description": "A self-paced course that takes managers from operating software to supervising AI agents — how agents work under the hood, how to govern them safely, and how to deploy a real workflow in their own team.",
+    "order": 10,
+    "price": "0.00",
+    "currency": "USD",
+    "is_premium_only": false,
+    "lemon_squeezy_variant_id": null,
+    "_note": "price / is_premium_only / lemon_squeezy_variant_id are placeholders — set these in the admin panel once the whole course is seeded. Do not re-seed after pricing without re-applying the price."
+  },
+  "submodules": [
+    {
+      "title": "Module 2: Core Mechanics — How Agents Actually Work",
+      "description": "Open the hood: the loop every agent runs, how agents use tools, how their memory really works and where it fails, and what changes when several agents work together. Four lessons, each followed by a knowledge check.",
+      "order": 2,
+      "lessons": [
+        {
+          "type": "READ",
+          "title": "Lesson 2.1 — The Perceive–Reason–Act Loop",
+          "order": 1,
+          "text_content_steps": [
+            "## The loop in one picture\n\nIn Module 1 you saw that an agent acts toward a goal. This lesson opens the hood to show *how*. Almost every agent, however it is built, runs the same basic cycle: it **perceives** (takes in information), **reasons** (decides what to do next), and **acts** (does something through a tool) — then it looks at the result and goes around again. Perceive → reason → act → check → repeat, until the goal is met or it gives up.\n\nUnderstanding this loop is what lets you supervise an agent without reading its code. At any moment you can ask: which part of the loop is it in, and is that part trustworthy *here*?",
+            "## Perceive — taking in the situation\n\nThe loop starts with perception: the agent gathers what it needs. That might be your instruction, the contents of a document, the current state of a database, the result of a web search, or the output of its own previous step. Everything downstream depends on this. An agent reasoning over stale, incomplete, or wrong inputs will reason *confidently* toward a wrong answer. So the first supervisory question is always: what is it actually looking at?\n\n## Reason — turning a goal into a plan\n\nNext the agent reasons: it breaks the goal into steps and decides what to do first. Given \"compile last quarter's competitor pricing,\" it might plan: find the pricing pages → extract current prices → find historical prices → compare → write up. This decomposition is the plan, and a lot of quality (or failure) is decided here. A good plan reaches the goal; a flawed plan executes flawlessly toward the wrong place. The agent does not \"understand\" your intent — it works from the instruction as written, so an ambiguous goal yields a confident plan for the wrong thing.",
+            "## Act — using tools\n\nThen it acts, using a tool: it runs the search, reads the record, sends the message, writes the file. This is the only part of the loop that changes the world. Everything before it is thinking; the action is doing. That is why, as you will see in Module 4, the action step is where guardrails live — it is the moment an agent can actually help or actually do damage.\n\n## Evaluate and iterate\n\nAfter acting, a well-built agent evaluates: did that step work? Did the search return anything useful? Did the file save? Based on that it loops — adjusting the plan, retrying, or moving on — until it judges the goal met. This self-checking is what separates an agent from a simple script. It is also imperfect: the agent is grading its own homework, so it can wrongly decide it is finished, or loop endlessly convinced it is almost there.",
+            "## Where the loop breaks\n\nThree break points are worth knowing, because they map onto the three parts:\n\n- **Bad perception** — wrong or stale input, so garbage goes in.\n- **Bad plan** — the reasoning decomposes the goal incorrectly.\n- **Bad stop** — it quits too early with a half-answer, or never stops and burns time and money looping.\n\nWhen an agent's output is wrong, it is almost always traceable to one of these. You do not need to fix it yourself — but naming which part failed is how you give useful feedback or decide the task is not a fit.\n\n## What this means for you\n\nYou can supervise this loop without seeing the code. Ask: what is it looking at (perceive), does its plan match what I actually want (reason), and does it know when it is done (stop)? Those three questions are most of practical agent supervision.\n\n> **Misconception to bust** — \"The agent understands the goal the way I do.\" It optimizes the instruction it was *given*, not the intent in your head. An ambiguous goal produces a confident plan toward the wrong target.",
+            "## Key takeaways\n\n- Agents run a loop: perceive → reason → act → evaluate → repeat until done.\n- Only the **act** step changes the world; that is where guardrails belong.\n- Failures trace to bad input, a bad plan, or a bad stopping decision — naming which is the core of supervision.\n\n## Apply it — capstone worksheet, part 4\n\n**Your task:** Take your candidate workflow from Module 1 and write it as a perceive–reason–act loop. What does the agent **perceive** (which inputs and systems it reads), what is its **plan** (the steps), what **actions** does it take, and how would it know it is **done**? Circle the single step where a wrong move would be hardest to undo.\n\n**Self-check:** if you cannot name a clear \"done\" condition, that is a sign the task needs a tighter goal before it is safe to delegate.\n\n**Model answer (snippet):** For the Monday support-ticket summary — *perceive:* pull last week's tickets from the help desk; *reason:* group by theme, count, rank the top three; *act:* write the summary and (optionally) email the product lead; *done:* email drafted or sent with the top three themes. Hardest to undo: sending the email externally."
+          ],
+          "ai_tutor_initial_prompt": "You are an AI tutor for the lesson 'The Perceive–Reason–Act Loop'. Key ideas: every agent runs a loop — perceive (take in information), reason (turn the goal into a plan), act (use a tool, the only step that changes the world), then evaluate and repeat; and failures trace to one of three break points — bad input, a bad plan, or a bad stopping decision. Help the learner map their own workflow onto the loop and identify which step carries the most risk. Keep it concrete and non-technical."
+        },
+        {
+          "type": "QUIZ",
+          "title": "Knowledge Check 2.1",
+          "order": 2,
+          "quiz": {
+            "title": "Knowledge Check — The Perceive–Reason–Act Loop",
+            "passing_score": 75,
+            "questions": [
+              {
+                "order": 1,
+                "type": "MC",
+                "question_text": "What is the correct order of the agent loop?",
+                "explanation": "An agent first perceives (takes in information), then reasons (plans), then acts (uses a tool), then evaluates the result and loops — repeating until the goal is met or it stops.",
+                "choices": [
+                  {
+                    "answer_text": "Act → perceive → reason → evaluate",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Perceive → reason → act → evaluate",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "Reason → act → perceive → evaluate",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Perceive → act → reason → evaluate",
+                    "is_correct": false
+                  }
+                ]
+              },
+              {
+                "order": 2,
+                "type": "MC",
+                "question_text": "Which step in the loop actually changes the world, and therefore needs guardrails?",
+                "explanation": "Only the act step uses a tool to do something in a real system. Everything before it is thinking; the action is where help — or damage — actually happens, so that is where guardrails belong.",
+                "choices": [
+                  {
+                    "answer_text": "Perceive",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Reason",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Act (tool use)",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "Evaluate",
+                    "is_correct": false
+                  }
+                ]
+              },
+              {
+                "order": 3,
+                "type": "MC",
+                "question_text": "An agent produces a confident but wrong answer. What is the most useful supervisory move?",
+                "explanation": "You don't need to read code. Wrong outputs almost always trace to bad perception, a bad plan, or a bad stop — naming which one is how you give useful feedback or judge fit.",
+                "choices": [
+                  {
+                    "answer_text": "Read the agent's source code to find the bug",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Identify which part failed: the input, the plan, or the stopping decision",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "Immediately stop using agents for this task",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Re-run it several times and average the results",
+                    "is_correct": false
+                  }
+                ]
+              },
+              {
+                "order": 4,
+                "type": "MC",
+                "question_text": "\"The agent doesn't understand your goal the way you do\" means:",
+                "explanation": "The agent optimizes the instruction it was given, not the intent in your head. Ambiguity in the goal produces a confident plan toward the wrong target — which is why a clear 'done' condition matters.",
+                "choices": [
+                  {
+                    "answer_text": "The agent is malfunctioning and should be reset",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "It works from the instruction as written, so an ambiguous goal yields a confident but wrong plan",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "It needs a faster model to understand intent",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "It can only handle one-step tasks",
+                    "is_correct": false
+                  }
+                ]
+              }
+            ]
+          },
+          "ai_tutor_initial_prompt": "You are an AI tutor helping with the knowledge check for 'The Perceive–Reason–Act Loop'. Do not give answers outright; guide the learner to recall the loop order, that the act step is the one that changes the world, and that diagnosing a bad output means asking which part failed — perception, plan, or stop."
+        },
+        {
+          "type": "READ",
+          "title": "Lesson 2.2 — Tool Use & Integration",
+          "order": 3,
+          "text_content_steps": [
+            "## Tools are the agent's hands\n\nA model on its own only produces text. **Tools** are what let an agent *do* things — and an agent is only as capable, and only as dangerous, as the tools you connect to it. A tool is any capability the agent can invoke: search the web, read a database, call an API, post to Slack, send an email, create a calendar event, run code. Each tool you add extends what the agent can accomplish and, at the same time, extends what can go wrong.",
+            "## Read tools vs. write tools\n\nThe single most important distinction for a supervisor is **read vs. write**.\n\nA **read** tool gathers information — search, look up a record, fetch a page. If it misbehaves you get a wrong answer: bad, but recoverable. A **write** tool changes something — send the message, update the record, delete the file, move the money. If it misbehaves, it changes the real world, sometimes irreversibly.\n\nMost of your governance attention belongs on the write tools. So when someone says \"we connected the agent to our CRM,\" the question that matters is: can it only *read* the CRM, or can it also *write* to it?",
+            "## Connecting to systems you already run\n\nAgents reach your existing systems through integrations — APIs, connectors, or browser automation. In practice that means an agent can plug into the same tools your team already uses: Slack, your CRM, your ERP, your help desk, your file storage, your calendar. This is what makes agents useful (they work where your work already lives) and also what makes them consequential (they touch real business systems). The agent's reach is defined entirely by which connectors it is given — nothing more, nothing less.",
+            "## The integration surface is the risk surface\n\nHere is the principle to carry into Module 4: every system you connect is both a **capability** and an **exposure**. More integrations means more power *and* more surface for errors and attacks.\n\nA research agent that can only read public web pages is low-risk. The same agent, also given the ability to send email from your domain, is a different animal entirely — because now a mistake (or a manipulation, which we cover in Module 4) can reach your customers. You do not reduce that risk by understanding the API. You reduce it by deciding, deliberately, which tools an agent gets and whether each one is read or write.\n\n> **Misconception to bust** — \"Connecting an agent to a system is read-only by default.\" Many integrations grant write access. What an agent can *change* is a choice you must make on purpose, not an assumption you can safely make.",
+            "## Key takeaways\n\n- Tools are the agent's hands; both its capability and its risk come from the tools it is given.\n- Read tools cause wrong answers (recoverable); write tools change the world (sometimes not). Govern the write tools.\n- Every integration is also an exposure — the integration surface is the risk surface.\n\n## Apply it — capstone worksheet, part 5\n\n**Your task:** List the systems your candidate workflow's agent would need to touch. For each, tag it **read-only** or **read-write**, and star (⭐) any write tool that does something hard to undo — sends to customers, moves money, deletes data.\n\n**Self-check:** if your workflow needs several write tools, that is not a reason to abandon it — it is a signal that Module 4's checkpoints will matter a lot for this one.\n\n**Model answer (snippet):** Support-ticket summary — help desk: *read-only* (pull tickets); internal spreadsheet/doc: *read-write* (low stakes); email to product lead: *write* (internal, recoverable); ⭐ if it ever emails customers directly: *write*, hard to undo."
+          ],
+          "ai_tutor_initial_prompt": "You are an AI tutor for the lesson 'Tool Use & Integration'. Key ideas: tools are the agent's hands and define both its capability and its risk; the most important distinction is read tools (recoverable wrong answers) vs. write tools (change the real world, sometimes irreversibly), so governance focuses on write tools; and every connected system is both a capability and an exposure — the integration surface is the risk surface. Help the learner classify the tools their own workflow needs as read vs. write."
+        },
+        {
+          "type": "QUIZ",
+          "title": "Knowledge Check 2.2",
+          "order": 4,
+          "quiz": {
+            "title": "Knowledge Check — Tool Use & Integration",
+            "passing_score": 75,
+            "questions": [
+              {
+                "order": 1,
+                "type": "MC",
+                "question_text": "Why are write tools the priority for a supervisor's governance attention?",
+                "explanation": "A read tool that misbehaves gives a wrong answer (recoverable). A write tool that misbehaves changes a real system — sending, updating, deleting, paying — sometimes irreversibly. That is where governance belongs.",
+                "choices": [
+                  {
+                    "answer_text": "They are slower than read tools",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "They change the real world, sometimes irreversibly, while read errors are recoverable",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "They cost more tokens to run",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "They are harder to connect",
+                    "is_correct": false
+                  }
+                ]
+              },
+              {
+                "order": 2,
+                "type": "MC",
+                "question_text": "Someone says, \"We connected the agent to our CRM.\" What is the best clarifying question?",
+                "explanation": "Read-only access to the CRM is low-risk; write access means the agent can change customer records. The read-vs-write answer is what determines how much you need to govern it.",
+                "choices": [
+                  {
+                    "answer_text": "Which CRM vendor is it?",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "How many records does it have?",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Can it only read the CRM, or can it also write to it?",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "How fast is the connection?",
+                    "is_correct": false
+                  }
+                ]
+              },
+              {
+                "order": 3,
+                "type": "MC",
+                "question_text": "\"The integration surface is the risk surface\" means:",
+                "explanation": "Every system you connect extends what the agent can do and what can go wrong. Risk scales with the tools you grant — which is why granting them is a deliberate decision.",
+                "choices": [
+                  {
+                    "answer_text": "Integrations are too risky to use",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Each connected system adds both capability and exposure",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "Only IT should connect integrations",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "More integrations always make an agent faster",
+                    "is_correct": false
+                  }
+                ]
+              },
+              {
+                "order": 4,
+                "type": "MC",
+                "question_text": "Which of these is a read tool?",
+                "explanation": "Looking up a record only gathers information — a read. The others all change something in a real system, which makes them write tools.",
+                "choices": [
+                  {
+                    "answer_text": "Sending an email from your domain",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Looking up a customer record",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "Deleting a file",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Updating a CRM field",
+                    "is_correct": false
+                  }
+                ]
+              }
+            ]
+          },
+          "ai_tutor_initial_prompt": "You are an AI tutor helping with the knowledge check for 'Tool Use & Integration'. Do not give answers outright; guide the learner to reason about why write tools deserve the most governance, what to ask when a system is 'connected', and how each integration adds both capability and exposure."
+        },
+        {
+          "type": "READ",
+          "title": "Lesson 2.3 — Memory — Working vs. Persistent",
+          "order": 5,
+          "text_content_steps": [
+            "## Two kinds of memory\n\nThis is the lesson where a common misconception gets corrected, so let us start clean: agents have two different kinds of memory, and confusing them is a direct route to over-trusting them.\n\n- **Working memory (short-term)** — what the agent is holding in mind *during a single task*: your instructions, the documents in play, the results of its last few steps.\n- **Persistent memory (long-term)** — information stored *outside* the task that it can look up later: your company's documents, past conversations, a knowledge base.",
+            "## Working memory is finite — and it forgets\n\nWorking memory lives in something called the **context window**: a fixed-size space for the current task. It is finite. When a task runs long or involves a lot of material, earlier details fall out of working memory — the agent can literally \"forget\" something you told it ten steps ago, or lose the thread on a long document.\n\nThis is not a malfunction; it is a limit. For long or complex tasks, do not assume the agent still remembers the constraint you gave at the start. The longer the task, the more this matters.",
+            "## Persistent memory is retrieval — not photographic recall\n\nHere is the correction that matters most. It is tempting to imagine an agent has perfect, photographic recall of everything about your business — that once it has \"seen\" your data, it simply *knows* it. It does not.\n\nPersistent memory works by **retrieval**: when the agent needs something, it searches a store and pulls back the pieces that seem most relevant, then reasons over those pieces. That retrieval is imperfect. It can fetch the wrong passage, miss the right one, or surface something outdated. So the agent's \"knowledge of your company\" is really \"whatever it managed to retrieve this time\" — lossy and variable, not a perfect record.",
+            "## Why this is a supervision issue, not a trivia point\n\nThis matters because retrieval failures produce **confident, wrong answers** — exactly the automation-bias trap from Module 1. An agent that retrieved an outdated pricing document will tell you the old price with total confidence. An agent whose working memory dropped your \"exclude EU customers\" instruction will cheerfully include them. Nothing looks broken.\n\nSo the practical rule: for anything that depends on a specific fact or a specific constraint, verify that the agent actually had the right, current information — do not assume its memory is complete just because its answer is fluent.\n\n> **Misconception to bust** — \"The agent perfectly remembers everything about my company.\" It retrieves fragments imperfectly and holds only a finite amount in working memory. Treating its recall as photographic is how stale or partial information slips through as confident fact.",
+            "## Key takeaways\n\n- Two kinds: **working memory** (finite, per-task, can forget) and **persistent memory** (retrieved, lossy, not photographic).\n- Long tasks strain working memory; retrieval can fetch stale or wrong information.\n- For fact- or constraint-dependent work, verify the agent had the right current information — fluency is not proof.\n\n## Apply it — capstone worksheet, part 6\n\n**Your task:** Identify one point in your workflow where the agent acting on stale or partial memory would cause real harm — a wrong figure, a dropped constraint, an outdated policy. Note how you would catch it *before* it mattered.\n\n**Self-check:** if the harm would be hard to detect after the fact, that is a candidate for a Module 4 checkpoint — a place to verify the inputs before the agent acts.\n\n**Model answer (snippet):** Support-ticket summary — if the agent's notion of \"our product areas\" is outdated, it could mis-tag the themes. Catch it by spot-checking that the theme labels match this quarter's actual product areas before the summary goes out."
+          ],
+          "ai_tutor_initial_prompt": "You are an AI tutor for the lesson 'Memory — Working vs. Persistent'. Key ideas: agents have working memory (the finite context window for a single task, which can drop earlier details on long tasks) and persistent memory (long-term storage accessed by imperfect retrieval, not photographic recall); and because retrieval can fetch stale or wrong information, it produces confident wrong answers — so fact- or constraint-dependent work needs the inputs verified. Gently correct any belief that an agent perfectly remembers everything about the business."
+        },
+        {
+          "type": "QUIZ",
+          "title": "Knowledge Check 2.3",
+          "order": 6,
+          "quiz": {
+            "title": "Knowledge Check — Memory — Working vs. Persistent",
+            "passing_score": 75,
+            "questions": [
+              {
+                "order": 1,
+                "type": "MC",
+                "question_text": "Working memory (the context window) is best described as:",
+                "explanation": "Working memory is the fixed-size context for the current task. On long or complex tasks, earlier details can fall out — the agent can 'forget' an instruction it was given many steps ago.",
+                "choices": [
+                  {
+                    "answer_text": "Unlimited storage of everything the agent has ever seen",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "A finite, per-task space where earlier details can drop out on long tasks",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "A permanent record of your company's data",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "The agent's training data",
+                    "is_correct": false
+                  }
+                ]
+              },
+              {
+                "order": 2,
+                "type": "MC",
+                "question_text": "How does persistent (long-term) memory actually work?",
+                "explanation": "Long-term memory works by retrieving the pieces that seem most relevant and reasoning over them. Retrieval can fetch the wrong passage, miss the right one, or surface outdated information — it is lossy, not photographic.",
+                "choices": [
+                  {
+                    "answer_text": "Perfect, photographic recall of all stored data",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Retrieval of relevant stored fragments — imperfect and sometimes stale",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "It memorizes everything the first time it reads it",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "It does not exist; agents have no long-term memory",
+                    "is_correct": false
+                  }
+                ]
+              },
+              {
+                "order": 3,
+                "type": "MC",
+                "question_text": "Why is assuming an agent has 'photographic memory' dangerous?",
+                "explanation": "If you believe its recall is perfect, you stop checking — and a stale or missed retrieval then slips through as confident fact, which is exactly how automation bias causes harm.",
+                "choices": [
+                  {
+                    "answer_text": "It makes the agent slower",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Retrieval failures produce confident, wrong answers — the automation-bias trap",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "It uses more storage",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "It prevents the agent from using tools",
+                    "is_correct": false
+                  }
+                ]
+              },
+              {
+                "order": 4,
+                "type": "MC",
+                "question_text": "For a task that depends on a specific current figure, the supervisor should:",
+                "explanation": "Fluency is not proof of accuracy. For fact- or constraint-dependent work, confirm the agent actually had the correct, current inputs rather than inferring completeness from how polished the answer sounds.",
+                "choices": [
+                  {
+                    "answer_text": "Trust the answer if it is well-written",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Verify the agent had the right, current information",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "Assume long-term memory covered it",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Run the task at a busier time of day",
+                    "is_correct": false
+                  }
+                ]
+              }
+            ]
+          },
+          "ai_tutor_initial_prompt": "You are an AI tutor helping with the knowledge check for 'Memory — Working vs. Persistent'. Do not give answers outright; guide the learner to distinguish finite working memory from retrieval-based persistent memory, and to see why the 'photographic memory' assumption leads to over-trust."
+        },
+        {
+          "type": "READ",
+          "title": "Lesson 2.4 — Multi-Agent Systems — Orchestration & Failure Modes",
+          "order": 7,
+          "text_content_steps": [
+            "## From one agent to a team\n\nSo far we have pictured a single agent running its loop. But Module 5 promises each person supervising a fleet of five to ten agents, so you need to understand what changes when agents work *together* — because a team of agents is not just more agents, it is a new set of behaviors. This lesson is the bridge.",
+            "## How agents coordinate\n\nThe common pattern is an **orchestrator and workers**: one agent (the orchestrator) breaks a big goal into parts and hands each to a worker agent — one gathers data, one analyzes, one writes — then assembles their outputs. Agents pass work to each other through **handoffs**.\n\nThink of it like a small project team with a lead and specialists. When it works, you get parallelism and specialization: faster overall, with each agent focused on what it does best.",
+            "## The new failure modes\n\nHere is the part that matters, because these failures do not exist with a single agent:\n\n- **Error propagation** — if the first agent gets something wrong, every agent downstream builds on the mistake, and the final output looks polished, hiding the bad foundation.\n- **Conflicting actions** — two agents acting on the same system step on each other (both update the same record; one undoes the other).\n- **Deadlock / waiting** — agents wait on each other and nothing finishes.\n- **Runaway loops and cost blow-ups** — agents trigger each other in circles, and because each step costs money (Module 3), a loop among ten agents can burn budget fast.\n\nThe theme: interactions create problems no single agent has. Ten agents are not ten times one agent; they are a *system*, with system-level failures.",
+            "## What this means for you\n\nTwo practical implications.\n\nFirst, **coordination has to be designed, not assumed** — someone has to decide who does what, who has authority over which system, and where the whole thing stops.\n\nSecond, when a multi-agent workflow produces a bad result, the cause is often in the **handoffs**, not in any one agent — so supervising means looking at how they pass work to each other, not just at each agent alone. You do not need to build the orchestration; you need to know to ask: \"what happens when one of these gets it wrong, and does anything stop the others from compounding it?\"\n\n> **Misconception to bust** — \"Ten agents are just ten times one agent.\" Their interactions create entirely new failure modes — propagated errors, conflicts, deadlocks, runaway loops — that no single agent exhibits.",
+            "## Key takeaways\n\n- Multi-agent systems use an orchestrator plus workers passing handoffs; they add parallelism and specialization.\n- They also add system-level failures: error propagation, conflicting actions, deadlock, and runaway cost loops.\n- Coordination must be designed; multi-agent problems usually live in the handoffs, not in one agent.\n\n## Apply it — capstone worksheet, part 7\n\n**Your task:** Sketch a version of your workflow done by three agents (for example: one gathers, one processes, one delivers). Name one way it could fail that a single agent would not — and where you would put a stop.\n\n**Self-check:** if you cannot yet see a failure mode, look at the first handoff — what happens to everything downstream if that first agent is wrong?\n\n**Model answer (snippet):** Support summary as three agents — *collector* (pulls tickets), *analyst* (tags and ranks), *writer* (drafts the email). New failure: if the collector pulls the wrong week, the analyst and writer produce a perfect summary of the wrong data — it looks right but is wrong. Stop: verify the date range at the first handoff."
+          ],
+          "ai_tutor_initial_prompt": "You are an AI tutor for the lesson 'Multi-Agent Systems — Orchestration & Failure Modes'. Key ideas: multiple agents usually coordinate via an orchestrator that delegates to worker agents through handoffs, giving parallelism and specialization; but they introduce system-level failures that single agents never have — error propagation across handoffs, conflicting actions on the same system, deadlock, and runaway cost loops; so coordination must be designed and problems usually live in the handoffs. Help the learner imagine their workflow split across a few agents and spot a failure mode."
+        },
+        {
+          "type": "QUIZ",
+          "title": "Knowledge Check 2.4",
+          "order": 8,
+          "quiz": {
+            "title": "Knowledge Check — Multi-Agent Systems — Orchestration & Failure Modes",
+            "passing_score": 75,
+            "questions": [
+              {
+                "order": 1,
+                "type": "MC",
+                "question_text": "What is a common multi-agent coordination pattern?",
+                "explanation": "The typical pattern is an orchestrator that breaks the goal into parts and hands each to a specialized worker agent, then assembles the results — coordinated through handoffs.",
+                "choices": [
+                  {
+                    "answer_text": "Every agent works in complete isolation",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "An orchestrator delegates parts of the goal to worker agents via handoffs",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "All agents share one single memory with no roles",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Agents take turns using one keyboard",
+                    "is_correct": false
+                  }
+                ]
+              },
+              {
+                "order": 2,
+                "type": "MC",
+                "question_text": "Which failure mode is unique to multi-agent systems (not single-agent)?",
+                "explanation": "Error propagation — and conflicts, deadlock, and runaway loops — arise from agents *interacting*. A lone agent can make a bad plan, but it cannot propagate an error to teammates it does not have.",
+                "choices": [
+                  {
+                    "answer_text": "A single bad plan",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Error propagation across handoffs, where downstream agents build on an upstream mistake",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "Running out of working memory",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Choosing the wrong tool once",
+                    "is_correct": false
+                  }
+                ]
+              },
+              {
+                "order": 3,
+                "type": "MC",
+                "question_text": "\"Ten agents are not ten times one agent\" because:",
+                "explanation": "Adding agents adds interactions, and interactions bring failures no single agent has — propagated errors, conflicts, deadlocks, runaway loops. The system behaves differently from its parts.",
+                "choices": [
+                  {
+                    "answer_text": "Ten agents are always slower",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Their interactions create new, system-level failure modes",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "Each agent gets ten times weaker",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Cost stays exactly the same",
+                    "is_correct": false
+                  }
+                ]
+              },
+              {
+                "order": 4,
+                "type": "MC",
+                "question_text": "When a multi-agent workflow gives a bad result, where should you look first?",
+                "explanation": "Multi-agent problems usually originate in how work passes between agents. A polished final output can hide a mistake introduced at an early handoff, so the handoffs are the first place to inspect.",
+                "choices": [
+                  {
+                    "answer_text": "At the most expensive agent",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "At the handoffs between agents, not just each agent alone",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "At the user's original device",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "At the time of day it ran",
+                    "is_correct": false
+                  }
+                ]
+              }
+            ]
+          },
+          "ai_tutor_initial_prompt": "You are an AI tutor helping with the knowledge check for 'Multi-Agent Systems'. Do not give answers outright; guide the learner to recall the orchestrator-and-workers pattern, to identify failure modes unique to multiple agents, and to see why the handoffs are where multi-agent problems usually originate."
+        }
+      ]
+    }
+  ]
+}

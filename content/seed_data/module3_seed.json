@@ -1,0 +1,388 @@
+{
+  "_meta": {
+    "description": "Seed data for the Agentic AI Management course, Module 3. Same schema as Modules 1–2; course block identical so the existing seed_agentic_course command ingests it unchanged.",
+    "module_in_this_file": 3
+  },
+  "course": {
+    "title": "Agentic AI Management",
+    "description": "A self-paced course that takes managers from operating software to supervising AI agents — how agents work under the hood, how to govern them safely, and how to deploy a real workflow in their own team.",
+    "order": 10,
+    "price": "0.00",
+    "currency": "USD",
+    "is_premium_only": false,
+    "lemon_squeezy_variant_id": null,
+    "_note": "price / is_premium_only / lemon_squeezy_variant_id are placeholders — set these in the admin panel once the whole course is seeded. Do not re-seed after pricing without re-applying the price."
+  },
+  "submodules": [
+    {
+      "title": "Module 3: Operational Decisions — Deployment, Cost & Scale",
+      "description": "The operational calls agents force on a leader — where an agent runs, how to supervise work that runs for hours or days, and how to weigh what a workflow costs against what it returns. Framed as decisions you own, not engineering. Three lessons, each followed by a knowledge check.",
+      "order": 3,
+      "lessons": [
+        {
+          "type": "READ",
+          "title": "Lesson 3.1 — Deployment Decisions — Cloud vs. Local",
+          "order": 1,
+          "text_content_steps": [
+            "## A decision, not a detail\n\nWhen you delegate work to an agent, one question arrives quickly: where does it run? It can run in the **cloud** — on servers that stay on whether or not your laptop is — or **locally**, on a desktop or inside an environment you control. It is tempting to wave this off as a technical detail for IT. It is not. Where an agent runs determines where your data goes, whether the work continues when you walk away, and who controls the environment it operates in. Those are governance questions, and they are yours.",
+            "## What \"cloud\" buys you — and costs you\n\nA cloud agent runs on remote infrastructure that is always on. The upside: it can work around the clock, scale up for big jobs, and keep going after you close your laptop — ideal for continuous monitoring, heavy analysis, or anything that runs for hours. The trade-off: your data leaves your perimeter. The agent, and the service running it, sees whatever you feed it, on infrastructure you do not own. For public or low-sensitivity data that is usually fine; for regulated, confidential, or customer data it is a decision to make consciously, often with compliance in the room.\n\n## What \"local\" buys you — and costs you\n\nA local agent runs in an environment you control — a desktop, an on-premises machine, a private cloud you administer. The upside: data stays inside your boundary, which is often what privacy and compliance require, and you have tighter control over what it can reach. The trade-off: it is bounded. It may stop when the machine sleeps, cannot easily scale to large continuous jobs, and is limited by the resources of its environment. Local is the natural choice when sensitivity outweighs the need for always-on scale.",
+            "## The four drivers\n\nYou do not need to understand the servers to make this call. Weigh four things:\n\n- **Data sensitivity** — how bad is it if this data is seen outside your perimeter?\n- **Continuity** — does the work need to run unattended, around the clock, or only on demand?\n- **Scale** — is it a big, heavy, or continuous job, or a quick one?\n- **Compliance** — do regulations or contracts dictate where this data may live?\n\nSensitivity and compliance tend to push toward **local**; continuity and scale tend to push toward **cloud**. The skill is naming which driver dominates for a given workflow — and being able to say it in a sentence.",
+            "## What this means for you\n\nCloud versus local is not a one-time, whole-company switch; it is a per-workflow decision. A public-market-research agent can happily live in the cloud; an agent that reads employee records or unreleased financials may need to stay local. Your job is to make that call deliberately, workflow by workflow, with data and compliance — not convenience — driving it.\n\n> **Misconception to bust** — \"Cloud vs. local is purely a technical choice for IT.\" Where an agent runs decides where your data goes and what runs unattended. That is a risk and compliance decision leadership owns, even when IT implements it.",
+            "## Key takeaways\n\n- Where an agent runs is a governance decision (data, continuity, control), not just an IT detail.\n- Cloud = always-on and scalable, but data leaves your perimeter; local = private but bounded.\n- Decide **per workflow**, with data sensitivity and compliance as the dominant drivers.\n\n## Apply it — capstone worksheet, part 8\n\n**Your task:** For your candidate workflow, decide **cloud or local** and justify it in one sentence grounded in data sensitivity and continuity. If you have a second candidate, do it too — the contrast is the lesson.\n\n**Self-check:** if your one-sentence justification is about convenience or speed rather than data and compliance, re-examine it — those rarely should decide where sensitive work runs.\n\n**Model answer (snippet):** \"Support-ticket summary — cloud is fine: the tickets contain customer text but no regulated financial or health data, and running it on a weekly schedule benefits from always-on infrastructure.\" Contrast: \"An agent reading unreleased quarterly financials — local: the sensitivity outweighs any convenience of the cloud.\""
+          ],
+          "ai_tutor_initial_prompt": "You are an AI tutor for the lesson 'Deployment Decisions — Cloud vs. Local'. Key ideas: where an agent runs is a governance decision (it determines where data goes, what runs unattended, and who controls the environment), not just an IT detail; cloud is always-on and scalable but data leaves your perimeter, while local is private but bounded; and the decision is made per workflow by weighing four drivers — data sensitivity, continuity, scale, and compliance — with sensitivity and compliance usually deciding sensitive cases. Help the learner make this call for their own workflow in one clear sentence."
+        },
+        {
+          "type": "QUIZ",
+          "title": "Knowledge Check 3.1",
+          "order": 2,
+          "quiz": {
+            "title": "Knowledge Check — Deployment Decisions — Cloud vs. Local",
+            "passing_score": 75,
+            "questions": [
+              {
+                "order": 1,
+                "type": "MC",
+                "question_text": "Why is the cloud-vs-local choice a leadership decision rather than just an IT one?",
+                "explanation": "Where an agent runs decides where your data travels and what operates without you watching. Those are governance questions leadership owns, even when IT implements the result.",
+                "choices": [
+                  {
+                    "answer_text": "Because IT teams are too busy to decide",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Because it determines where your data goes and what runs unattended — a risk and compliance call",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "Because cloud is always cheaper",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Because local execution is always more secure",
+                    "is_correct": false
+                  }
+                ]
+              },
+              {
+                "order": 2,
+                "type": "MC",
+                "question_text": "What is the main trade-off of running an agent in the cloud?",
+                "explanation": "Cloud gives you always-on, scalable execution that survives closing your laptop — at the cost of sending your data to infrastructure you do not own.",
+                "choices": [
+                  {
+                    "answer_text": "It is always slower than local",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "It is always-on and scalable, but your data leaves your perimeter",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "It can never handle large jobs",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "It cannot connect to your existing systems",
+                    "is_correct": false
+                  }
+                ]
+              },
+              {
+                "order": 3,
+                "type": "MC",
+                "question_text": "Which driver most strongly pushes a workflow toward local execution?",
+                "explanation": "Sensitivity and compliance push toward keeping data inside your boundary (local). Continuity and scale are what push the other way, toward cloud.",
+                "choices": [
+                  {
+                    "answer_text": "A need to run around the clock at large scale",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "High data sensitivity or compliance constraints",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "A desire for the fastest possible setup",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Wanting to use the biggest model",
+                    "is_correct": false
+                  }
+                ]
+              },
+              {
+                "order": 4,
+                "type": "MC",
+                "question_text": "What is the best way to make the cloud-vs-local call?",
+                "explanation": "It is a per-workflow decision: a public-data agent can live in the cloud while a sensitive-data agent stays local. Data and compliance — not convenience — should dominate.",
+                "choices": [
+                  {
+                    "answer_text": "Pick one option company-wide for convenience",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Decide per workflow, driven by data sensitivity and compliance",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "Always choose cloud because it scales",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Always choose local because it is private",
+                    "is_correct": false
+                  }
+                ]
+              }
+            ]
+          },
+          "ai_tutor_initial_prompt": "You are an AI tutor helping with the knowledge check for 'Deployment Decisions — Cloud vs. Local'. Do not give answers outright; guide the learner to see why this is a leadership decision, the core cloud trade-off (data leaves the perimeter), which drivers push toward local, and why it is decided per workflow."
+        },
+        {
+          "type": "READ",
+          "title": "Lesson 3.2 — Asynchronous Workflows & Expectations",
+          "order": 3,
+          "text_content_steps": [
+            "## Synchronous vs. asynchronous\n\nSome agent work is **synchronous**: you ask, it works, and you get an answer in seconds or minutes while you wait — like a conversation. Other work is **asynchronous**: you hand off a goal and the agent works for hours or even days — deep research, large data cleaning, monitoring something over time — and reports back when it is done.\n\nMost of the high-value agent work managers care about is asynchronous, and it changes your role. You are no longer watching it happen; you are delegating and then receiving.",
+            "## \"Set it and forget it\" is the trap\n\nThe natural instinct with a long-running task is to launch it and walk away. But long-running is not the same as unsupervised. An async agent can spend hours confidently heading the wrong direction, and you only discover it when the finished product lands — by which point the hours, and the cost, are already spent.\n\nThe discipline of async supervision is to build in points where you can see and correct the work *before* it finishes.",
+            "## Three things to set before you launch\n\nFor any async task, decide three things up front:\n\n- **Define \"done.\"** What exactly does a finished, acceptable result look like? Vague goals run long and drift; a crisp definition of done is what lets the agent — and you — know when to stop.\n- **Set checkpoints.** Build in one or two moments mid-run where the agent reports progress or pauses for a look: \"here is my plan before I execute,\" \"here is what I found halfway.\" A checkpoint an hour in can save a day of wasted work.\n- **Plan for partial failure.** Long jobs fail partway more often than short ones. Decide in advance: if it gets most of the way and stalls, do you want the partial result, a retry, or an alert? Knowing this beats discovering it at hour six.",
+            "## Setting realistic expectations\n\nAsync work also needs honest expectations — your own and your team's. An agent doing deep research is not instant, and treating it as if it were leads to either constant impatient checking (which defeats the point) or blind trust (which is the trap above).\n\nThink of it like delegating to a capable analyst: you would agree on what done looks like, when you will check in, and what to do if they hit a wall — then let them work. That is exactly the posture for an async agent.\n\n> **Misconception to bust** — \"Asynchronous means set it and forget it.\" Long-running is not unsupervised. Checkpoints and a clear definition of done are how you keep control of work you are not watching.",
+            "## Key takeaways\n\n- Async work (hours to days) is where much agent value lives, and it shifts you from watching to delegating-and-receiving.\n- Before launching, **define \"done,\" set one or two mid-run checkpoints, and plan for partial failure.**\n- Treat it like delegating to an analyst: agree on done, check-ins, and fallback — then let it work.\n\n## Apply it — capstone worksheet, part 9\n\n**Your task:** For your candidate workflow (or a deep-research version of it), write your definition of **\"done\"** plus **two mid-run checkpoints** that would let you catch a wrong direction early.\n\n**Self-check:** if your \"done\" is something you could not verify in under a minute when the result lands, tighten it — a good definition of done is checkable at a glance.\n\n**Model answer (snippet):** \"Support summary — *done:* an email draft listing the top three ticket themes from the past seven days, with counts. *Checkpoints:* (1) after pulling tickets, confirm the date range and ticket count look right; (2) after tagging, confirm the theme list matches our current product areas before it writes the email.\""
+          ],
+          "ai_tutor_initial_prompt": "You are an AI tutor for the lesson 'Asynchronous Workflows & Expectations'. Key ideas: synchronous work answers while you wait, while asynchronous work runs for hours or days and reports back — and most high-value agent work is async, which shifts the manager from watching to delegating-and-receiving; 'set it and forget it' is a trap because an agent can spend hours heading the wrong way; so before launching you define 'done', set one or two mid-run checkpoints, and plan for partial failure. Help the learner define 'done' and good checkpoints for their own task."
+        },
+        {
+          "type": "QUIZ",
+          "title": "Knowledge Check 3.2",
+          "order": 4,
+          "quiz": {
+            "title": "Knowledge Check — Asynchronous Workflows & Expectations",
+            "passing_score": 75,
+            "questions": [
+              {
+                "order": 1,
+                "type": "MC",
+                "question_text": "Asynchronous agent work is best described as:",
+                "explanation": "Async work is handed off and runs unattended for a long stretch — deep research, large data jobs, monitoring — reporting back when finished, rather than answering in real time while you wait.",
+                "choices": [
+                  {
+                    "answer_text": "The agent answers while you wait, in seconds",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "You hand off a goal and the agent works for hours or days, then reports back",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "Work that requires no goal at all",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Work that only runs on a local machine",
+                    "is_correct": false
+                  }
+                ]
+              },
+              {
+                "order": 2,
+                "type": "MC",
+                "question_text": "Why is \"set it and forget it\" risky for a long-running task?",
+                "explanation": "Long-running is not unsupervised. Without checkpoints, an agent can confidently work toward the wrong result for hours, and you only learn when the finished product lands — after the time and cost are spent.",
+                "choices": [
+                  {
+                    "answer_text": "It uses too much electricity",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "The agent can spend hours heading the wrong direction before you find out",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "Async tasks are always wrong",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "It requires a cloud connection",
+                    "is_correct": false
+                  }
+                ]
+              },
+              {
+                "order": 3,
+                "type": "MC",
+                "question_text": "Which three things should you set before launching an asynchronous task?",
+                "explanation": "Define 'done' so it knows when to stop, set checkpoints so you can correct it mid-run, and plan for partial failure so a stall at hour six is something you already decided how to handle.",
+                "choices": [
+                  {
+                    "answer_text": "The model, the price, and the color theme",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "A clear definition of \"done,\" one or two mid-run checkpoints, and a plan for partial failure",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "The user, the device, and the time zone",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Three separate agents to do it",
+                    "is_correct": false
+                  }
+                ]
+              },
+              {
+                "order": 4,
+                "type": "MC",
+                "question_text": "A good definition of \"done\" is one that:",
+                "explanation": "Vague goals drift and run long. A crisp, glance-checkable definition of done is what lets the agent stop at the right point and lets you verify the result fast.",
+                "choices": [
+                  {
+                    "answer_text": "Is as broad as possible to allow flexibility",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Is crisp and quickly checkable, so both the agent and you know when to stop",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "Only the agent can evaluate",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Takes a long time to verify",
+                    "is_correct": false
+                  }
+                ]
+              }
+            ]
+          },
+          "ai_tutor_initial_prompt": "You are an AI tutor helping with the knowledge check for 'Asynchronous Workflows & Expectations'. Do not give answers outright; guide the learner to distinguish sync from async, to see why long-running is not unsupervised, and to recall the three things to set before launching plus what makes a good definition of 'done'."
+        },
+        {
+          "type": "READ",
+          "title": "Lesson 3.3 — The Economics — Cost AND Value",
+          "order": 5,
+          "text_content_steps": [
+            "## Agents cost money to think\n\nEvery step an agent takes costs something. The underlying unit is the **token** — roughly, a chunk of text the model reads or writes — and you pay per token. Jensen Huang's shorthand for this is \"tokenomics\": as agents do real work, tokens become the metered unit of that work, the way kilowatt-hours meter electricity.\n\nYou do not need to count tokens. You do need the intuition: an agent that reads a lot, thinks a lot, and loops a lot costs more than one that does a little. Thinking is not free.",
+            "## What actually drives the cost\n\nThe bill is driven by a few things, and noticing them is enough to estimate roughly:\n\n- **Loop length** — how many perceive-reason-act cycles a task takes. Complex goals loop more.\n- **Retries** — when steps fail and the agent tries again, you pay for each attempt.\n- **Model size** — bigger, smarter models cost more per token; not every task needs the biggest one.\n- **Fleet size** — running 100 workflows, or ten agents each, multiplies all of the above.\n\nA useful estimate is not \"what is the token price\" but \"how heavy is this workflow, how often does it run, and how many of them run at once.\" That gets you to a budget range without a spreadsheet of token counts.",
+            "## The hidden costs\n\nThe API bill is not the whole cost. Two others are easy to miss and often larger:\n\n- **Oversight** — the human time spent reviewing, approving, and correcting the agent. A workflow that needs heavy checking is cheap in tokens but expensive in your team's hours.\n- **Remediation** — the cost of cleaning up when the agent gets something wrong: the bad email sent, the record that has to be fixed. The less reversible the work (Module 2's write tools), the higher this can run.\n\nWhen you compare an agent to doing the work manually, count these too — not just the obvious per-run fee.",
+            "## Cost is only half the question\n\nHere is the reframe that matters most for a manager: cost is one side of the ledger; **value** is the other, and it is the side that justifies the whole thing.\n\nValue shows up as **time saved** (hours of routine work returned to your team), **errors avoided** (consistency a tired human might miss), and **throughput** (work that simply would not get done otherwise). A workflow that costs a little in tokens and oversight but returns hours a week is a clear win; one that costs heavy oversight to save twenty minutes is not.\n\nThe decision is not \"is it cheap.\" It is \"does the value clearly beat the *full* cost.\" A back-of-envelope estimate — one rough number for cost, one for value — is usually enough to tell.\n\n> **Misconception to bust** — \"The cost of an agent is the API bill.\" Retries, human oversight, and cleanup are real costs too — and cost is only half the decision. A workflow is worth it when its value clearly beats the full cost, not when the token price is low.",
+            "## Key takeaways\n\n- Agents cost per token (\"tokenomics\"); cost is driven by loop length, retries, model size, and fleet size.\n- The real cost includes **oversight time and remediation**, not just the API bill.\n- Cost is only half — weigh it against **value** (time saved, errors avoided, throughput). Worth it = value clearly beats full cost.\n\n## Apply it — capstone worksheet, part 10\n\n**Your task:** Build a one-page, back-of-envelope estimate for your workflow: one rough **cost** figure (including oversight) and one rough **value** figure (for example, hours saved per week). State in a sentence whether the value clearly beats the cost.\n\n**Self-check:** if cost and value come out close, that is a signal to either tighten the workflow (less oversight, fewer retries) or keep the task human for now.\n\n**Model answer (snippet):** \"Support summary — *cost:* minimal tokens weekly plus about 10 minutes of my review — small. *Value:* replaces roughly 90 minutes of manual work each week and produces a more consistent result. Value clearly beats cost — a good candidate to deploy.\""
+          ],
+          "ai_tutor_initial_prompt": "You are an AI tutor for the lesson 'The Economics — Cost AND Value'. Key ideas: agents cost money per token ('tokenomics'), with cost driven by loop length, retries, model size, and fleet size; the real cost also includes human oversight and remediation, not just the API bill; and cost is only half the decision — it must be weighed against value (time saved, errors avoided, throughput), so a workflow is worth deploying when its value clearly beats its full cost. Help the learner build a rough cost-vs-value estimate for their workflow. Do not quote specific token prices — they change; teach the drivers instead."
+        },
+        {
+          "type": "QUIZ",
+          "title": "Knowledge Check 3.3",
+          "order": 6,
+          "quiz": {
+            "title": "Knowledge Check — The Economics — Cost AND Value",
+            "passing_score": 75,
+            "questions": [
+              {
+                "order": 1,
+                "type": "MC",
+                "question_text": "What does it mean that agents cost \"per token\" (tokenomics)?",
+                "explanation": "Tokens are the metered unit of an agent's work. An agent that reads, reasons, and loops a lot consumes more tokens and costs more — thinking is not free.",
+                "choices": [
+                  {
+                    "answer_text": "Agents are free to run once set up",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Each step an agent takes — reading, thinking, acting — costs money, so heavier, longer-looping workflows cost more",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "Tokens are a security feature, not a cost",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Cost depends only on a flat monthly subscription",
+                    "is_correct": false
+                  }
+                ]
+              },
+              {
+                "order": 2,
+                "type": "MC",
+                "question_text": "Which of these most directly drives how much an agent costs to run?",
+                "explanation": "Cost scales with loop length and retries (plus model size and fleet size). The heavier and more repetitive the work, the higher the bill — regardless of when it runs or what it is called.",
+                "choices": [
+                  {
+                    "answer_text": "The time of day it runs",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "How many perceive-reason-act loops and retries the task takes",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "The user's monitor size",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "The name given to the agent",
+                    "is_correct": false
+                  }
+                ]
+              },
+              {
+                "order": 3,
+                "type": "MC",
+                "question_text": "Why is the API bill not the full cost of running an agent?",
+                "explanation": "Beyond tokens, you pay in the human time spent reviewing and correcting the agent and in cleaning up its mistakes — especially for hard-to-reverse work. Those often exceed the API bill.",
+                "choices": [
+                  {
+                    "answer_text": "The API bill is always inaccurate",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Human oversight time and remediation (cleanup) are real, sometimes larger, costs",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "Electricity is the dominant cost",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "There are no other costs",
+                    "is_correct": false
+                  }
+                ]
+              },
+              {
+                "order": 4,
+                "type": "MC",
+                "question_text": "A workflow is worth deploying when:",
+                "explanation": "Cost is only half the ledger. The decision is whether the value clearly exceeds the full cost (tokens plus oversight plus remediation) — a cheap workflow that saves little is not worth it, and a pricier one that returns hours a week is.",
+                "choices": [
+                  {
+                    "answer_text": "Its token price is low",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Its value — time saved, errors avoided, throughput — clearly beats its full cost",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "It uses the biggest available model",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "It runs the fastest",
+                    "is_correct": false
+                  }
+                ]
+              }
+            ]
+          },
+          "ai_tutor_initial_prompt": "You are an AI tutor helping with the knowledge check for 'The Economics — Cost AND Value'. Do not give answers outright; guide the learner to reason about what drives cost, why the API bill is not the full cost, and why value (not just low cost) is what justifies deploying a workflow."
+        }
+      ]
+    }
+  ]
+}

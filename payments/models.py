@@ -57,4 +57,6 @@ class PaymentTransaction(models.Model):
         ]
 
     def __str__(self):
-        return f"{self.user.username} - {self.module.title} - {self.amount} {self.currency} ({self.status})"
+        # module is null for subscription payments — guard against AttributeError
+        target = self.module.title if self.module else "Subscription"
+        return f"{self.user.username} - {target} - {self.amount} {self.currency} ({self.status})"

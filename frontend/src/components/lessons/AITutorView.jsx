@@ -5,7 +5,10 @@ import { markLessonComplete } from '../../api/contentService';
 import { getUsageStats } from '../../api/subscriptionService';
 import LessonCompletionPanel from './LessonCompletionPanel';
 
-const AITutorView = ({ lessonId, lessonTitle, initialPrompt, aiConfig, backLink, backLinkLabel = 'Back to lessons' }) => {
+// NOTE: the lesson's ai_tutor_initial_prompt is server-side persona/context and
+// is read by the backend directly from the lesson record — it is intentionally
+// NOT a prop here and is never shown to the learner.
+const AITutorView = ({ lessonId, lessonTitle, aiConfig, backLink, backLinkLabel = 'Back to lessons', embedded = false }) => {
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -52,17 +55,12 @@ const AITutorView = ({ lessonId, lessonTitle, initialPrompt, aiConfig, backLink,
     }
   }, [aiConfig]);
 
-  // Initialize with welcome message and lesson context
+  // Initialize with a learner-facing greeting only.
+  // NOTE: initialPrompt is a server-side persona/instruction and must NOT be
+  // shown to the learner — it is sent to the backend as context, never rendered.
   useEffect(() => {
-    let welcomeContent = `Hello! I'm your AI tutor for "${lessonTitle}". I'm here to help you understand the concepts and answer any questions you have. What would you like to know?`;
-    
-    // Use custom welcome message if available in config
-    if (config && config.welcome_message) {
-      welcomeContent = config.welcome_message;
-    } else if (initialPrompt) {
-      // Use initial prompt as context for a more personalized welcome
-      welcomeContent = `Hello! I'm your AI tutor for "${lessonTitle}". ${initialPrompt}\n\nI'm here to help you understand the concepts and answer any questions you have. What would you like to know?`;
-    }
+    const welcomeContent = config?.welcome_message
+      || `Hello! I'm your AI tutor for "${lessonTitle}". I'm here to help you understand the concepts and answer any questions you have. What would you like to know?`;
 
     const welcomeMessage = {
       id: 'welcome',
@@ -71,19 +69,8 @@ const AITutorView = ({ lessonId, lessonTitle, initialPrompt, aiConfig, backLink,
       timestamp: new Date().toISOString()
     };
 
-    // Add context message if we have detailed initial prompt
-    if (initialPrompt && !config?.welcome_message) {
-      const contextMessage = {
-        id: 'context',
-        type: 'ai',
-        content: `📚 **Lesson Context:**\n${initialPrompt}`,
-        timestamp: new Date().toISOString()
-      };
-      setMessages([welcomeMessage, contextMessage]);
-    } else {
-      setMessages([welcomeMessage]);
-    }
-  }, [lessonTitle, initialPrompt, config]);
+    setMessages([welcomeMessage]);
+  }, [lessonTitle, config]);
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
@@ -102,8 +89,19 @@ const AITutorView = ({ lessonId, lessonTitle, initialPrompt, aiConfig, backLink,
     setIsLoading(true);
     setError(null);
 
+    // Build recent conversation history for memory: exclude the welcome greeting
+    // and any error bubbles, then keep the last 10 turns (consistent with the
+    // server-side cap). Map our message types to Gemini roles.
+    const history = messages
+      .filter((m) => m.id !== 'welcome' && m.type !== 'error')
+      .slice(-10)
+      .map((m) => ({
+        role: m.type === 'user' ? 'user' : 'model',
+        content: m.content,
+      }));
+
     try {
-      const response = await askAI(lessonId, inputMessage, '', config);
+      const response = await askAI(lessonId, inputMessage, '', config, history);
       
       // Check for subscription/limit errors
       if (response.error) {
@@ -230,7 +228,11 @@ const AITutorView = ({ lessonId, lessonTitle, initialPrompt, aiConfig, backLink,
   }
 
   return (
-    <div className="flex flex-col h-[calc(100dvh-9.5rem)] sm:h-[calc(100dvh-10.5rem)] min-h-[300px] bg-white border border-gray-200 rounded-lg">
+    <div className={`flex flex-col bg-white border border-gray-200 rounded-lg ${
+      embedded
+        ? 'h-full min-h-0'
+        : 'h-[calc(100dvh-9.5rem)] sm:h-[calc(100dvh-10.5rem)] min-h-[300px]'
+    }`}>
       {/* Header */}
       <div className="flex items-center justify-between p-3 border-b border-gray-200 bg-gray-50 rounded-t-lg">
         <div className="flex-1">
@@ -367,18 +369,21 @@ const AITutorView = ({ lessonId, lessonTitle, initialPrompt, aiConfig, backLink,
           <p className="text-xs text-gray-500 hidden sm:block">
             Enter to send · Shift+Enter for new line
           </p>
-          <button
-            type="button"
-            onClick={handleComplete}
-            disabled={isCompleting}
-            className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
-              isCompleting
-                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                : 'bg-green-600 hover:bg-green-700 text-white'
-            }`}
-          >
-            {isCompleting ? 'Saving...' : 'Mark Complete'}
-          </button>
+          {/* In embedded (panel) mode the lesson's own view owns completion. */}
+          {!embedded && (
+            <button
+              type="button"
+              onClick={handleComplete}
+              disabled={isCompleting}
+              className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
+                isCompleting
+                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                  : 'bg-green-600 hover:bg-green-700 text-white'
+              }`}
+            >
+              {isCompleting ? 'Saving...' : 'Mark Complete'}
+            </button>
+          )}
         </div>
       </div>
 

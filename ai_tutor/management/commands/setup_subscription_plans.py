@@ -21,8 +21,8 @@ class Command(BaseCommand):
                 'price': 0.00,
                 'currency': 'EUR',
                 'billing_period': 'MONTHLY',
-                'monthly_chat_limit': 5,
-                'monthly_token_limit': 10000,
+                'monthly_chat_limit': 15,
+                'monthly_token_limit': 30000,
                 'features': {
                     'ai_tutor_access': 'Basic AI Tutor access',
                     'free_courses': 'Access to all free courses',

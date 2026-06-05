@@ -58,8 +58,9 @@ class Subscription(models.Model):
         """Get usage limits for this subscription tier"""
         limits = {
             Subscription.SubscriptionTier.FREE: {
-                'monthly_chats': 5,
-                'monthly_tokens': 10000,  # ~10k tokens
+                # Raised now that the AI tutor is available on every lesson (was 5).
+                'monthly_chats': 15,
+                'monthly_tokens': 30000,  # ~30k tokens (~2k/chat; scaled with the chat bump)
             },
             Subscription.SubscriptionTier.BASIC: {
                 'monthly_chats': 50,

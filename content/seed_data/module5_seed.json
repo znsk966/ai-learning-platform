@@ -1,0 +1,452 @@
+{
+  "_meta": {
+    "description": "Seed data for the Agentic AI Management course, Module 5 (final). Same schema as Modules 1–4; course block identical so the existing seed_course command ingests it unchanged. ai_tutor_config baked into every lesson. Closes with a capstone-wrap READ lesson (no quiz) that assembles the running capstone into a one-page plan.",
+    "module_in_this_file": 5
+  },
+  "course": {
+    "title": "Agentic AI Management",
+    "description": "A self-paced course that takes managers from operating software to supervising AI agents — how agents work under the hood, how to govern them safely, and how to deploy a real workflow in their own team.",
+    "order": 10,
+    "price": "0.00",
+    "currency": "USD",
+    "is_premium_only": false,
+    "lemon_squeezy_variant_id": null,
+    "_note": "price / is_premium_only / lemon_squeezy_variant_id are placeholders — set these in the admin panel once the whole course is seeded. Do not re-seed after pricing without re-applying the price."
+  },
+  "submodules": [
+    {
+      "title": "Module 5: Strategy, People & Enterprise Implementation",
+      "description": "Bringing it home: deciding what to delegate to agents, choosing how to build it, and leading the people who will supervise it. Three chapters — the delegation matrix, evaluating agent builders, and leading a hybrid team — each a reading plus a knowledge check, closing with a capstone wrap that assembles the whole course into a one-page deployment plan.",
+      "order": 5,
+      "lessons": [
+        {
+          "type": "READ",
+          "title": "Lesson 5.1 — The Delegation Matrix",
+          "order": 1,
+          "text_content_steps": [
+            "## Not everything should be an agent\n\nThe excitement around agents creates a quiet pressure: if agents are powerful, shouldn't you point them at everything? This is the most expensive mistake a leader can make in this space — not because agents are dangerous, but because they are the wrong tool for a great many jobs. Some work is better done by plain, traditional software. Some work should stay firmly with humans. The skill that separates a thoughtful AI leader from an over-eager one is **knowing which is which** — and that skill has a name and a shape: the **delegation matrix**.\n\nThis lesson is the spine of your capstone. Everything you've built so far — the perceive-reason-act understanding, the governance, the economics — gets pointed at one question: *what, in my world, should an agent actually do?*",
+            "## Three homes for any task\n\nEvery process in your department has a natural home in one of three places:\n\n- **Traditional software** — fully rule-based, deterministic work. \"When an invoice arrives, file it in this folder.\" There is no judgment, no ambiguity; the same input always gives the same output. An agent here is overkill: slower, costlier, and less reliable than a simple script or an existing automation. If you can write the rule down completely, you don't need an agent.\n- **An agent** — structured, repeatable work that still needs *judgment over messy input*: reading varied customer language, summarizing, triaging, drafting. Rules can't fully capture it, but it's bounded and the stakes are recoverable. This is the agent's home turf.\n- **Humans** — work that is high-stakes, hard to reverse, deeply relational, or genuinely novel. Firing someone, setting strategy, handling a grieving customer. Judgment, accountability, and human presence are the point, not overhead to automate away.",
+            "## The two axes\n\nWhat decides the home? Two questions you already know from earlier modules, now used together:\n\n- **Task structure & repeatability** — is this the same kind of task over and over with a recognizable shape, or is each instance novel and unstructured?\n- **Risk & reversibility** — if it goes wrong, is the damage small and easily undone, or large and permanent?\n\nPlot a task on those two axes and its home appears. **Structured + repeatable + low-risk + reversible** is the sweet spot — but split that corner once more: if it needs *no judgment at all*, it's traditional software; if it needs judgment over messy input, it's an agent. Move toward **high-risk, irreversible, or novel** and it belongs with a human, no matter how repetitive it looks. A task can be done a thousand times a day and still be human-only if getting it wrong is catastrophic.",
+            "## Why this is the leader's call\n\nNo tool can draw this matrix for you, because only you know your processes, your risk tolerance, and where judgment actually lives in your team's work. A vendor will happily tell you their agent can do all of it; that is their job, not your analysis. Drawing the matrix deliberately is how you avoid both failure modes at once — automating something that should have stayed human, and hand-building an agent for something a five-line script would have done better and cheaper.\n\n> **Misconception to bust** — \"If agents are powerful, agent-ify everything.\" Power is not fit. Fully rule-based work belongs to ordinary software; high-stakes, irreversible, or deeply human work belongs to people. Agents earn their place in the specific middle band — structured, repeatable, recoverable work that needs judgment over messy input. The matrix is how you find that band on purpose.",
+            "## Key takeaways\n\n- Every task has one of three homes: **traditional software** (fully rule-based), **an agent** (structured/repeatable but needs judgment over messy input), or **a human** (high-stakes, irreversible, relational, or novel).\n- Two axes place it: **task structure & repeatability** and **risk & reversibility**. The agent's band is the recoverable, repeatable middle — not everything that's repetitive.\n- Drawing the matrix is a **leadership analysis no vendor can do for you**, and it prevents both over-automating and under-using ordinary software.\n\n## Apply it — capstone worksheet, part 16\n\n**Your task:** Build a **delegation matrix for your own department.** List 6–10 real processes and sort each into *traditional software / agent / human-only*, noting the structure and risk that put it there. This is the backbone your final capstone plan hangs on.\n\n**Self-check:** if everything landed in the \"agent\" column, push back on yourself — look for the fully rule-based tasks (software) and the high-stakes or relational ones (human). A healthy matrix uses all three columns.\n\n**Model answer (snippet):** \"Support desk — *traditional software:* auto-routing tickets by keyword (a rule). *Agent:* summarizing the week's ticket themes into a draft (the running example — structured, repeatable, reversible, needs judgment over messy text). *Human-only:* handling an angry enterprise customer threatening to churn (high-stakes, relational).\""
+          ],
+          "ai_tutor_initial_prompt": "You are an AI tutor for the lesson 'The Delegation Matrix'. Key ideas: not every task should be an agent — every process has one of three homes: traditional software (fully rule-based, deterministic work, where an agent is overkill), an agent (structured, repeatable work that needs judgment over messy input and is bounded and recoverable), or a human (high-stakes, irreversible, relational, or novel work); two axes place a task — task structure & repeatability and risk & reversibility — and the agent's band is the recoverable, repeatable middle that still needs judgment, not everything repetitive; and drawing this matrix is a leadership analysis no vendor can do, preventing both over-automating and under-using ordinary software. Help the learner sort their own department's processes into the three homes.",
+          "ai_tutor_config": {
+            "subject": "The delegation matrix — sorting work into software, agent, or human",
+            "difficulty_level": "Non-technical manager (no coding background)",
+            "teaching_style": "Plain-language and Socratic; concrete everyday examples; relate to the learner's own work; avoid jargon.",
+            "preferred_explanation_length": "Concise — 2 to 4 sentences; expand only if the learner asks.",
+            "welcome_message": "Want to figure out what in your team is really an agent's job? Name a process and we'll place it."
+          }
+        },
+        {
+          "type": "QUIZ",
+          "title": "Knowledge Check 5.1",
+          "order": 2,
+          "quiz": {
+            "title": "Knowledge Check — The Delegation Matrix",
+            "passing_score": 75,
+            "questions": [
+              {
+                "order": 1,
+                "type": "MC",
+                "question_text": "A task that is fully rule-based and deterministic — same input always gives the same output — is best handled by:",
+                "explanation": "If you can write the rule down completely, ordinary software does it more cheaply and reliably than an agent. Agents earn their place where rules can't fully capture the judgment needed.",
+                "choices": [
+                  {
+                    "answer_text": "An agent, because agents handle everything",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Traditional software — an agent would be slower, costlier, and less reliable here",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "A human, always",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Two agents working together",
+                    "is_correct": false
+                  }
+                ]
+              },
+              {
+                "order": 2,
+                "type": "MC",
+                "question_text": "Which two axes place a task in the delegation matrix?",
+                "explanation": "Task structure & repeatability and risk & reversibility together decide a task's home. The recoverable, repeatable middle that needs judgment is the agent's band.",
+                "choices": [
+                  {
+                    "answer_text": "Cost and speed",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Task structure & repeatability, and risk & reversibility",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "Model size and token price",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Team size and time zone",
+                    "is_correct": false
+                  }
+                ]
+              },
+              {
+                "order": 3,
+                "type": "MC",
+                "question_text": "What kind of work belongs in the \"agent\" band specifically?",
+                "explanation": "Agents fit structured, repeatable work that's bounded and recoverable but still needs judgment over messy input — like summarizing varied customer language. Fully rule-based work is software's; high-stakes or relational work is a human's.",
+                "choices": [
+                  {
+                    "answer_text": "Any work that happens frequently, regardless of stakes",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Structured, repeatable, recoverable work that needs judgment over messy input",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "Only the highest-stakes decisions in the company",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Work that can be written down as a complete rule",
+                    "is_correct": false
+                  }
+                ]
+              },
+              {
+                "order": 4,
+                "type": "MC",
+                "question_text": "Why can't a vendor draw your delegation matrix for you?",
+                "explanation": "Only you know your processes, your risk tolerance, and where judgment lives in your team's work. A vendor is motivated to say their agent can do everything — that's sales, not your analysis.",
+                "choices": [
+                  {
+                    "answer_text": "Vendors are not allowed to see your processes by law",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Only you know your processes, risk tolerance, and where judgment really lives — and the vendor is motivated to oversell",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "Vendors don't understand AI",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "The matrix is generated automatically by the agent",
+                    "is_correct": false
+                  }
+                ]
+              }
+            ]
+          },
+          "ai_tutor_initial_prompt": "You are an AI tutor helping with the knowledge check for 'The Delegation Matrix'. Do not give answers outright; guide the learner to reason about the three homes for a task, the two placing axes, what specifically belongs in the agent band, and why this analysis is theirs to do rather than a vendor's.",
+          "ai_tutor_config": {
+            "subject": "The delegation matrix — knowledge check",
+            "difficulty_level": "Non-technical manager (no coding background)",
+            "teaching_style": "Socratic and hint-based; guide with questions and analogies; never state or confirm the correct option.",
+            "preferred_explanation_length": "Concise — 2 to 4 sentences.",
+            "max_hints_per_question": 2,
+            "welcome_message": "Tell me how you're sorting a task and I'll nudge your thinking — I won't hand you the answer."
+          }
+        },
+        {
+          "type": "READ",
+          "title": "Lesson 5.2 — Choosing an Agent Builder",
+          "order": 3,
+          "text_content_steps": [
+            "## The wrong question and the right one\n\nOnce you know *what* to build (your delegation matrix), the next question is *with what.* A whole market of \"agent builder\" platforms now promises to let non-technical teams assemble agents with drag-and-drop visual tools instead of code. They are real and useful. But the way most people choose between them — *which has the most features?* — is exactly backwards. Features age out, and the flashiest platform is often the one that makes the governance you learned in Module 4 hardest to apply. The right question is narrower and more durable: *which platform best supports the specific workflow I need, run safely?*\n\nThis lesson deliberately teaches **criteria, not a winner** — because the winners change every few months, and the criteria don't.",
+            "## Six durable criteria\n\nScore any builder against these, in roughly this priority for a manager who cares about governance:\n\n- **Integration coverage** — does it connect to the systems your workflow actually touches (your CRM, ticketing, email, data)? An agent that can't reach your tools is a demo, not a product.\n- **Guardrail & HITL support** — can you set permission boundaries and human-approval checkpoints (Module 4) *inside* the tool, or does it assume full autonomy?\n- **Observability** — does it give you logs, audit trails, and a readable view of what agents did? If you can't see it, you can't supervise it.\n- **Governance & permissions** — role-based access, who-can-build-and-deploy controls, data-handling rules. Matters more the larger your org.\n- **Pricing & lock-in** — how does cost scale with usage, and how hard is it to leave? Open standards and exportable work reduce lock-in.\n- **Security posture & deployment model** — cloud-only vs. self-hosted vs. on-premises. This ties straight back to your cloud-vs-local decision (Module 3): regulated or sensitive data often forces self-hosted or on-prem.",
+            "## The landscape — a dated snapshot, not a recommendation\n\n> ⚠️ **Snapshot — verify before you rely on it.** The tool market moves fast; treat the names below as examples of *categories* as of **mid-2026**, and re-check the current state before you choose. Do not memorize this list — memorize the criteria above.\n\nAs of mid-2026 the market sorts roughly into three categories:\n\n- **Business-suite platforms** tied to an ecosystem — e.g. **Microsoft Copilot Studio** (deep Microsoft 365 / Teams / Dataverse integration, enterprise governance controls). Strong when your org already lives in that ecosystem.\n- **Visual low-code builders** — e.g. **Langflow**, **n8n**, **Dify**, **Flowise** — drag-and-drop, often open-source and self-hostable; good for prototyping and for pipeline-style \"agent as one step\" automations.\n- **Developer frameworks with managed/governance layers** — e.g. **CrewAI**, **LangGraph**, plus cloud platforms like **Google Vertex AI Agent Builder** — more power and control, more technical skill required; some add enterprise observability and on-prem options for regulated industries.\n\nThe point of the list is the *shape*: ecosystem-suite, visual low-code, developer framework. Where a tool sits tells you more than its feature count.",
+            "## Matching tool to need\n\nThe best builder is the one that fits *your* row in the delegation matrix, not the one that wins a feature shootout. A small, reversible, internal workflow can live happily on a simple visual builder. A workflow touching regulated customer data points you toward self-hosted or on-prem options with strong governance, even if they're less glossy. A workflow deep inside Microsoft tooling makes the Microsoft-ecosystem option an easy call. Start from the workflow and its governance needs; let those eliminate most of the market before you ever compare features.\n\n> **Misconception to bust** — \"Pick the builder with the most features.\" Feature count is the weakest signal there is. A platform can do a hundred things and still make least-privilege, human checkpoints, and audit logs awkward — which means it can't run *your* workflow safely. Fit-for-your-governed-workflow beats feature-rich every time, and it ages far better.",
+            "## Key takeaways\n\n- Choose a builder by **fit for your specific, governed workflow** — not by feature count, which is the weakest signal and ages fastest.\n- Score candidates on **six durable criteria**: integration coverage, guardrail/HITL support, observability, governance & permissions, pricing & lock-in, and security/deployment model.\n- Today's tools sort into **ecosystem suites, visual low-code builders, and developer frameworks** — but treat any specific tool list as a fast-changing snapshot and re-verify before choosing.\n\n## Apply it — capstone worksheet, part 17\n\n**Your task:** Pick the workflow from your delegation matrix you'd build first. **Score two agent builders** against the six criteria for *that* workflow (a simple ✓ / partial / ✗ per criterion is enough). Name which you'd choose and the one criterion that decided it.\n\n**Self-check:** if your deciding factor was \"it has the most features,\" re-run it against integration, governance, and security for your actual data — those should usually decide it.\n\n**Model answer (snippet):** \"Support-summary agent — *Tool A (visual low-code, self-hostable):* integrations ✓, guardrails/HITL ✓ (can set draft-only), observability ✓, governance partial, lock-in low, self-host ✓. *Tool B (ecosystem suite):* integrations ✓, HITL ✓, observability ✓, governance ✓, lock-in higher, cloud-only. Choice: Tool A — the deciding criterion was self-hosting, since tickets contain customer text I'd rather keep in our perimeter.\""
+          ],
+          "ai_tutor_initial_prompt": "You are an AI tutor for the lesson 'Choosing an Agent Builder'. Key ideas: the right question is not which platform has the most features but which best supports the specific workflow you need, run safely; score builders on six durable criteria — integration coverage, guardrail/HITL support, observability, governance & permissions, pricing & lock-in, and security posture/deployment model; the current market sorts roughly into ecosystem business suites, visual low-code builders, and developer frameworks, but specific tool names are a fast-changing snapshot to re-verify rather than memorize; and the best builder is the one that fits the learner's own row in the delegation matrix, with governance needs eliminating most of the market before any feature comparison. When the learner asks about specific tools, remind them the landscape changes fast and to check current sources; emphasize the criteria over any product. Help the learner score two builders against the criteria for their chosen workflow.",
+          "ai_tutor_config": {
+            "subject": "Evaluating no-code/low-code agent builders by durable criteria",
+            "difficulty_level": "Non-technical manager (no coding background)",
+            "teaching_style": "Plain-language and Socratic; concrete everyday examples; relate to the learner's own work; avoid jargon.",
+            "preferred_explanation_length": "Concise — 2 to 4 sentences; expand only if the learner asks.",
+            "welcome_message": "Choosing a tool to build with? Tell me your workflow and we'll score options on what actually matters."
+          }
+        },
+        {
+          "type": "QUIZ",
+          "title": "Knowledge Check 5.2",
+          "order": 4,
+          "quiz": {
+            "title": "Knowledge Check — Choosing an Agent Builder",
+            "passing_score": 75,
+            "questions": [
+              {
+                "order": 1,
+                "type": "MC",
+                "question_text": "What is the right primary question when choosing an agent builder?",
+                "explanation": "The durable question is which platform best supports your specific workflow, run safely — not which has the most features. Features age out; fit and governance don't.",
+                "choices": [
+                  {
+                    "answer_text": "Which platform has the most features?",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Which platform best supports my specific workflow, run safely?",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "Which platform is newest?",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Which platform the most companies use?",
+                    "is_correct": false
+                  }
+                ]
+              },
+              {
+                "order": 2,
+                "type": "MC",
+                "question_text": "Which of these is one of the durable criteria for evaluating a builder?",
+                "explanation": "Guardrail and HITL support — whether you can set permission boundaries and approval checkpoints inside the tool — is a core durable criterion, alongside integration, observability, governance, pricing/lock-in, and security/deployment.",
+                "choices": [
+                  {
+                    "answer_text": "The color scheme of its dashboard",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Whether you can set permission boundaries and human-approval checkpoints inside the tool",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "How many awards it has won",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Whether a celebrity endorses it",
+                    "is_correct": false
+                  }
+                ]
+              },
+              {
+                "order": 3,
+                "type": "MC",
+                "question_text": "Why does this lesson teach criteria rather than naming a single best tool?",
+                "explanation": "The specific winners change every few months, while the evaluation criteria stay stable. Memorizing a tool list ages badly; memorizing the criteria lets you re-evaluate the market whenever you choose.",
+                "choices": [
+                  {
+                    "answer_text": "Because all tools are identical",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Because the specific winners change every few months while the criteria stay stable",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "Because naming tools is against the rules",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Because there are no good tools available",
+                    "is_correct": false
+                  }
+                ]
+              },
+              {
+                "order": 4,
+                "type": "MC",
+                "question_text": "A workflow handling regulated, sensitive customer data should push you toward:",
+                "explanation": "Sensitive or regulated data ties back to the cloud-vs-local decision: it often forces self-hosted or on-premises options with strong governance, even if they're less glossy than a cloud-only suite.",
+                "choices": [
+                  {
+                    "answer_text": "Whatever cloud-only tool has the most features",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Self-hosted or on-premises options with strong governance, even if less glossy",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "The cheapest tool regardless of where data lives",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Skipping governance to move faster",
+                    "is_correct": false
+                  }
+                ]
+              }
+            ]
+          },
+          "ai_tutor_initial_prompt": "You are an AI tutor helping with the knowledge check for 'Choosing an Agent Builder'. Do not give answers outright; guide the learner to see why fit-for-workflow beats feature count, to recall the durable criteria, to understand why criteria outlast any tool list, and to connect sensitive-data workflows to deployment model. Do not endorse a specific product.",
+          "ai_tutor_config": {
+            "subject": "Choosing an agent builder — knowledge check",
+            "difficulty_level": "Non-technical manager (no coding background)",
+            "teaching_style": "Socratic and hint-based; guide with questions and analogies; never state or confirm the correct option.",
+            "preferred_explanation_length": "Concise — 2 to 4 sentences.",
+            "max_hints_per_question": 2,
+            "welcome_message": "Share your reasoning on a question and I'll guide you toward it — without naming the answer."
+          }
+        },
+        {
+          "type": "READ",
+          "title": "Lesson 5.3 — Leading the Hybrid Team",
+          "order": 5,
+          "text_content_steps": [
+            "## The org doesn't adapt itself\n\nYou can have the perfect delegation matrix, the right builder, and flawless governance — and still fail, because the hardest part of deploying agents isn't technical. It's human. A team that doesn't trust the agents, doesn't know how to supervise them, or fears for their jobs will quietly route around the whole effort. Leading a **hybrid team** — humans and agents working together — is its own discipline, and it's the part that most often decides whether an agent program delivers value or stalls. The technology is the easy half.",
+            "## Change and trust — name the fear honestly\n\nThe first reality is that people will worry about their jobs, and pretending otherwise destroys trust faster than the worry itself. Be honest that views genuinely differ: some analysts and economists expect agents to mostly *augment* people — removing drudgery and raising what one person can do — while others expect meaningful *displacement* of certain roles, and the honest answer is that it varies by role, industry, and how leadership chooses to deploy the technology. Pretending there's no debate, or promising no one will ever be affected, reads as spin. What builds trust is naming the uncertainty, being clear about your own intentions for the team, and involving people in the change rather than announcing it at them. Trust is also earned by starting with low-stakes wins people can see, so the agent proves itself before anyone is asked to rely on it.",
+            "## Reskilling — from doing to supervising\n\nWhen an agent takes over the *doing* of a task, the human role shifts to *supervising* it — and that is a genuinely different skill set. The people who did the work are often best placed to oversee it, but they need support to make the jump: from producing the output to reviewing it, calibrating checkpoints, spotting drift, and knowing when to intervene or escalate. This is the reskilling agenda, and it's mostly judgment and oversight skills, not coding. Framed well, it's a promotion in substance — less rote production, more decisions — and treating it that way (rather than as a threat) is what turns a nervous team into capable agent supervisors.",
+            "## New KPIs and the span-of-control trap\n\nThe old metrics don't fit a hybrid team. If you measure a supervisor on raw personal output, you're measuring the wrong thing — the agent does the output now. Better signals include:\n\n- **Throughput per supervisor** — how much work one person, overseeing several agents, can shepherd.\n- **Exception rate** — how often agents hit cases they can't handle and kick to a human.\n- **Intervention rate** — how often the supervisor has to step in and correct.\n- **Quality** — the accuracy/acceptability of the agent output (from your Module 4 monitoring).\n- **Cost-per-outcome** — the full cost (Module 3) per unit of value delivered.\n\nAnd a trap to watch: **over-span-of-control.** When each person is asked to supervise five, ten, or more agents, oversight quality degrades and people burn out — the human becomes a rubber stamp (the over-gating failure from Module 4, at the org level). Right-sizing how many agents one person can genuinely supervise is a real management decision, not an afterthought.\n\n> **Misconception to bust** — \"Deploy the technology and the organization adapts itself.\" Organizations do not self-adapt; people do, and only if you lead them through it — honest change management, real reskilling toward supervision, and metrics that fit the new shape of the work. The hybrid team is built deliberately or not at all.",
+            "## Key takeaways\n\n- The hardest part of deploying agents is **human, not technical**: trust, reskilling, and metrics decide whether a program delivers or stalls.\n- Lead change by **naming job-impact uncertainty honestly** (views differ — augmentation vs. displacement), starting with visible low-stakes wins, and **reskilling people from doing to supervising**.\n- Adopt **KPIs that fit hybrid work** (throughput per supervisor, exception rate, intervention rate, quality, cost-per-outcome) and avoid **over-span-of-control**, which turns supervisors into rubber stamps.\n\n## Apply it — capstone worksheet, part 18\n\n**Your task:** Draft a short **\"AI supervisor\" role description** for whoever will oversee your capstone workflow (what they do, what skills they need), plus **three KPIs** you'd hold that role to.\n\n**Self-check:** if your KPIs still measure personal output rather than oversight quality and outcomes, revise them — and sanity-check that you're not asking one person to supervise more agents than they realistically can.\n\n**Model answer (snippet):** \"AI supervisor (Support) — *role:* reviews and approves the agent's weekly summaries, calibrates its checkpoints, watches the correction-rate dashboard for drift, and escalates anomalies. *Skills:* domain judgment, comfort reviewing AI output, knowing when to intervene. *KPIs:* (1) intervention rate under 1 in 3, (2) zero un-reviewed sends to customers, (3) cost-per-summary below the manual baseline.\""
+          ],
+          "ai_tutor_initial_prompt": "You are an AI tutor for the lesson 'Leading the Hybrid Team'. Key ideas: the hardest part of deploying agents is human, not technical — trust, reskilling, and metrics decide success; lead change by naming job-impact uncertainty honestly (views genuinely differ between augmentation and displacement, and it depends on role, industry, and deployment choices), starting with visible low-stakes wins, and involving people rather than announcing at them; reskill people from doing the work to supervising it (a judgment-and-oversight skill set, not coding); adopt KPIs that fit hybrid work — throughput per supervisor, exception rate, intervention rate, quality, cost-per-outcome — instead of raw personal output; and avoid over-span-of-control, where supervising too many agents degrades oversight and causes burnout, turning supervisors into rubber stamps. On the job-impact question, present differing views fairly rather than taking a side. Help the learner draft an AI-supervisor role and fitting KPIs.",
+          "ai_tutor_config": {
+            "subject": "Leading a hybrid human-plus-agent team: change, reskilling, and KPIs",
+            "difficulty_level": "Non-technical manager (no coding background)",
+            "teaching_style": "Plain-language and Socratic; concrete everyday examples; relate to the learner's own work; avoid jargon.",
+            "preferred_explanation_length": "Concise — 2 to 4 sentences; expand only if the learner asks.",
+            "welcome_message": "Thinking about the people side of going agentic? Let's work through trust, roles, and the right metrics."
+          }
+        },
+        {
+          "type": "QUIZ",
+          "title": "Knowledge Check 5.3",
+          "order": 6,
+          "quiz": {
+            "title": "Knowledge Check — Leading the Hybrid Team",
+            "passing_score": 75,
+            "questions": [
+              {
+                "order": 1,
+                "type": "MC",
+                "question_text": "What is the most common reason a technically sound agent program stalls?",
+                "explanation": "The hardest part is human, not technical. A team that doesn't trust the agents, can't supervise them, or fears for their jobs will route around the effort regardless of how good the technology is.",
+                "choices": [
+                  {
+                    "answer_text": "The model isn't large enough",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "The human side — trust, reskilling, and fit of metrics — wasn't led through deliberately",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "The cloud servers are too slow",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "There are not enough features in the builder",
+                    "is_correct": false
+                  }
+                ]
+              },
+              {
+                "order": 2,
+                "type": "MC",
+                "question_text": "How should a leader handle the team's fears about job impact?",
+                "explanation": "Name the uncertainty honestly: informed views genuinely differ between augmentation and displacement, and it depends on role, industry, and deployment choices. Pretending there's no debate or promising no one will be affected reads as spin and destroys trust.",
+                "choices": [
+                  {
+                    "answer_text": "Promise firmly that no one's job will ever change",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Avoid the topic so people don't worry",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Name the uncertainty honestly — views differ — and involve people in the change",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "Insist the technology has no effect on jobs",
+                    "is_correct": false
+                  }
+                ]
+              },
+              {
+                "order": 3,
+                "type": "MC",
+                "question_text": "When an agent takes over doing a task, the human role shifts toward:",
+                "explanation": "The role shifts from producing the output to supervising the agent — reviewing, calibrating checkpoints, spotting drift, and knowing when to intervene. That's a judgment-and-oversight skill set, not coding.",
+                "choices": [
+                  {
+                    "answer_text": "Writing the agent's code",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Supervising the agent — reviewing output, calibrating checkpoints, intervening when needed",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "Doing nothing further",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Doing the same task manually as a backup every time",
+                    "is_correct": false
+                  }
+                ]
+              },
+              {
+                "order": 4,
+                "type": "MC",
+                "question_text": "What is the \"over-span-of-control\" trap on a hybrid team?",
+                "explanation": "When one person is asked to supervise too many agents, oversight quality degrades and they burn out, becoming a rubber stamp — the org-level version of over-gating. Right-sizing how many agents one person can truly supervise is a real management decision.",
+                "choices": [
+                  {
+                    "answer_text": "Giving an agent too many permissions",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Asking one person to supervise too many agents, so oversight degrades and they rubber-stamp",
+                    "is_correct": true
+                  },
+                  {
+                    "answer_text": "Having too many managers in a meeting",
+                    "is_correct": false
+                  },
+                  {
+                    "answer_text": "Running an agent in the cloud instead of locally",
+                    "is_correct": false
+                  }
+                ]
+              }
+            ]
+          },
+          "ai_tutor_initial_prompt": "You are an AI tutor helping with the knowledge check for 'Leading the Hybrid Team'. Do not give answers outright; guide the learner to see why the human side decides success, how to handle job-impact fears honestly without taking a side, how the role shifts to supervision, which KPIs fit hybrid work, and what the over-span-of-control trap is.",
+          "ai_tutor_config": {
+            "subject": "Leading the hybrid team — knowledge check",
+            "difficulty_level": "Non-technical manager (no coding background)",
+            "teaching_style": "Socratic and hint-based; guide with questions and analogies; never state or confirm the correct option.",
+            "preferred_explanation_length": "Concise — 2 to 4 sentences.",
+            "max_hints_per_question": 2,
+            "welcome_message": "Talk me through your thinking and I'll point you the right way — I won't give the answer outright."
+          }
+        },
+        {
+          "type": "READ",
+          "title": "Lesson 5.4 — Capstone: Your Agentic Deployment Plan",
+          "order": 7,
+          "text_content_steps": [
+            "## You've already built it\n\nIf you've done the \"Apply it\" exercise in each lesson, you are not starting your capstone now — you're *assembling* it. Across the course you've produced eighteen pieces, each a part of one coherent thing: a one-page **Agentic Deployment Plan** for a real workflow in your own team. This final lesson is the assembly instructions — how the parts snap together into something you could put in front of your leadership on a single page.\n\nThere's no new concept here and no quiz. The work is to gather what you've already written and see it whole.",
+            "## The one-page plan — what goes on it\n\nYour Agentic Deployment Plan pulls together the threads:\n\n- **The delegation matrix** (part 16) — showing this workflow genuinely belongs in the agent band, with the software and human work around it named.\n- **The chosen workflow, specified end to end** — its **perceive-reason-act flow** (Modules 1–2), its **permission table** (part 11), its **HITL checkpoints** (part 12), its **security guardrail** for untrusted input (part 13), and its **monitoring plan** with intervention thresholds (part 14).\n- **A named owner and escalation path** (part 15) — who is accountable and who can pause it.\n- **A cost-vs-value estimate** (part 10) — the rough number showing value clearly beats full cost, including the cloud-vs-local call (part 8) and async checkpoints (part 9) where relevant.\n- **The tooling choice** (part 17) — which builder, decided on governed-fit criteria.\n- **The people plan** (part 18) — the AI-supervisor role and the KPIs you'll hold it to.\n\nThat is a complete, defensible deployment plan — strategy, mechanics, governance, economics, and people, on one page.",
+            "## Worked example — the running thread, assembled\n\nThe support-summary agent we've carried through the course assembles like this: *delegation* — it sits squarely in the agent band (structured, repeatable, reversible, needs judgment over messy ticket text). *Workflow* — perceives the week's tickets, reasons out the top themes, acts by drafting an email; may read tickets, may write a draft, must never send to customers or touch billing. *HITL* — draft-vs-execute, with the team lead approving the send. *Security* — ticket text is treated as content to summarize, never as instructions; draft-only blocks exfiltration. *Monitoring* — weekly correction rate, failure count, sampled reads; intervene if edits exceed one in three. *Owner* — the Support Team Lead, with same-day escalation and authority to pause. *Economics* — minimal tokens plus ~10 minutes of review to replace ~90 minutes of manual work: value clearly beats cost. *Tool* — a self-hostable low-code builder, chosen so customer text stays in-perimeter. *People* — an AI-supervisor role measured on intervention rate, zero un-reviewed customer sends, and cost-per-summary. One workflow, fully governed, on a page.",
+            "## Ship it, then keep it honest\n\nTwo closing moves. First, **put the plan in front of the people who must approve it** — the one-page format exists so a busy leader can see the whole thing, including who's accountable, in a few minutes. Second, **set the volatile parts on a refresh cadence:** the regulatory specifics (part 15), the tool landscape (part 17), and any prices will drift; the durable 80% — the perceive-reason-act model, the governance levers, the delegation logic — will not. Schedule a periodic look at the volatile pieces so the plan stays true without constant rework.\n\nThat's the whole course, brought to a point: you can now look at a process, decide whether it belongs to software, an agent, or a person; design a safe agentic workflow if it does; estimate whether it's worth it; choose how to build it; and lead the people who will supervise it. That's what it means to manage agents rather than just use them.\n\n## How to assemble your capstone\n\n**Your task:** Gather your worksheet parts 8–18 and lay them out on a single page in the structure above. Fill any gaps, tighten anything vague, and read it as one document — does it hang together as a plan you'd actually stake your name on as the owner?\n\n**Self-check:** if any section is missing an owner, a checkpoint, or a number, that's the part to firm up first — those are the three things a reviewer will look for."
+          ],
+          "ai_tutor_initial_prompt": "You are an AI tutor for the capstone wrap of the Agentic AI Management course. There is no new concept and no quiz here; the goal is to help the learner assemble the eighteen worksheet parts they built across the course into a single one-page Agentic Deployment Plan: the delegation matrix; the chosen workflow specified end to end (perceive-reason-act flow, permission table, HITL checkpoints, security guardrail, monitoring plan with thresholds); a named owner and escalation path; a cost-vs-value estimate including the cloud-vs-local and async decisions; the tooling choice on governed-fit criteria; and the people plan (AI-supervisor role and KPIs). Encourage the learner to put the one-page plan in front of approvers and to set the volatile parts (regulation, tool landscape, prices) on a refresh cadence while the durable concepts stay stable. Help the learner pull their parts together and spot gaps — especially missing owners, checkpoints, or numbers.",
+          "ai_tutor_config": {
+            "subject": "Assembling the capstone — the one-page Agentic Deployment Plan",
+            "difficulty_level": "Non-technical manager (no coding background)",
+            "teaching_style": "Plain-language and Socratic; concrete everyday examples; relate to the learner's own work; avoid jargon.",
+            "preferred_explanation_length": "Concise — 2 to 4 sentences; expand only if the learner asks.",
+            "welcome_message": "Ready to pull it all together? Tell me which parts you've got and we'll assemble your one-page plan."
+          }
+        }
+      ]
+    }
+  ]
+}

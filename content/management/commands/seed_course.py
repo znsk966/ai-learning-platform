@@ -122,6 +122,12 @@ class Command(BaseCommand):
             "ai_tutor_initial_prompt": lesson_data.get("ai_tutor_initial_prompt", ""),
         }
 
+        # Per-lesson AI tutor config (subject, difficulty, teaching_style, etc.).
+        # Only overwrite when the file provides it, so files that omit it (e.g.
+        # Modules 1-3, configured via admin) keep their existing config on re-run.
+        if "ai_tutor_config" in lesson_data:
+            defaults["ai_tutor_config"] = lesson_data["ai_tutor_config"]
+
         # READ lessons: join the step list with the ReadingView page separator.
         if lesson_type == Lesson.LessonType.READING:
             steps = lesson_data.get("text_content_steps", [])

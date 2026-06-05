@@ -3,7 +3,7 @@ import apiClient from './api';
 /**
  * Sends a question to the AI tutor for a specific lesson.
  */
-export const askAI = async (lessonId, userQuestion, diyContext = '', aiConfig = null) => {
+export const askAI = async (lessonId, userQuestion, diyContext = '', aiConfig = null, history = []) => {
   try {
     const requestData = {
       lesson_id: lessonId,
@@ -14,6 +14,11 @@ export const askAI = async (lessonId, userQuestion, diyContext = '', aiConfig = 
     // Add AI config if available
     if (aiConfig) {
       requestData.ai_config = aiConfig;
+    }
+
+    // Send recent conversation turns for memory (server caps this further)
+    if (Array.isArray(history) && history.length > 0) {
+      requestData.history = history;
     }
 
     const response = await apiClient.post('/ai/ask/', requestData);

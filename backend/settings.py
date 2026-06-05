@@ -280,6 +280,12 @@ FRONTEND_URL = os.getenv('FRONTEND_URL', 'http://localhost:5173')
 # AI Configuration
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY', '')
 
+# When True, the AI tutor may fall back to a canned simulated response if Gemini
+# is unavailable/misconfigured. Intended for local dev and tests only — in
+# production this stays False so failures surface honestly (HTTP 503) instead of
+# returning a fake answer.
+AI_TUTOR_ALLOW_SIMULATED = os.getenv('AI_TUTOR_ALLOW_SIMULATED', 'False').lower() == 'true'
+
 # Demo mode: allows subscription creation without real payment processing
 DEMO_MODE = os.getenv('DEMO_MODE', 'False').lower() == 'true'
 

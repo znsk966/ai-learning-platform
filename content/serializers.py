@@ -40,6 +40,8 @@ class LessonSerializer(serializers.ModelSerializer):
             'id', 'submodule', 'title', 'lesson_type', 'order',
             'text_content', 'video_url', 'bunny_video_id', 'bunny_embed_url',
             'simulation_url',
+            # Exposed for all lesson types: READ/QUIZ lessons now surface the AI
+            # tutor panel and rely on these fields (sent to the backend as context).
             'ai_tutor_initial_prompt', 'ai_tutor_config',
             'status', 'files',
         ]

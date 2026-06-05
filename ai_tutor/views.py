@@ -18,6 +18,7 @@ logger = logging.getLogger('ai_tutor')
 # This ensures the API key stays on the server and is never exposed to the frontend
 try:
     from google import genai
+    from google.genai import types
     GEMINI_AVAILABLE = True
     # API key is loaded from environment variables (settings.GEMINI_API_KEY)
     # Never exposed to frontend - 100% secure proxy pattern
@@ -29,6 +30,19 @@ try:
 except ImportError:
     GEMINI_AVAILABLE = False
     GEMINI_API_KEY = None
+    types = None
+
+if not GEMINI_AVAILABLE:
+    logger.warning(
+        "AI tutor: Gemini is not available (library missing or GEMINI_API_KEY unset). "
+        "Requests will fail with HTTP 503 unless AI_TUTOR_ALLOW_SIMULATED is enabled."
+    )
+
+# Server-side caps for conversation memory
+MAX_HISTORY_TURNS = 10
+MAX_HISTORY_CHARS = 8000
+# Cap on lesson reading text injected into the tutor context (READ lessons only)
+MAX_LESSON_TEXT_CHARS = 6000
 
 
 class AIAskView(APIView):
@@ -43,7 +57,7 @@ class AIAskView(APIView):
         # --- 1. Get data from the frontend request ---
         lesson_id = request.data.get('lesson_id')
         user_question = request.data.get('user_question')
-        diy_context = request.data.get('diy_context', '') # Optional
+        diy_context = request.data.get('diy_context', '')  # Optional
 
         if not lesson_id or not user_question:
             return Response(
@@ -81,45 +95,41 @@ class AIAskView(APIView):
                 "limit_info": limit_info
             }, status=status.HTTP_429_TOO_MANY_REQUESTS)
 
-        # --- 4. Real AI Logic ---
+        # --- 4. Build prompt (system instruction + multi-turn contents) ---
         ai_config = request.data.get('ai_config', {})
+        history = self._sanitize_history(request.data.get('history', []))
 
-        # Build the AI prompt
-        prompt = self._build_ai_prompt(lesson, user_question, diy_context, ai_config)
+        system_instruction = self._build_system_instruction(lesson, diy_context, ai_config)
+        contents = self._build_contents(history, user_question)
 
-        # Get AI response
-        tokens_used = 0
+        # --- 5. Get AI response (honest failure handling) ---
         if GEMINI_AVAILABLE:
-            logger.debug("GEMINI_AVAILABLE: %s", GEMINI_AVAILABLE)
-            logger.debug("API Key configured: %s", bool(hasattr(settings, 'GEMINI_API_KEY') and settings.GEMINI_API_KEY != 'your-gemini-api-key-here'))
             try:
-                ai_response = self._get_gemini_response(prompt)
-                # Estimate tokens used (prompt + response)
-                tokens_used = SubscriptionService.estimate_tokens(prompt + ai_response)
-                logger.info("Successfully got Gemini response")
+                ai_response = self._get_gemini_response(system_instruction, contents)
             except Exception as e:
-                error_msg = str(e)
                 logger.error("Gemini API error: %s", e)
-
-                # Check if it's an API key issue
-                if 'leaked' in error_msg.lower() or '403' in error_msg or 'invalid' in error_msg.lower() or 'API_KEY_HTTP_REFERRER_BLOCKED' in error_msg:
-                    if 'API_KEY_HTTP_REFERRER_BLOCKED' in error_msg:
-                        logger.warning("API Key has HTTP referrer restrictions. Update restrictions in Google Cloud Console.")
-                    else:
-                        logger.warning("API Key issue detected. Using simulated response.")
+                if settings.AI_TUTOR_ALLOW_SIMULATED:
                     ai_response = self._get_simulated_response(lesson, user_question)
-                    # Add a note that this is a simulated response
-                    ai_response = f"[Note: Using simulated response due to API key restrictions. Please update API key restrictions in Google Cloud Console for server-side usage.]\n\n{ai_response}"
                 else:
-                    ai_response = self._get_simulated_response(lesson, user_question)
-
-                tokens_used = SubscriptionService.estimate_tokens(prompt + ai_response)
-        else:
-            logger.info("GEMINI_AVAILABLE is False - using simulated response")
+                    return Response({
+                        "error": "The AI tutor is temporarily unavailable. Please try again shortly.",
+                        "tutor_unavailable": True
+                    }, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+        elif settings.AI_TUTOR_ALLOW_SIMULATED:
+            logger.info("GEMINI_AVAILABLE is False - using simulated response (AI_TUTOR_ALLOW_SIMULATED enabled)")
             ai_response = self._get_simulated_response(lesson, user_question)
-            tokens_used = SubscriptionService.estimate_tokens(prompt + ai_response)
+        else:
+            logger.error("AI tutor request failed: Gemini unavailable and simulated responses disabled.")
+            return Response({
+                "error": "The AI tutor is temporarily unavailable. Please try again shortly.",
+                "tutor_unavailable": True
+            }, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
-        # --- 5. Record Usage ---
+        # Estimate tokens used (prompt context + history + question + response)
+        prompt_text = system_instruction + self._contents_to_text(contents)
+        tokens_used = SubscriptionService.estimate_tokens(prompt_text + ai_response)
+
+        # --- 6. Record Usage (only on a successful response) ---
         SubscriptionService.record_usage(
             user=user,
             lesson=lesson,
@@ -153,56 +163,124 @@ class AIAskView(APIView):
             "usage_info": usage_info
         })
 
-    def _build_ai_prompt(self, lesson, user_question, diy_context, ai_config):
-        """Build a comprehensive prompt for the AI tutor."""
+    @staticmethod
+    def _coerce_config(ai_config):
+        """Coerce ai_config into a dict, tolerating JSON strings and bad input."""
+        if isinstance(ai_config, str):
+            try:
+                ai_config = json.loads(ai_config)
+            except (json.JSONDecodeError, TypeError, ValueError):
+                return {}
+        return ai_config if isinstance(ai_config, dict) else {}
 
-        # Base context
-        prompt_parts = [
+    def _sanitize_history(self, history):
+        """
+        Validate and cap client-supplied conversation history.
+
+        Accepts a list of {"role": "user"|"model", "content": "..."} turns.
+        Drops malformed entries, keeps the last MAX_HISTORY_TURNS turns, and
+        enforces a total character budget (trimming oldest-first).
+        """
+        if not isinstance(history, list):
+            return []
+
+        cleaned = []
+        for turn in history:
+            if not isinstance(turn, dict):
+                continue
+            role = turn.get('role')
+            content = turn.get('content')
+            if role not in ('user', 'model'):
+                continue
+            if not isinstance(content, str) or not content.strip():
+                continue
+            cleaned.append({'role': role, 'content': content})
+
+        # Keep only the most recent turns
+        cleaned = cleaned[-MAX_HISTORY_TURNS:]
+
+        # Enforce a total character budget, trimming oldest-first
+        total = sum(len(t['content']) for t in cleaned)
+        while cleaned and total > MAX_HISTORY_CHARS:
+            removed = cleaned.pop(0)
+            total -= len(removed['content'])
+
+        return cleaned
+
+    def _build_system_instruction(self, lesson, diy_context, ai_config):
+        """Build the tutoring persona + lesson context + rules as a system instruction."""
+        ai_config = self._coerce_config(ai_config)
+
+        parts = [
             f"You are an expert AI tutor helping a student with the lesson: '{lesson.title}'.",
         ]
 
-        # Add lesson-specific context
+        # Lesson-specific context (server-side persona/instruction, not shown to the learner)
         if lesson.ai_tutor_initial_prompt:
-            prompt_parts.append(f"Lesson Context: {lesson.ai_tutor_initial_prompt}")
+            parts.append(f"Lesson Context: {lesson.ai_tutor_initial_prompt}")
 
-        # Add AI configuration if available
-        if ai_config:
-            if isinstance(ai_config, str):
-                try:
-                    ai_config = json.loads(ai_config)
-                except (json.JSONDecodeError, TypeError, ValueError):
-                    ai_config = {}
+        if ai_config.get('subject'):
+            parts.append(f"Subject: {ai_config['subject']}")
+        if ai_config.get('difficulty_level'):
+            parts.append(f"Difficulty Level: {ai_config['difficulty_level']}")
+        if ai_config.get('teaching_style'):
+            parts.append(f"Teaching Style: {ai_config['teaching_style']}")
+        if ai_config.get('preferred_explanation_length'):
+            parts.append(f"Keep explanations to: {ai_config['preferred_explanation_length']}.")
+        if ai_config.get('max_hints_per_question'):
+            parts.append(
+                f"Offer at most {ai_config['max_hints_per_question']} hints toward any single "
+                "quiz question, and never state or confirm the correct answer."
+            )
 
-            if ai_config.get('subject'):
-                prompt_parts.append(f"Subject: {ai_config['subject']}")
-            if ai_config.get('difficulty_level'):
-                prompt_parts.append(f"Difficulty Level: {ai_config['difficulty_level']}")
-            if ai_config.get('teaching_style'):
-                prompt_parts.append(f"Teaching Style: {ai_config['teaching_style']}")
+        # Inject the reading material for READ lessons only. Never inject quiz
+        # questions or answer choices — the tutor must not see the answer key.
+        if lesson.lesson_type == Lesson.LessonType.READING and lesson.text_content:
+            reading = lesson.text_content[:MAX_LESSON_TEXT_CHARS]
+            parts.append(
+                "The following is the lesson reading material the student is studying. "
+                "Use it to ground your answers:\n"
+                f"{reading}"
+            )
 
-        # Add user context
         if diy_context:
-            prompt_parts.append(f"Additional Context: {diy_context}")
+            parts.append(f"Additional Context: {diy_context}")
 
-        # Add the user's question
-        prompt_parts.append(f"\nStudent Question: {user_question}")
-
-        # Add instructions
-        prompt_parts.append("""
-Please provide a helpful, educational response that:
-1. Directly addresses the student's question
-2. Uses clear, step-by-step explanations
-3. Encourages learning and understanding
-4. Is appropriate for the specified difficulty level
-5. Maintains a supportive and encouraging tone
+        parts.append("""
+Please provide helpful, educational responses that:
+1. Directly address the student's question
+2. Use clear, step-by-step explanations
+3. Encourage learning and understanding
+4. Are appropriate for the specified difficulty level
+5. Maintain a supportive and encouraging tone
 """)
 
-        return "\n\n".join(prompt_parts)
+        return "\n\n".join(parts)
 
-    def _get_gemini_response(self, prompt):
+    def _build_contents(self, history, user_question):
+        """Build the multi-turn contents list from sanitized history + the new question."""
+        contents = []
+        for turn in history:
+            contents.append({'role': turn['role'], 'parts': [{'text': turn['content']}]})
+        contents.append({'role': 'user', 'parts': [{'text': user_question}]})
+        return contents
+
+    @staticmethod
+    def _contents_to_text(contents):
+        """Flatten contents into plain text (used only for token estimation)."""
+        chunks = []
+        for turn in contents:
+            for part in turn.get('parts', []):
+                chunks.append(part.get('text', ''))
+        return "\n".join(chunks)
+
+    def _get_gemini_response(self, system_instruction, contents):
         """
         Get response from Google Gemini API using secure proxy pattern.
         API key is stored server-side only - never exposed to frontend.
+
+        Uses google-genai's GenerateContentConfig(system_instruction=...) plus a
+        multi-turn `contents` list of {"role", "parts": [{"text"}]} turns.
         """
         if not GEMINI_AVAILABLE or not GEMINI_API_KEY:
             raise Exception("Gemini API not available or API key not configured")
@@ -210,22 +288,24 @@ Please provide a helpful, educational response that:
         # Initialize client with API key (server-side only)
         client = genai.Client(api_key=GEMINI_API_KEY)
 
+        config = types.GenerateContentConfig(system_instruction=system_instruction)
+
         # Try newer model names (as of 2025)
         model_names = [
-            'gemini-2.5-flash',      # Latest stable flash model
-            'gemini-2.0-flash',      # Alternative flash model
+            'gemini-2.5-flash',       # Latest stable flash model
+            'gemini-2.0-flash',       # Alternative flash model
             'gemini-flash-latest',    # Latest flash (auto-updates)
-            'gemini-2.5-pro',        # Pro model
+            'gemini-2.5-pro',         # Pro model
             'gemini-pro-latest',      # Latest pro (auto-updates)
         ]
 
         last_error = None
         for model_name in model_names:
             try:
-                # Use the newer Client API pattern
                 response = client.models.generate_content(
                     model=model_name,
-                    contents=prompt
+                    contents=contents,
+                    config=config,
                 )
                 logger.info("Successfully used model: %s", model_name)
                 return response.text
@@ -234,22 +314,13 @@ Please provide a helpful, educational response that:
                 last_error = e
                 continue
 
-        # If all models failed, try to list available models for debugging
-        try:
-            models = client.models.list()
-            available_models = [
-                model.name for model in models
-                if hasattr(model, 'supported_generation_methods') and
-                'generateContent' in model.supported_generation_methods
-            ]
-            logger.info("Available models with generateContent: %s", available_models)
-        except Exception as debug_error:
-            logger.warning("Could not list models for debugging: %s", debug_error)
-
         raise Exception(f"All Gemini models failed. Last error: {last_error}")
 
     def _get_simulated_response(self, lesson, user_question):
-        """Fallback simulated response."""
+        """Fallback simulated response (dev/tests only, gated by AI_TUTOR_ALLOW_SIMULATED)."""
         time.sleep(1)  # Simulate processing time
-        return f"Of course! Let's think about your question regarding '{lesson.title}'. A good first step would be to check your assumptions about the topic. Have you considered...?"
-
+        return (
+            f"Of course! Let's think about your question regarding '{lesson.title}'. "
+            "A good first step would be to check your assumptions about the topic. "
+            "Have you considered...?"
+        )

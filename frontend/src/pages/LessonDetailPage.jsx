@@ -18,10 +18,12 @@ const LessonDetailPage = () => {
   const [lesson, setLesson] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [tutorOpen, setTutorOpen] = useState(false);
 
   const fetchLesson = useCallback(async () => {
     setLoading(true);
     setError(null);
+    setTutorOpen(false);
     try {
       const data = await getLessonById(lessonId);
       setLesson(data);
@@ -56,10 +58,9 @@ const LessonDetailPage = () => {
           // or automatically navigating to the next lesson
         }} />;
       case 'AI':
-        return <AITutorView 
-          lessonId={lesson.id} 
+        return <AITutorView
+          lessonId={lesson.id}
           lessonTitle={lesson.title}
-          initialPrompt={lesson.ai_tutor_initial_prompt}
           aiConfig={lesson.ai_tutor_config}
           backLink={backLink}
           backLinkLabel={backLinkLabel}
@@ -100,6 +101,12 @@ const LessonDetailPage = () => {
 
   const isAI = lesson.lesson_type === 'AI';
 
+  // Surface the AI tutor as a side panel on READ and QUIZ lessons, but only when
+  // the lesson actually has tutor context configured.
+  const showTutorPanel =
+    (lesson.lesson_type === 'READ' || lesson.lesson_type === 'QUIZ') &&
+    Boolean(lesson.ai_tutor_initial_prompt || lesson.ai_tutor_config);
+
   return (
     <div className="max-w-5xl mx-auto">
       <div className={isAI ? 'mb-1' : 'mb-6'}>
@@ -121,6 +128,58 @@ const LessonDetailPage = () => {
 
       {lesson.files && lesson.files.length > 0 && (
         <FileDownloadList files={lesson.files} />
+      )}
+
+      {showTutorPanel && (
+        <>
+          {/* Floating toggle button */}
+          {!tutorOpen && (
+            <button
+              type="button"
+              onClick={() => setTutorOpen(true)}
+              className="fixed bottom-5 right-5 z-40 inline-flex items-center gap-2 px-4 py-3 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg transition-colors"
+              aria-label="Open AI Tutor"
+            >
+              <span aria-hidden="true">💬</span>
+              <span className="hidden sm:inline font-medium">Ask AI Tutor</span>
+            </button>
+          )}
+
+          {/* Slide-over drawer */}
+          {tutorOpen && (
+            <div className="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-label="AI Tutor">
+              {/* Backdrop */}
+              <div
+                className="absolute inset-0 bg-black/40"
+                onClick={() => setTutorOpen(false)}
+              />
+              {/* Panel */}
+              <div className="absolute inset-y-0 right-0 flex w-full max-w-md flex-col bg-white shadow-xl">
+                <div className="flex items-center justify-between border-b border-gray-200 px-4 py-3">
+                  <h2 className="text-base font-semibold text-gray-800">AI Tutor</h2>
+                  <button
+                    type="button"
+                    onClick={() => setTutorOpen(false)}
+                    className="rounded-md p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+                    aria-label="Close AI Tutor"
+                  >
+                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+                <div className="flex-1 min-h-0 p-3">
+                  <AITutorView
+                    embedded
+                    lessonId={lesson.id}
+                    lessonTitle={lesson.title}
+                    aiConfig={lesson.ai_tutor_config}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

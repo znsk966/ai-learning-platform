@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "description": "Seed data for the Agentic AI Management course, Module 3. Same schema as Modules 1–2; course block identical so the existing seed_agentic_course command ingests it unchanged.",
+    "description": "Seed data for the Agentic AI Management course, Module 3. Same schema as Modules 1–2; course block identical so the existing seed_course command ingests it unchanged.",
     "module_in_this_file": 3
   },
   "course": {

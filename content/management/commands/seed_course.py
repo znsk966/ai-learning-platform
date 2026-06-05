@@ -3,11 +3,11 @@ Idempotent seed command for the "Agentic AI Management" course (and similarly
 shaped course seed files).
 
 Usage:
-    python manage.py seed_agentic_course
-    python manage.py seed_agentic_course --file content/seed_data/module1_seed.json
+    python manage.py seed_course
+    python manage.py seed_course --file content/seed_data/module1_seed.json
 
 This is a MANUAL operator step for local/dev use and for manual production runs
-(e.g. `railway run python manage.py seed_agentic_course`). It is deliberately NOT
+(e.g. `railway run python manage.py seed_course`). It is deliberately NOT
 wired into any deploy hook. Re-running it must never create duplicates.
 """
 

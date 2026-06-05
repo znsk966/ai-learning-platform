@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "description": "Seed data for the Agentic AI Management course, Module 2. Same schema as module1_seed.json: course -> submodule -> lessons; READ lessons join text_content_steps with '\\n\\n---\\n\\n'; QUIZ lessons map to assessment.Quiz/Question/AnswerChoice. The course block is identical to Module 1 so the existing seed_agentic_course command ingests it unchanged.",
+    "description": "Seed data for the Agentic AI Management course, Module 2. Same schema as module1_seed.json: course -> submodule -> lessons; READ lessons join text_content_steps with '\\n\\n---\\n\\n'; QUIZ lessons map to assessment.Quiz/Question/AnswerChoice. The course block is identical to Module 1 so the existing seed_course command ingests it unchanged.",
     "module_in_this_file": 2
   },
   "course": {
